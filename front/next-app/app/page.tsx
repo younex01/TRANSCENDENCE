@@ -1,8 +1,12 @@
-export default function Home() {
+import SignPage from './Sign'
+import HomePage from './HomePage/page'
 
+export default function Home() {
   return (
-    <main> 
-      home page
-    </main>
+    <>
+        <body className="container">
+            <SignPage />
+        </body>
+     </>
   )
 }
