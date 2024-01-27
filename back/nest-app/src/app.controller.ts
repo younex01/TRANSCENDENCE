@@ -10,5 +10,18 @@ export class AppController {
   gethello(){
     return this.appService.getHello()
   }
+// create a controloer with an endpoint thatt gets the user data
+//
+}
 
+
+@Controller('users')
+export class AppController {
+  constructor(private readonly prismaService: PrismaService) {}
+
+  @Get(':username')
+  async getUser(@Param('username') username: string) {
+    const user = await this.prismaService.userExists(username);
+    return user;
+  }
 }

@@ -1,14 +1,40 @@
 "use client"
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import SearchPanel from './SearchPanel';
+import axios from 'axios';
+
+
+const login = async (username:string, password:string) => {
+  try {
+    const response = await axios.post('http://localhost:4000/auth/redirect');
+    return response.data.token;
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+};
+
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [data, setData] = useState<any>(null);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/auth/redirect');
+        setData(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="h-screen md:h-[100vh] w-full flex" >

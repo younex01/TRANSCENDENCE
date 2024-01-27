@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import { env } from "process";
 import React from "react";
 import { useState } from "react";
@@ -111,8 +112,9 @@ function Signup() {
           <span className="bg-[#6E7AAE] pl-[20px] pr-[20px] text-[#c9c9c9] ">or</span>
         </div>
         <div className="self-center col-span-1 bg-inherit border-[1px] border-gray-300 rounded-[10px] flex items-center mb-7">
-          <button type="submit" className="flex w-full justify-center items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm bg-[#6E7AAE] border-[1px] border-[#6E7AAE] hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            <img src="./images/google_logo.png" className="w-[30%] h-[6vh] mr-2" alt="Logo" /> Sign up with google</button>
+          <Link  href="http://localhost:4000/auth/redirect" type="submit" className="flex w-full justify-center items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm bg-[#6E7AAE] border-[1px] border-[#6E7AAE] hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <img src="./images/google_logo.png" className="w-[30%] h-[6vh] mr-2" alt="Logo" 
+            /> Sign up with google</Link>
         </div>
 
 
