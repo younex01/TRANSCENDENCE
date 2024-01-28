@@ -5,11 +5,14 @@ import { Request } from 'express';
 import { PrismaService } from 'src/prisma.service';
 
 const extractCookie = (req: Request): string | null => {
+    console.log("======>" ,req.headers.authorization);
     console.log("cookies", req.cookies);
-    // console.log("cookies", req.cookies.token);
-  if (req.cookies && req.cookies.JWT_TOKEN) {
+    console.log("cookies", req.cookies.token);
+  if (req.cookies && req.cookies.JWT_TOKEN ) {
     return req.cookies.JWT_TOKEN;
   }
+  else if (req.headers.authorization) {
+    return req.headers.authorization.replace('Bearer ', '');}
   return null;
 };
 

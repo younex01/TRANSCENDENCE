@@ -11,16 +11,19 @@ export default function Profile() {
     withCredentials: true,
   });
     const fetchData = async () => {
-      // try {
+      try {
         const response = await API.get('/user/me');
         if(response.data.info){
           setData(response.data.user);
         }
         console.log("here: ", response);
-      // } catch (error) {
-      //   console.error('Error fetching data:', error);
-      // }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
+  useEffect(() => {
+    fetchData();
+  }, []);
 return (
     <>
       <div className='grid grid-cols-2 grid-rows-4 gap-5 p-[30px] bg-white sm:w-[100%] h-[100vh] rounded-xl'>
@@ -35,8 +38,7 @@ return (
           </div>
         </div>
 
-        <div className="ml-auto"
-        onClick={() => fetchData()}>
+        <div className="ml-auto">
           <Image src="./images/mdi_settings.svg" alt="settingsLogo" width={30} height={30} />
         </div>
         <div className='md:mt-[-13%] md:ml-[-11%]'>

@@ -9,7 +9,7 @@ export class AuthController {
     private readonly prisma: PrismaService) {}
     @Get('redirect')
     @UseGuards(AuthGuard('42'))
-    async ft_redirect(@Req() req, @Res({passthrough: true}) res)
+    async ft_redirect(@Req() req, @Res() res)
     {
         const payload = { sub: req.user.id };
         const token = await this.jwtService.signAsync(payload);
