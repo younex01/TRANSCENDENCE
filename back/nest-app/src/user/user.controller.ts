@@ -1,18 +1,17 @@
-import { Controller, Get, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { FortyTwoAuthGuard } from 'src/auth/guards/42guards';
+import { Body, Controller, Get, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma.service';
 
-@Controller('user')
+@Controller('/user')
 export class UserController {
     constructor(private readonly prisma: PrismaService) {}
-    @Get('me')
-    async Getme(@Req() req: any)
+    @Get('/me')
+    @UseGuards(AuthGuard('jwt'))
+    async Getme(@Req() req, @Res() res)
     {
         const user = req.user;
-        return {
-            username: user.username,
-            displayName: user.displayName,
-            avatar: user.avatar,
-        };
+        // console.log("user", user);
+       return await res.send({info: true, user: user}); 
         }
     }
+

@@ -23,7 +23,7 @@ import Strategy from "passport-42";
 import { PrismaService } from "src/prisma.service";
 import { AuthDto } from "../dtos/auth.dto";
 import { AuthService } from "../auth.service";
-import { request } from "http";
+
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy) {
@@ -47,7 +47,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
             displayName: profile._json.displayname
 
         }
-        // console.log("dto", dto);
         const user = await this.service.findOrCreate(dto);
         console.log("->", user);
         

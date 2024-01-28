@@ -7,7 +7,7 @@ export class AuthService {
     constructor(private readonly prisma: PrismaService) {}
     async findOrCreate(dto: AuthDto)
     {
-        const user = await this.prisma.user.findUnique({where: {username: dto.username}});
+        const user = await this.prisma.user.findUnique({where: {username: dto.username}}); 
         // console.log("user", user);
         if (user)
             return user;

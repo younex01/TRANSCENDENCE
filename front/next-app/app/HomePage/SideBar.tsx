@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import SearchPanel from './SearchPanel';
 import axios from 'axios';
+import { TURBO_TRACE_DEFAULT_MEMORY_LIMIT } from 'next/dist/shared/lib/constants';
 
 
 const login = async (username:string, password:string) => {
