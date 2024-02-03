@@ -22,7 +22,7 @@ export default function freinds() {
   // }, []);
 
   return (
-    <div className='friends grid grid-cols-1 gap-5 p-[15px] bg-white h-[60vh] sm:h-[69vh]  lg:ml-[-1%] md:ml-[4%] md:w-[92%] lg:w-[100%] rounded-xl mb-5'>
+    <div className='friends grid grid-cols-1 gap-5 p-[15px] bg-white h-[60vh] sm:h-[69vh]  lg:w-[100%] rounded-xl mb-5'>
     
     <div className="flex justify-start items-start w-full gap-[20px] p-[3%] h-[20%]">
         <div

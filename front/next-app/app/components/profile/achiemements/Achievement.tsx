@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function Achievement({name,achived,imagePath,achivedDate}:{name:string, achived:string, imagePath:string, achivedDate:string}) {
   return (
-<div className="bg-[#C7B1B1] flex justify-between lg:w-[100%] w-[max-content]  h-[max-content]">
+<div className="bg-[#C7B1B1] flex justify-between lg:w-[100%]   h-[max-content]  w-full mb-[16px]">
         <div className="flex flex-col">
             <div className="m-2">
                 <h2 className="text-xl font-semibold w-[107%]">{name}</h2>
