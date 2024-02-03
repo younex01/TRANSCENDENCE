@@ -7,7 +7,7 @@ export default function SearchPanel() {
   return (
     <>
       <div className='w-full h-[8%] flex flex-row justify-center items-center '>
-        <div className='searchBar w-[71%] md:w-[50%]  md:h-[18%] h-[10vh] relative flex-0 flex-grow-1 flex-shrink-auto md:left-[52%] left-[55%] transform -translate-x-1/2'>
+        <div className='mysearchBar w-[71%] md:w-[50%]  md:h-[18%] h-[10vh] relative flex-0 flex-grow-1 flex-shrink-auto md:left-[52%] left-[55%] transform -translate-x-1/2'>
           <form className="w-full">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

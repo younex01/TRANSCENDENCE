@@ -8,5 +8,8 @@ export class AuthDto{
     avatar: string;
 
     @IsString()
-    displayName: string;
+    firstName: string;
+
+    @IsString()
+    lastName: string;
 }

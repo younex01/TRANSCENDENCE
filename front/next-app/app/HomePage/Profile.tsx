@@ -3,8 +3,13 @@ import Image from 'next/image'
 import LastGames from './LastGames'
 import Link from 'next/link'
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProfileData } from '../redux/features/profile/profileSlice';
 
 export default function Profile() {
+
+  const dispatch = useDispatch();
+
   const [data, setData] = useState<any>(null);
   const API = axios.create({
     baseURL: `http://localhost:4000`,
@@ -15,15 +20,18 @@ export default function Profile() {
         const response = await API.get('/user/me');
         if(response.data.info){
           setData(response.data.user);
+          useEffect(() =>{
+      
+            dispatch(setProfileData(response.data.user));
+          }, [])
         }
-        console.log("here: ", response);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  useEffect(() => {
-    fetchData();
-  }, []);
+    useEffect(() => {
+      fetchData();
+    }, []);
   return (
       <>
     <div className='bg-white flex flex-col rounded-[20px] overflow-hidden'>
@@ -32,7 +40,7 @@ export default function Profile() {
         <div className='flex items-center gap-3 ml-2'>
           <img className='w-[60px] h-[60px] rounded-[50%] object-contain' src={data?.avatar} alt={data?.avatar} />
           <div>
-            <div>{data?.displayName}</div>
+            <div>{data?.firstName}</div>
             <div className='font-light'>{data?.username}</div>
           </div>
         </div>

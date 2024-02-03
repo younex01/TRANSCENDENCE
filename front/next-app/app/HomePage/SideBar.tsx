@@ -26,9 +26,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    console.log("useEffect 1")
-    console.log("FreindData.data 1", FreindData.data)
-    console.log("allFreinds.data 1", allFreinds.data)
     dispatch(setFreindRequestInfo(
       FreindData.data
       ));
@@ -38,8 +35,6 @@ const Sidebar = () => {
         dispatch(setAchievementInfo(
           AchievementData.achievements
           ));
-          
-    console.log("useEffect2")
   }, []);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

@@ -14,7 +14,8 @@ model User {
   id       Int         @id @default(autoincrement())
   username String      @unique
   avatar   String
-  displayName String
+  firstName String
+  lastName  String
   messages Message[]
   groups   ChatGroup[] @relation("UserGroup")
 }

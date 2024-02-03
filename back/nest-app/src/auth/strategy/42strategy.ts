@@ -44,13 +44,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
         const dto : AuthDto = {
             username: profile._json.login,
             avatar: profile._json.image.link,
-            displayName: profile._json.displayname
-
+            firstName: profile._json.first_name,
+            lastName: profile._json.last_name,
         }
         const user = await this.service.findOrCreate(dto);
         console.log("->", user);
         
-        console.log("mn strategy " +user.displayName);
+        console.log("mn strategy " +user);
         if (!user)
             throw new UnauthorizedException("User not found");
         return user;

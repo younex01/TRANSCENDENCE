@@ -18,7 +18,7 @@ export default function FreindInfo() {
   const array = useSelector(selectFreindInfo);
   // console.log("my arrraaaay freinds:",array);
   return (
-    <div className='lg:mt-[-7%] border border-2 border-black'>
+    <div className='lg:mt-[-7%] border-2 border-black'>
          <Swiper
           spaceBetween={3}
           slidesPerView={6}
