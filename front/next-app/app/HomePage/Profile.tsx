@@ -6,32 +6,30 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfileData } from '../redux/features/profile/profileSlice';
 
-export default function Profile() {
+export default function Profile({user}:any) {
 
   const dispatch = useDispatch();
 
-  const [data, setData] = useState<any>(null);
-  const API = axios.create({
-    baseURL: `http://localhost:4000`,
-    withCredentials: true,
-  });
-    const fetchData = async () => {
-      try {
-        const response = await API.get('/user/me');
-        if(response.data.info){
-          setData(response.data.user);
-          useEffect(() =>{
+  const [data, setData] = useState<any>(user);
+  // const API = axios.create({
+  //   baseURL: `http://localhost:4000`,
+  //   withCredentials: true,
+  // });
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await API.get('/user/me');
+  //       if(response.data.info){
+  //         setData(response.data.user);
+  //           dispatch(setProfileData(response.data.user));
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+  //   useEffect(() => {
+  //     fetchData();
       
-            dispatch(setProfileData(response.data.user));
-          }, [])
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    useEffect(() => {
-      fetchData();
-    }, []);
+  //   }, []);
   return (
       <>
     <div className='bg-white flex flex-col rounded-[20px] overflow-hidden'>

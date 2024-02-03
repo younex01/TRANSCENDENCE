@@ -22,7 +22,7 @@ const login = async (username:string, password:string) => {
 };
 
 
-const Sidebar = () => {
+const Sidebar = ({user}:{user:any}) => {
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -43,19 +43,19 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/auth/redirect');
-        setData(response.data);
-        console.log(response);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:4000/auth/redirect');
+  //       setData(response.data);
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="h-screen md:h-[100vh]  w-full flex">
@@ -100,7 +100,7 @@ const Sidebar = () => {
         </button>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
-        <SearchPanel />
+        <SearchPanel user={user} />
       </div>
     </div>
   );

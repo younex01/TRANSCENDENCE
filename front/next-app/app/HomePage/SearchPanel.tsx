@@ -3,7 +3,7 @@ import Profile from './Profile'
 import Achievements from './Achievements'
 import Freinds from './Freinds'
 
-export default function SearchPanel() {
+export default function SearchPanel({user}: {user: any}) {
   return (
     <>
       <div className='w-full h-[8%] flex flex-row justify-center items-center '>
@@ -29,7 +29,7 @@ export default function SearchPanel() {
       </div>
       <div className="flex flex-col lg:flex-row gap-10">
         <div className="w-[100%] h-full ">
-          <Profile />
+          <Profile user={user} />
         </div>
         <div className="flex w-[100%] flex-col gap-4 ">
           <div className="">

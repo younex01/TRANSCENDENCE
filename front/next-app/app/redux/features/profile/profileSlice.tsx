@@ -8,6 +8,8 @@ export const profileSlice = createSlice({
   },
   reducers: {
       setProfileData: (state, action) => {
+        console.log("action.payload", action.payload);
+        
       return {
         ...state,
         profileData: action.payload
@@ -16,7 +18,7 @@ export const profileSlice = createSlice({
   },
 });
 
-export const selectFreindInfo = createSelector(
+export const selectProfileInfo = createSelector(
   (state) => state.profile,
   (substate) => substate.profileData
 );

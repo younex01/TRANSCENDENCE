@@ -2,11 +2,13 @@ import React from 'react';
 import Profile from '../HomePage/Profile';
 import { setProfileData } from '../redux/features/profile/profileSlice';
 import { useSelector } from 'react-redux';
-import { selectFreindInfo } from '../redux/features/freinds/requestSlice';
+import { selectProfileInfo } from '../redux/features/profile/profileSlice';
 
 
 export default function PersonnelInfo() {
-  const ProfileData = useSelector(selectFreindInfo);
+  const ProfileData = useSelector(selectProfileInfo);
+  console.log("the is our Profile", ProfileData);
+  
   return (
     <>
       <div className='lg:h-[100vh] md:h-[87vh] bg-white lg:w-[51%]  md:ml-[0%] lg:ml-[-4%] rounded-xl'>
