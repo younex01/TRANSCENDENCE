@@ -1,12 +1,12 @@
-import React from 'react'
-import Profile from './Profile'
-import Achievements from './Achievements'
-import Freinds from './Freinds'
+import React from 'react';
+import PersonnelInfo from './PersonnelInfo';
+import QRcode from './QRcode';
+import CloseAccont from './CloseAccont';
 
 export default function SearchPanel() {
   return (
     <>
-      <div className='w-full h-[8%] flex flex-row justify-center items-center '>
+      <div className='w-full h-[8%] flex flex-row justify-center items-center'>
         <div className='searchBar w-[71%] md:w-[50%]  md:h-[18%] h-[10vh] relative flex-0 flex-grow-1 flex-shrink-auto md:left-[52%] left-[55%] transform -translate-x-1/2'>
           <form className="w-full">
             <div className="relative">
@@ -16,7 +16,7 @@ export default function SearchPanel() {
               <input
                 type="search"
                 id="default-search"
-                className="block w-[100%] p-4 pl-10 text-sm text-gray-900 border  rounded-lg  focus:ring-blue-500 focus:border-gray-500 vbg-[rgba(217, 217, 217, 0.38)] dark:placeholder-gray-400 dark:text-gray mt-[0%] md:mt-[-1%] dark:focus:ring-black"
+                className="block w-[100%] p-4 pl-10 text-sm text-gray-900 border  rounded-lg  focus:ring-blue-500 focus:border-gray-500 vbg-[rgba(217, 217, 217, 0.38)] dark:placeholder-gray-400 dark:text-gray dark:focus:ring-black"
                 placeholder="Search..."
               />
             </div>
@@ -25,21 +25,19 @@ export default function SearchPanel() {
         <div className='notifications ml-auto h-screen  md:h-[0vh] sm:h-[12vh]'>
           <img src="./images/Bell.svg" alt="notif" className='w-8 h-8' />
         </div>
-
       </div>
-      <div className="flex flex-col lg:flex-row gap-10">
-        <div className="w-[100%] h-full ">
-          <Profile />
-        </div>
-        <div className="flex w-[100%] flex-col gap-4 ">
-          <div className="">
-            <Achievements />
-          </div>
-          <div className="">
-            <Freinds />
-          </div>
-        </div>
-      </div>
+      <div className='flex flex-col gap-4 lg:mt-[3%] md:mt-[5%] lg:ml-[9%]'>
+  <div className="flex flex-col md:flex-row gap-4">
+    <PersonnelInfo />
+    <div >
+    <QRcode />
+ 
+  
+ <CloseAccont/>
+    </div>
+  
+  </div>
+</div>
     </>
   )
 }

@@ -24,30 +24,34 @@ export default function Profile() {
   useEffect(() => {
     fetchData();
   }, []);
-return (
-    <>
-      <div className='grid grid-cols-2 grid-rows-4 gap-5 p-[30px] bg-white sm:w-[100%] h-[100vh] rounded-xl'>
-
-        <div className='flex flex-row'>
-          <div className='mr-4'>
-            <Image src={data?.avatar} alt='pdp' width={120} height={60} className='rounded-full' />
-          </div>
-          <div className='w-[100%]'>
-            <div className='font-semibold  w-[100%] md:text-xl'><h3>{data?.displayName}</h3></div>
-            <div className='w-[100%] md:text-2xl'><h4>{data?.username}</h4></div>
+  return (
+      <>
+    <div className='bg-white flex flex-col rounded-[20px] overflow-hidden'>
+  
+      <div className='relative mt-2 w-full h-[30%] flex gap-3 justify-between items-center'>
+        <div className='flex items-center gap-3 ml-2'>
+          <img className='w-[60px] h-[60px] rounded-[50%] object-contain' src={data?.avatar} alt={data?.avatar} />
+          <div>
+            <div>{data?.displayName}</div>
+            <div className='font-light'>{data?.username}</div>
           </div>
         </div>
-
-        <div className="ml-auto">
-          <Image src="./images/mdi_settings.svg" alt="settingsLogo" width={30} height={30} />
-        </div>
-        <div className='md:mt-[-13%] md:ml-[-11%]'>
-          <LastGames />
+        <div>
+          <Link href='./../2fau'>
+            <div className='mr-4'>
+              <img className='w-[30px] h-[30px] object-contain' src="./images/mdi_settings.svg" alt="settingsLogo" />
+            </div>
+          </Link>
         </div>
       </div>
-
-    </>
-
-
-  )
+    
+      <div className='h-[100%]'>
+        <LastGames />
+      </div>
+    </div>
+  
+      </>
+  
+  
+    )
 }

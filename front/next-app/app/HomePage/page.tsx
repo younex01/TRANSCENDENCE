@@ -31,7 +31,7 @@ export default async function page() {
   // console.log("user: ", user.data.user);
   //dispatch the user to the store
   return (
-    <div className='w-full bg-[#BBBB5B] overflow-y-auto'>   
+    <div className='w-full bg-[#dbe0f6] overflow-y-auto'>   
       <SideBar/>
     </div>
   )

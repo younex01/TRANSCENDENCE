@@ -9,22 +9,17 @@ import { setAchievementInfo } from '../redux/features/achievement/achievementSli
 import AchievementData from './../achiev.json';
 import FreindData from './../freindslist.json';
 import allFreinds from './../freinddata.json';
-import axios from 'axios';
-
-
-const login = async (username:string, password:string) => {
-  try {
-    const response = await axios.post('http://localhost:4000/auth/redirect');
-    return response.data.token;
-  } catch (error) {
-    console.error('Login failed:', error);
-  }
-};
 
 
 const Sidebar = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     console.log("useEffect 1")
     console.log("FreindData.data 1", FreindData.data)
@@ -41,27 +36,8 @@ const Sidebar = () => {
           
     console.log("useEffect2")
   }, []);
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [data, setData] = useState<any>(null);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/auth/redirect');
-        setData(response.data);
-        console.log(response);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  
+    
   return (
     <div className="h-screen md:h-[100vh]  w-full flex">
       <div
@@ -84,7 +60,8 @@ const Sidebar = () => {
         <button
           className="md:hidden text-white p-2 absolute top-2 left-2"
           onClick={toggleSidebar}
-          style={{ zIndex: 1 }}>
+          style={{ zIndex: 1 }}
+        >
           {isSidebarOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path d="M0 0h24v24H0z" fill="none" />
@@ -104,10 +81,14 @@ const Sidebar = () => {
           )}
         </button>
       </div>
+    
+    
+
+
       <div className="flex-1 p-4 overflow-y-auto">
         <SearchPanel />
       </div>
-    </div>
+  </div>
   );
 };
 
