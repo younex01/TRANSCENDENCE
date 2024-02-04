@@ -1,7 +1,7 @@
 import React from 'react'
 import Profile from './Profile'
-import Achievements from './Achievements'
-import Freinds from './Freinds'
+import Achievements from './achiemements/Achievements'
+import Freinds from './freinds/Freinds'
 
 export default function SearchPanel({user}: {user: any}) {
   return (

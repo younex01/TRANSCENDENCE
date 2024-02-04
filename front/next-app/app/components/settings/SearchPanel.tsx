@@ -33,7 +33,7 @@ export default function SearchPanel() {
     <QRcode />
  
   
- <CloseAccont/>
+    <CloseAccont/>
     </div>
   
   </div>

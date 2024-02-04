@@ -1,8 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
-import Achievement from '../components/profile/achiemements/Achievement'
+import Achievement from './Achievement'
 import { useSelector } from 'react-redux'
-import { selectAchievement } from '../redux/features/achievement/achievementSlice'
+import { selectAchievement } from '../../../redux/features/achievement/achievementSlice'
 
 
 

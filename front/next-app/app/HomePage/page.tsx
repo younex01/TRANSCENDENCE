@@ -1,5 +1,5 @@
 import React from 'react'
-import SideBar from './SideBar'
+import SideBar from '../components/profile/Home'
 import axios from 'axios';
 import { redirect } from 'next/navigation';
 
@@ -25,7 +25,6 @@ const getData = async () => {
   console.log("here: ", response);
   return response;
 }
-
 
 export default async function page() {
   // console.log("here is the home page: ");

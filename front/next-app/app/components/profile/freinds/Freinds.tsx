@@ -8,8 +8,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { useState } from 'react';
-import FreindsRequests from '../components/profile/freinds/FreindsRequests';
-import FreindInfo from '../components/profile/freinds/FreindInfo';
+import FreindsRequests from './FreindsRequests';
+import FreindInfo from './FreindInfo';
 
 export default function freinds() {
   const [activeTab, setActiveTab] = useState('freinds');

@@ -4,13 +4,13 @@ import LastGames from './LastGames'
 import Link from 'next/link'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProfileData } from '../redux/features/profile/profileSlice';
+import { setProfileData } from '../../redux/features/profile/profileSlice';
 
 export default function Profile({user}:any) {
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const [data, setData] = useState<any>(user);
+  // const [data, setData] = useState<any>(user);
   // const API = axios.create({
   //   baseURL: `http://localhost:4000`,
   //   withCredentials: true,
@@ -36,14 +36,14 @@ export default function Profile({user}:any) {
   
       <div className='relative mt-2 w-full h-[30%] flex gap-3 justify-between items-center'>
         <div className='flex items-center gap-3 ml-2'>
-          <img className='w-[60px] h-[60px] rounded-[50%] object-contain' src={data?.avatar} alt={data?.avatar} />
+          <img className='w-[60px] h-[60px] rounded-[50%] object-contain' src={user?.avatar} alt={user?.avatar} />
           <div>
-            <div>{data?.firstName}</div>
-            <div className='font-light'>{data?.username}</div>
+            <div>{user?.firstName}</div>
+            <div className='font-light'>{user?.username}</div>
           </div>
         </div>
         <div>
-          <Link href='./../2fau'>
+          <Link href='./../Settings'>
             <div className='mr-4'>
               <img className='w-[30px] h-[30px] object-contain' src="./images/mdi_settings.svg" alt="settingsLogo" />
             </div>
