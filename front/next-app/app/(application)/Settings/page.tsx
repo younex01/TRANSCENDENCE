@@ -1,5 +1,5 @@
 import React from 'react'
-import ChangeInfo from '../components/settings/changeInfo'
+import ChangeInfo from '../../components/settings/changeInfo'
 
 
 export default function page() {

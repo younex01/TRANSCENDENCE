@@ -153,7 +153,7 @@ function Signup() {
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mt-4">
           <button className="flex-grow md:w-1/2 border border-gray-300 text-gray-900 py-2 px-4 rounded hover:bg-indigo-500 flex items-center">
             <img src="./images/google_logo.png" className="w-6 h-6 mr-2" alt="Google Logo" />
-            Sign in with Google
+            Sign up with Google
           </button>
           <Link  href="http://localhost:4000/auth/redirect" type="submit" className="flex-grow md:w-1/2 border border-gray-300 text-gray-900 py-2 px-4 rounded hover:bg-indigo-500 flex items-center">
             <img src="./images/42_Logo.png" className="w-6 h-6 mr-2" alt="42 Logo" 

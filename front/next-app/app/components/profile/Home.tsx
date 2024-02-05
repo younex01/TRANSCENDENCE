@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import SearchPanel from './SearchPanel';
 import { setFreindRequestInfo, setFreindInfo } from '../../redux/features/freinds/requestSlice';
-import { useDispatch} from "react-redux"
+import { useDispatch, useSelector} from "react-redux"
 import { useState } from 'react';
 import { setAchievementInfo } from '../../redux/features/achievement/achievementSlice';
 import AchievementData from '../../achiev.json';
@@ -11,6 +11,7 @@ import FreindData from '../../freindslist.json';
 import allFreinds from '../../freinddata.json';
 import axios from 'axios';
 import LeftBar from '../leftBar';
+import { selectProfileInfo } from '@/app/redux/features/profile/profileSlice';
 
 
 const login = async (username:string, password:string) => {
@@ -23,7 +24,7 @@ const login = async (username:string, password:string) => {
 };
 
 
-const Sidebar = ({user}:{user:any}) => {
+const Home = () => {
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -38,7 +39,7 @@ const Sidebar = ({user}:{user:any}) => {
           ));
   }, []);
 
-  const [data, setData] = useState<any>(null);
+  // const [data, setData] = useState<any>(null);
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // const toggleSidebar = () => {
@@ -57,16 +58,19 @@ const Sidebar = ({user}:{user:any}) => {
 
   //   fetchData();
   // }, []);
+  const data = useSelector(selectProfileInfo);
+  
+console.log("freind data:", data);
 
   return (
     <div className="h-screen md:h-[100vh]  w-full flex">
-      <LeftBar />
+      {/* <LeftBar /> */}
       <div className="flex-1 p-4 overflow-y-auto">
-        <SearchPanel user={user} />
+        <SearchPanel />
       </div>
     </div>
   );
 };
 
-export default Sidebar;
+export default Home;
 

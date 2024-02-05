@@ -1,7 +1,7 @@
 'use client'
-import SideBar from '../components/sideBar'
-import FriendsAndGroups from '../components/friendsAndGroups'
-import { RightSection } from '../components/rightSection'
+import SideBar from '../components/chat/sideBar'
+import FriendsAndGroups from '../components/chat/friendsAndGroups'
+import { RightSection } from '../components/chat/rightSection'
 import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 

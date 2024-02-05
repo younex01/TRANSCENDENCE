@@ -19,7 +19,7 @@ export const profileSlice = createSlice({
 });
 
 export const selectProfileInfo = createSelector(
-  (state) => state.profile,
+  (state:any) => state.profile,
   (substate) => substate.profileData
 );
 

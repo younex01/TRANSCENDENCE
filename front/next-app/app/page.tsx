@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-export default function Home() {
+export default function FirstPage() {
   return (
       <div className=" w-full h-screen bg-black/40 flex flex-col items-center justify-center">
       <h1 className="text-5xl pb-3 text-white font-bold text-center"> PingPong </h1>

@@ -14,3 +14,4 @@ function Providers({
 }
 
 export default Providers
+// export default wrapper.withRedux(Providers);

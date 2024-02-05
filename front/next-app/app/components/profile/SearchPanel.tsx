@@ -2,8 +2,16 @@ import React from 'react'
 import Profile from './Profile'
 import Achievements from './achiemements/Achievements'
 import Freinds from './freinds/Freinds'
+import { selectProfileInfo } from '@/app/redux/features/profile/profileSlice';
+import { useSelector } from 'react-redux';
 
-export default function SearchPanel({user}: {user: any}) {
+export default function SearchPanel() {
+  
+  const data = useSelector(selectProfileInfo);
+  console.log("wash dkhol illa hoooonahhhhh");
+  
+  console.log("data: ", data);
+  
   return (
     <>
       <div className='w-full h-[8%] flex flex-row justify-center items-center '>
@@ -29,7 +37,7 @@ export default function SearchPanel({user}: {user: any}) {
       </div>
       <div className="flex flex-col lg:flex-row gap-10">
         <div className="w-[100%] h-full ">
-          <Profile user={user} />
+          <Profile user={data.user} />
         </div>
         <div className="flex w-[100%] flex-col gap-4 ">
           <div className="">

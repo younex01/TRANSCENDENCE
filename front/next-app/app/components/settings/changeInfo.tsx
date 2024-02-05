@@ -17,7 +17,7 @@ const ChangeInfo = () => {
     
   return (
     <div className="h-screen md:h-[100vh]  w-full flex">
-      <LeftBar />
+      {/* <LeftBar /> */}
       <div className="flex-1 p-4 overflow-y-auto">
         <SearchPanel />
       </div>

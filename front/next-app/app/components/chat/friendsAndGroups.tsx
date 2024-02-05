@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Convos from './convos';
-import CreateGroupChat from './groupChat/createGroupChat';
-import JoinGroupChat from './groupChat/joinGroupChat';
+import CreateGroupChat from '../groupChat/createGroupChat';
+import JoinGroupChat from '../groupChat/joinGroupChat';
 
 export default function FriendsAndGroups(props:any) {
 
