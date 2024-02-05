@@ -1,9 +1,6 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import SideBar from '../../components/profile/Home'
+import React, { use, useEffect } from 'react'
 import axios from 'axios';
-import { redirect } from 'next/navigation';
-import LeftBar from '@/app/components/leftBar';
 import Home from '@/app/components/profile/Home';
 import { useDispatch } from 'react-redux';
 import { setProfileData } from '@/app/redux/features/profile/profileSlice';
@@ -18,50 +15,38 @@ const API = axios.create({
   },
 });
 
-const getData = async () => {
-  const response = await axios.get('http://localhost:4000/user/me', {
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-  return response.data.user;
-}
+export default function page() {
 
-export default async function page() {
-  // console.log("here is the home page: ");
-  // dispatch the user to the store
+  const dispatch = useDispatch();
   let user;
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getData();
-        user = res;
-        console.log("user data: ", user);
-        
-        const dispatch = useDispatch();
+        const response = await axios.get('http://localhost:4000/user/me', {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        user = response.data.user;
+        console.log("user+++++++++++++++++++++++", user);
+        console.log("response+++++++++++++++++++++++", response);
         dispatch(setProfileData(user));
+        
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
     fetchData();
   }, []);
+  
   return (
           <>
-            <div className='w-full bg-[#dbe0f6] overflow-y-auto'>   
+            <div className='w-full bg-[#dbe0f6] overflow-y-auto'>
               <Home />
             </div>
           </>
   )
 }
-
-
-
-
-
-
-
-
 

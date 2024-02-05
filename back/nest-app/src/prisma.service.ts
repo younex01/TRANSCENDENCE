@@ -19,4 +19,15 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     return user;
   }
+
+
+  async updateUser(payload:any) {
+    console.log("payload",payload);
+    console.log("payload",payload.id);
+    return this.user.update({
+      where: { id: payload.id },
+      data: { ...payload },
+    });
+  }
+    
 }

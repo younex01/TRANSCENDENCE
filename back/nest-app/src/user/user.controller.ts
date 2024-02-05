@@ -9,9 +9,16 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async Getme(@Req() req, @Res() res, @Headers() headers)
     {
-        console.log("user", headers);
         const user = req.user;
        return await res.send({info: true, user: user}); 
-        }
     }
+
+
+    @Get('dyali')
+    @UseGuards(AuthGuard('jwt'))
+    async Getdyali(userId: any)
+    {
+        return await this.prisma.userExists(userId);  
+    }
+}
 

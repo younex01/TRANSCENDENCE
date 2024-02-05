@@ -39,32 +39,8 @@ const Home = () => {
           ));
   }, []);
 
-  // const [data, setData] = useState<any>(null);
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // const toggleSidebar = () => {
-  //   setIsSidebarOpen(!isSidebarOpen);
-  // };
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:4000/auth/redirect');
-  //       setData(response.data);
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-  const data = useSelector(selectProfileInfo);
-  
-console.log("freind data:", data);
-
   return (
     <div className="h-screen md:h-[100vh]  w-full flex">
-      {/* <LeftBar /> */}
       <div className="flex-1 p-4 overflow-y-auto">
         <SearchPanel />
       </div>

@@ -30,27 +30,23 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly prisma: PrismaService,
         private readonly service: AuthService) {
         super({
-            clientID: 'u-s4t2ud-b1506d5ed0f4c81ab2f5b4fb7d2b896abdc9a97f90b6ce1c198d903d87c59418', // it's a best practice to put it your .env !!!!!
-            clientSecret: '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', // it's a best practice to put it your .env !!!!!
+            clientID: 'u-s4t2ud-b1506d5ed0f4c81ab2f5b4fb7d2b896abdc9a97f90b6ce1c198d903d87c59418', // matnssach t7etha f ".env" !!!!!
+            clientSecret: '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', // matnssach t7etha f ".env" !!!!!
             callbackURL: 'http://localhost:4000/auth/redirect',
         });
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any) {
-        // console.log(profile);
-        // console.log("Hello" + profile._json.login);
-        // console.log("image" + profile._json.image.link);
-        // console.log("displayname" + profile._json.displayname);
         const dto : AuthDto = {
+            id: profile._json.id,
             username: profile._json.login,
             avatar: profile._json.image.link,
             firstName: profile._json.first_name,
             lastName: profile._json.last_name,
         }
+        console.log("-------------------------**********", dto.id);    
         const user = await this.service.findOrCreate(dto);
-        console.log("->", user);
-        
-        console.log("mn strategy " +user);
+        console.log("-------------------", user);
         if (!user)
             throw new UnauthorizedException("User not found");
         return user;

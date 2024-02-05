@@ -8,11 +8,11 @@ export class AuthService {
     async findOrCreate(dto: AuthDto)
     {
         const user = await this.prisma.user.findUnique({where: {username: dto.username}}); 
-        console.log("userWA9ILA", user);
         if (user)
             return user;
         const createNewUser = await this.prisma.user.create({
             data: {
+                id: dto.id.toString(),
                 username: dto.username,
                 firstName: dto.firstName,
                 lastName: dto.lastName,
@@ -20,9 +20,6 @@ export class AuthService {
             },
         });
         
-        console.log("NewUser       " + createNewUser);
-        console.log("createNewUser       " + createNewUser.avatar);
-        console.log("ldakhl dyal   findOrCreate  " + createNewUser);
         return createNewUser;
     }
 }
