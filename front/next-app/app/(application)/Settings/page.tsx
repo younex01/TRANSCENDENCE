@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import ChangeInfo from '../../components/settings/changeInfo'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '@/app/redux/features/profile/profileSlice';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 
@@ -20,6 +21,8 @@ export default function page() {
 
   const dispatch = useDispatch();
   let user;
+  const router = useRouter();
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,6 +38,8 @@ export default function page() {
         
       } catch (error) {
         console.error('Error fetching user data:', error);
+        router.push('/');
+        
       }
     };
     fetchData();

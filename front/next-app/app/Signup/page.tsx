@@ -25,6 +25,7 @@ function Signup() {
     setPIsValid(passwordRegex.test(input));
   };
 
+  // const [showInfo, setShowInfo] = useState(false);
   return (
 
     <div className="grid place-items-center h-screen">
@@ -155,7 +156,8 @@ function Signup() {
             <img src="./images/google_logo.png" className="w-6 h-6 mr-2" alt="Google Logo" />
             Sign up with Google
           </button>
-          <Link  href="http://localhost:4000/auth/redirect" type="submit" className="flex-grow md:w-1/2 border border-gray-300 text-gray-900 py-2 px-4 rounded hover:bg-indigo-500 flex items-center">
+          <Link href="http://localhost:4000/auth/redirect" type="submit" 
+                className="flex-grow md:w-1/2 border border-gray-300 text-gray-900 py-2 px-4 rounded hover:bg-indigo-500 flex items-center">
             <img src="./images/42_Logo.png" className="w-6 h-6 mr-2" alt="42 Logo" 
             /> Sign up with Intra</Link>
         </div>

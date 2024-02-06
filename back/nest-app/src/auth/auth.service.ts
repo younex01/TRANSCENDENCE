@@ -7,7 +7,7 @@ export class AuthService {
     constructor(private readonly prisma: PrismaService) {}
     async findOrCreate(dto: AuthDto)
     {
-        const user = await this.prisma.user.findUnique({where: {username: dto.username}}); 
+        const user = await this.prisma.user.findUnique({where: {id: dto.id.toString()}}); 
         if (user)
             return user;
         const createNewUser = await this.prisma.user.create({
@@ -23,3 +23,4 @@ export class AuthService {
         return createNewUser;
     }
 }
+

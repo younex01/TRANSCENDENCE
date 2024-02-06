@@ -10,6 +10,7 @@ export class AppController {
   
   @Post('/updateUser')
   async handleUpdatedUser(@Body() userId: any){
+    console.log("userId", userId);
     return this.prisma.updateUser(userId);
   }
 }

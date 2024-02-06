@@ -5,7 +5,7 @@ import Home from '@/app/components/profile/Home';
 import { useDispatch } from 'react-redux';
 import { setProfileData } from '@/app/redux/features/profile/profileSlice';
 
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
+let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5Mzk2MCIsImlhdCI6MTcwNzE1NDIzMCwiZXhwIjo3NzA3MTU0MjMwfQ.MUTikhBs1WtgKCu7J8wx-8q8OW4QZW3H6lET6jcfCXI';
 const API = axios.create({
   baseURL: `http://localhost:4000`,
   withCredentials: true,
@@ -49,4 +49,5 @@ export default function page() {
           </>
   )
 }
+
 

@@ -9,10 +9,10 @@ export default function PersonnelInfo() {
   const ProfileData = useSelector(selectProfileInfo);
 
   const [updatedUserData, setUpdatedUserData] = useState({
-        id: ProfileData?.id,  
-        username: ProfileData?.username,
-        avatar: ProfileData?.avatar,
-        firstName: ProfileData?.firstName,
+        id: ProfileData.id,  
+        username: ProfileData.username,
+        avatar: ProfileData.avatar,
+        firstName: ProfileData.firstName,
         lastName: ProfileData?.lastName,
       });
   
@@ -45,6 +45,8 @@ export default function PersonnelInfo() {
         console.log("updatedUserData", updatedUserData);
         console.log("ProfileData", ProfileData);
         await axios.post(`http://localhost:4000/updateUser`, updatedUserData);
+        console.log("updatedUserData", updatedUserData);
+        console.log("same ProfileData", ProfileData);
       } catch (error) {
         console.log(error)
       }
@@ -93,28 +95,6 @@ export default function PersonnelInfo() {
             id="username" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
               appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500        focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
               <label htmlFor="username" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Nickname</label>
-            </div>
-            <div className="self-center col-span-1 relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] mt-[10%]">
-            <input type="email" id="email" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
-              appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500        focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-              <label htmlFor="email" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Email</label>
-            </div>
-            <div className="text-center mt-[10%]">
-              <label className="text-sm text-[#c9c9c9] ml-[78%] dark:text-[#c9c9c9] bg-white px-2">
-                Password
-              </label>
-
-
-              {/* <div className="bg-[#8B4513] h-[1px] lg:w-[407px]   lg:mt-[-7%] lg:ml-[-9%] lg:block hidden"></div> */}
-            </div>
-            <div className="self-center col-span-2 relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] w-full">
-            <input type="password" id="password" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
-              appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-              <label htmlFor="default_outlined" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1         rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"> New password</label>
-            </div>
-            <div className="self-center col-span-2 relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] w-full">
-            <input type="password" id="cpassword" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
-              appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500        focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />              <label htmlFor="default_outlined" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1         rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Confirme password</label>
             </div>
 
             <div className="flex flex-col lg:flex-row lg:w-[100%] items-center lg:ml-[18%] ml-[92%]  lg:mt-[4%] lg:w-153% sm:ml-[97%]">
