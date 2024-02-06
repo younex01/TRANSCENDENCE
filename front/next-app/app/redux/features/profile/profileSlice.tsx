@@ -8,6 +8,8 @@ export const profileSlice = createSlice({
   },
   reducers: {
       setProfileData: (state, action) => {
+        // console.log("action.payload", action.payload);
+        
         
         return {
           ...state,

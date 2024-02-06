@@ -8,9 +8,9 @@ export class AppController {
   constructor(private readonly appService: AppService, private prisma: PrismaService) {}
   
   
-  @Post('/updateUser')
-  async handleUpdatedUser(@Body() userId: any){
-    console.log("userId", userId);
-    return this.prisma.updateUser(userId);
-  }
+  // @Post('/updateUser')
+  // async handleUpdatedUser(@Body() userId: any){
+  //   console.log("userId", userId);
+  //   return this.prisma.updateUser(userId);
+  // }
 }

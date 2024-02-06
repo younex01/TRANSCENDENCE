@@ -1,63 +1,61 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
-import axios from "axios";
-import { selectProfileInfo, setProfileData } from "./redux/features/profile/profileSlice";
 
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
+// let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
 
-const API = axios.create({
-  baseURL: `http://localhost:4000`,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  },
-});
+// axios.defaults.withCredentials = true;
 
-export default function FirstPage() {
-  
-  const [showInfo, setShowInfo] = useState(false);
-  const [updatedUserData, setUpdatedUserData] = useState<any>();
-  let user;
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/user/me', {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        user = response.data.user;
-        setUpdatedUserData(user);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        
-      }
-    };
-    fetchData();
-  }, []);
+// const API = axios.create({
+//   baseURL: `http://localhost:4000/`
+// });
 
-  function handleClick(e:any){
-    e.preventDefault();
-    setShowInfo(true);
-  }
+// const [showInfo, setShowInfo] = useState(false);
+// const [updatedUserData, setUpdatedUserData] = useState<any>();
+// let user;
+
+// const heandleclick = () => {
+//   try
+//   {
+
+//     const res = axios.get('http://localhost:4000/auth/redirect')
+//     console.log("res", res);
+//   }
+//   catch
+//   {
+//     console.log("error");
+//   }
+// }
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const response = await axios.get('http://localhost:4000/user/me')
+//       user = response.data.user;
+//       // setUpdatedUserData(user);
+//     } catch (error) {
+//       console.error('Error fetching user data:', error);
+      
+//     }
+//   };
+//   fetchData();
+// }, []);
+
+// function handleClick(e:any){
+//   e.preventDefault();
+//   setShowInfo(true);
+// }
 
 
-const handleChange = (e:any) => {
-  console.log("the is our e", e.target.id, e.target.value);
-  
-  setUpdatedUserData({
-    ...updatedUserData,
-    [e.target.id]: e.target.value,
-  });
-  console.log("select", updatedUserData);
-}
+// const handleChange = (e:any) => {
+//   console.log("the is our e", e.target.id, e.target.value);
+
+//   setUpdatedUserData({
+//     ...updatedUserData,
+//     [e.target.id]: e.target.value,
+//   });
+//   console.log("select", updatedUserData);
+// }
 
 // const handleAvatarChange = (e:any) => {
 // const file = e.target.files[0];
@@ -72,18 +70,28 @@ const handleChange = (e:any) => {
 // };
 
 
-const onSubmit = async () => {
-  try {
-    console.log("updatedUserData", updatedUserData);
-    await axios.post(`http://localhost:4000/updateUser`, updatedUserData);
-    console.log("updatedUserData", updatedUserData);
-  } catch (error) {
-    console.log(error)
-  }
-}
+// const onSubmit = async () => {
+//   try {
+//     console.log("updatedUserData", updatedUserData);
+//     await axios.post(`http://localhost:4000/updateUser`, updatedUserData);
+//     console.log("updatedUserData", updatedUserData);
+//   } catch (error) {
+//     console.log(error)
+//   }
+export default function FirstPage() {
+  
   return (
-    <>
-      {showInfo ? (
+        <div className=" w-full h-screen bg-black/40 flex flex-col items-center justify-center">
+        <h1 className="text-5xl pb-3 text-white font-bold text-center"> PingPong </h1>
+        <Link href={"http://localhost:4000/auth/redirect"} >
+          <button className="block bg-zinc-200 px-6 py-3 rounded-lg font-bold">
+            {"LET'S GO 🔥"}
+          </button>
+        </Link>
+        </div>
+  );
+  }
+      {/* {showInfo ? (
         <div className="w-full bg-[#ccd3eb] h-[100vh] flex justify-center items-center">
         <div className='w-full lg:w-5/12 h-full lg:h-[40vh] bg-white rounded-0 lg:rounded-[40px]  flex flex-col justify-center items-center gap-[30px] '>
           <div className=''>
@@ -135,19 +143,12 @@ const onSubmit = async () => {
             </div>
         </div>
         </div>
-        ) : (
-          <div className=" w-full h-screen bg-black/40 flex flex-col items-center justify-center">
-          <h1 className="text-5xl pb-3 text-white font-bold text-center"> PingPong </h1>
-          <Link href={"http://localhost:4000/auth/redirect"} >
-            <button className="block bg-zinc-200 px-6 py-3 rounded-lg font-bold" onClick={handleClick}>
-              {"LET'S GO 🔥"}
-            </button></Link>
-          </div>
-      )}
+        ) : ( */}
+      {/* )} */}
 
-      </>
-  );
-}
+          {/* <div onClick={heandleclick} className=" top-0 left-0 cursor-pointer absolute h-100 w-100 bg-red-100">
+            click on me please dady
+          </div> */}
 
 
 

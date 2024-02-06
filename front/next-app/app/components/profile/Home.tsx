@@ -40,8 +40,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="h-screen md:h-[100vh]  w-full flex">
-      <div className="flex-1 p-4 overflow-y-auto">
+    <div className="h-[100vh] flex">
+      <div className="">
         <SearchPanel />
       </div>
     </div>
@@ -49,4 +49,3 @@ const Home = () => {
 };
 
 export default Home;
-

@@ -5,14 +5,13 @@ const nextConfig = {
 				{
 					protocol: 'https',
 					hostname: "cdn.intra.42.fr",
-					
 				},
-				
+				{
+					protocol: 'https',
+					hostname: "res.cloudinary.com",
+				}
         ],
     },
 };
-
-
-
 
 module.exports = nextConfig

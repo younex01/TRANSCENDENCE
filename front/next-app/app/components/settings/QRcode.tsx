@@ -2,22 +2,27 @@ import React from 'react';
 
 export default function QRcode() {
   return (
-    <div className='bg-[#6E7AAE] lg:w-[130%] md:w-[97%] md:ml-[4%] w-[100%] md:h-[51vh] sm:h-[65vh]  sm:w-[86%] h-[46vh] sm:ml-[6%] lg:h-[65vh] lg:ml-[8%] md:mr-2 flex flex-col items-center justify-center relative ml-[0%] rounded-xl'>
-      <div className='w-322 h-63 flex-shrink-0 p-[3%]  absolute top-[0%]'>
-        <h2 className='text-center font-poppins text-2xl font-semibold text-gray-500'>Authentication QR code</h2>
-      </div>
+    <>
+        <div className=''>
+            <h2 className='text-center font-poppins text-2xl font-semibold text-gray-500'>Authentication QR code</h2>
+          </div>
 
-      <div className='lg:w-[227px] rounded-xl lg:h-[228px] w-[30%] border-1 border-solid border-[#BBBB5B] sm:mt-[7%] rounded-5 bg-white lg:mt-[-99px] md:w-[38%] md:mt-[11%] sm:w-[41%] mt-[-1%] flex items-center justify-center'>
-        <img src='./images/Rectangle.png' alt='Your Image Alt Text' />
-      </div>
-      <div>
-      <div className='mt-[10%]'>
-    <input type='' className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400' placeholder='Enter your code' />
-  </div>
-      </div>
-      <div className='mt-[7%] lg:w-[365px] md:w-[270px] ml-[12%] mr-[12%]'>
-        <p className='text-white text-center font-inter lg:mt-[-1%] md:mt-[1%] text-base font-medium'>Your QR code is private. If you share it with someone, they can scan it to add you as a contact</p>
-      </div>
-    </div>
+          <div className='w-full  flex items-center justify-center '>
+            <div className=' overflow-hidden w-[250px] h-[250px] rounded-[24px] border-[1px]'>
+              <img src='/salahqr.png' alt='Your Image Alt Text' className='object-cover'/>
+            </div>
+          </div>
+
+            <div className='w-full flex items-center justify-center'>
+              <input type='' className='w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400' placeholder='Enter your code' />
+            </div>
+
+          <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row  px-[60px] w-full">
+            <button className="w-32 h-10 bg-[#90c8b8] text-white rounded-lg" 
+            // onClick={onSubmit}
+            >Enable</button>
+            <button className="w-32 h-10 bg-[#e19b91] text-white rounded-lg">Disable</button>
+          </div>
+    </>
  );
 }

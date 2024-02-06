@@ -7,15 +7,17 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
-const API = axios.create({
-  baseURL: `http://localhost:4000`,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  },
-});
+// let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
+axios.defaults.withCredentials = true;
+
+// const API = axios.create({
+//   baseURL: `http://localhost:4000`,
+//   withCredentials: true,
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'Authorization': `Bearer ${token}`,
+//   },
+// });
 
 export default function page() {
 
@@ -27,11 +29,11 @@ export default function page() {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:4000/user/me', {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
+          // withCredentials: true,
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Authorization': `Bearer ${token}`,
+          // },
         });
         user = response.data.user;
         dispatch(setProfileData(user));
@@ -47,7 +49,7 @@ export default function page() {
 
 
   return (
-    <div className='w-full bg-[#BBBB5B] overflow-y-auto'>   
+    <div className='w-full bg-[#e7edff] overflow-y-auto'>   
       <ChangeInfo />
     </div>
   )

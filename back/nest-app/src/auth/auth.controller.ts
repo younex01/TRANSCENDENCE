@@ -11,17 +11,20 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async ft_redirect(@Req() req, @Res() res)
     {
+        console.log('in the auth controller');  
         const payload = { sub: req.user.id };
         const token = await this.jwtService.signAsync(payload);
         res.cookie('JWT_TOKEN', token);
-        return res.redirect('http://localhost:3000/HomePage');
+        return res.redirect('http://localhost:3000/Settings');
     }
+
     @Post('logout')
     ft_logout(@Res() res)
     {
         res.clearCookie('JWT_TOKEN');
         return res.send({logout: true, message: 'Logged out'});
     }
+
 }
 
 @Controller('users')
