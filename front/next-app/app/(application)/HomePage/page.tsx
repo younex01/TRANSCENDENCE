@@ -1,5 +1,5 @@
 "use client"
-import React, { use, useEffect } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import axios from 'axios';
 import Home from '@/app/components/profile/Home';
 import { useDispatch } from 'react-redux';
@@ -21,6 +21,8 @@ export default function page() {
 
   const dispatch = useDispatch();
   let user;
+  
+  const [id , setId] = useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,6 +34,7 @@ export default function page() {
           // },
         });
         user = response.data.user;
+        setId(response.data.user.id);
         console.log("user+++++++++++++++++++++++", user);
         console.log("response+++++++++++++++++++++++", response);
         dispatch(setProfileData(user));
@@ -41,7 +44,7 @@ export default function page() {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
   
   return (
     <>

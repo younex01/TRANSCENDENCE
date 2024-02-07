@@ -45,10 +45,12 @@ export class UserController {
             return await res.send({info: false, message: "Error while updating avatar"});
         }
     }
+    
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
     async changeUsername(@Req() req, @Res() res, @Body() Obj: {username: string, lastName: string, firstName:string, avatar: string})
     {
+        console.log("aywaaaaaaa")
         try {
             const user = req.user;
             await this.prisma.user.update({

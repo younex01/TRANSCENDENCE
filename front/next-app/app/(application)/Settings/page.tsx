@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ChangeInfo from '../../components/settings/changeInfo'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '@/app/redux/features/profile/profileSlice';
@@ -24,7 +24,8 @@ export default function page() {
   const dispatch = useDispatch();
   let user;
   const router = useRouter();
-  
+  const [id , setId] = useState();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,6 +36,7 @@ export default function page() {
           //   'Authorization': `Bearer ${token}`,
           // },
         });
+        setId(response.data.user.id);
         user = response.data.user;
         dispatch(setProfileData(user));
         
@@ -45,8 +47,8 @@ export default function page() {
       }
     };
     fetchData();
-  }, []);
-
+  }, [id]);
+ 
 
   return (
     <div className='w-full bg-[#e7edff] overflow-y-auto'>   

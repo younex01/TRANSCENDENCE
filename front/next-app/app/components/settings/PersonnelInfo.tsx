@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Profile from '../profile/Profile';
 import { setProfileData } from '../../redux/features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,31 +8,28 @@ import { profile } from 'console';
 
 export default function PersonnelInfo() {
   const ProfileData = useSelector(selectProfileInfo);
+  const [isEmpty, setIsEmpty] = useState(false);
   
   const presetKey = 'r0th9bpt';
   const cloudName = 'dfcgherll';
-  const [updatedUserData, setUpdatedUserData] = useState({
-    id: ProfileData.id,  
-    username: ProfileData.username,
-    avatar: ProfileData.avatar,
-    firstName: ProfileData.firstName,
-    lastName: ProfileData?.lastName,
-  });
+  console.log("ProfileData", ProfileData);
+  // console.log("updatedUserData", updatedUserData);
   
   
   const handleChange = (e:any) => {
+    console.log("hello");
     console.log("the is our e", e.target.id, e.target.value);
-    setUpdatedUserData({
-      ...updatedUserData,
+    dispatch(setProfileData({
+      ...ProfileData,
       [e.target.id]: e.target.value,
-    });
+    }))
     console.log("select", ProfileData);
   }
   
   const _api = axios.create();
   const handleAvatarChange = async (e:any) => {
+    // console.log("hello2");
     try{
-      console.log("the is our e");
       const file = e.target.files?.[0];
       if(!file) return;
       // Handle the file upload here
@@ -44,10 +41,10 @@ export default function PersonnelInfo() {
       const res = await _api.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, formDate,{withCredentials: false});
       console.log("res", res);
       const imageUrl = res.data.secure_url;
-      // const res2 = await axios.post(`http://localhost:4000/user/changeAvatar`, {avatar: imageUrl});
-      // console.log("res2", res2);
-      setUpdatedUserData({...updatedUserData, avatar: imageUrl});
-      console.log("profileData", ProfileData.avatar);
+      dispatch(setProfileData({
+        ...ProfileData,
+        avatar: imageUrl
+      }));
       
       
     }catch(error){
@@ -59,46 +56,63 @@ export default function PersonnelInfo() {
   const dispatch = useDispatch();
   const onSubmit = async () => {
     try {
-      console.log("updatedUserData", updatedUserData);
+      if(!ProfileData.avatar || !ProfileData.firstName || !ProfileData.lastName || !ProfileData.username){
+        setIsEmpty(true);
+        console.log("all the fields are required");
+        return;
+      }
       console.log("ProfileData", ProfileData);
-      // const res = axios.post(`http://localhost:4000/user/changeUsername`, {username: updatedUserData.username});
-      // const res = axios.post(`http://localhost:4000/user/changeDisplayname`, {username: updatedUserData.lastName});
-      // const res2 = await axios.post(`http://localhost:4000/user/changeAvatar`, {avatar: imageUrl});
-      const res = await axios.post(`http://localhost:4000/user/changeInfos`, updatedUserData);
-        console.log("updatedUserData", updatedUserData);
+      const res = await axios.post(`http://localhost:4000/user/changeInfos`, ProfileData);
+        console.log("res", res);
+        console.log("updatedUserData", ProfileData);
         console.log("same ProfileData", ProfileData);
-        dispatch(setProfileData(updatedUserData));
       } catch (error) {
         console.log(error)
       }
     }
+
+    //give a regex to validate a username
   return (
     <>
         <div className=''>
           <h2 className='text-[#5F5F5F] font-poppins text-xl font-semibold text-center'>Personal information</h2>
         </div>
         <div className="w-full flex items-center justify-center">
-            <div className='w-[100px] h-[100px] rounded-full overflow-hidden'>
-              <input type="file" 
-                onChange={handleAvatarChange}
-                />
-                <img  src={ProfileData?.avatar}
-                id='avatar' alt='sanji' className='object-cover w-full h-full' />
-            </div>
+              <div className='relative'>
+              <label
+              htmlFor="upload"
+              className=" cursor-pointer z-50 absolute top-0 right-0"
+              >
+              <img id="imageUpload" src="/changeicon.svg" className=" transform hover:scale-125 transition-transform duration-300" />
+              </label>
+                  <input
+                  name="avatar"
+                  type="file"
+                  id="upload"
+                  className="absolute hidden cursor-pointer"
+              onChange={handleAvatarChange}
+              />
+                <div className='w-[100px] h-[100px] rounded-full overflow-hidden'>
+                    <img  src={`${ProfileData.avatar}`}
+                    id='avatar' alt='sanji' className='object-cover w-full h-full' />
+                </div>
+              </div>
         </div>
         <div className="w-full flex flex-col gap-[24px]  rounded-[8px] px-[60px] ">
           <div className="flex w-full gap-[24px] flex-col md:flex-row">
             <div className=" w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
               <input type="text"
                       onChange={handleChange}
-                      defaultValue={ProfileData?.firstName}
+                      defaultValue={ProfileData.firstName}
                       id="firstName" 
-              className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
-              appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />   
+                      className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
+                      appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />   
               <label htmlFor="firstName" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Firstname</label>
             </div>
+                {isEmpty && <div className="text-red-500 text-xs mb-3 absolute">All fields are required</div>}
+                
               <div className="  w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
-          <input type="text" 
+              <input type="text" 
                 onChange={handleChange}
                 defaultValue={ProfileData?.lastName}
                 id="lastName" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 

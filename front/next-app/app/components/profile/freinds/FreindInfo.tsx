@@ -17,8 +17,8 @@ export default function FreindInfo() {
     
   const array = useSelector(selectFreindInfo);
   // console.log("my arrraaaay freinds:",array);
-  return (
-    <div className='lg:mt-[-7%] border-2 border-black'>
+  return ( 
+    <div className='w-full h-full flex justify-center items-center'>
          <Swiper
           spaceBetween={3}
           slidesPerView={6}
@@ -36,7 +36,7 @@ export default function FreindInfo() {
               slidesPerView: 4,
             },
           }}
-          className="w-full h-full cursor-grab !pl-[30px] !pt-[40px] ">
+          className="w-full h-full cursor-grab !pl-[30px] ">
             {array && array.length > 0 ?
                array.map((value:any, index:number) =>{
                 return (

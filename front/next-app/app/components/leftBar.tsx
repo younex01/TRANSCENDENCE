@@ -1,5 +1,6 @@
 "use client"
 import Image from 'next/image'
+import Link from 'next/link';
 import React, { useState } from 'react'
 
 export default function LeftBar() {
@@ -19,7 +20,9 @@ export default function LeftBar() {
           <Image src="/images/ping_pong.png" alt="logo" width={160} height={60} className='md:mt-[0%] mt-[55%]' />
         </div>
         <div className="flex flex-col justify-center items-center gap-20 mt-[-151]">
+          <Link href="./../../HomePage"> 
           <Image src="./images/Profile.svg" alt="logo" width={35} height={50} />
+          </Link>
           <Image src="./images/Chat.svg" alt="logo" width={35} height={50} />
           <Image src="./images/Game.svg" alt="logo" width={35} height={50} />
   

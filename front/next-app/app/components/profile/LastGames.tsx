@@ -5,7 +5,7 @@ export default function LastGames() {
   <div className="flex flex-col items-center justify-center h-[100%] w-[100%]">
     <div className="text-gray font-bold text-xl mb-3">Last Games</div>
 
-    <div className="flex flex-col items-center justify-center w-[60%]">
+    <div className="flex flex-col items-center justify-center w-[80%]">
       <div className='w-full flex flex-row items-center justify-center'>
         <div className="picture w-1/2 md:w-1/4 h-1/4 md:h-1/2 rounded-full flex flex-col items-center">
           <img src="./images/sangi.png" alt="sangi" className="w-[65%] rounded-full" />
@@ -20,7 +20,7 @@ export default function LastGames() {
           <img src="./images/sangi.png" alt="sangi" className="w-[65%] rounded-full" />
           <div className="text-center mt-1">10</div>
         </div>
-        <div className="bg-green-700">
+        <div className="bg-green-700 w-[100px] h-[50px] rounded-lg flex justify-center items-center">
           <div className="">Victory</div>
         </div>
       </div>

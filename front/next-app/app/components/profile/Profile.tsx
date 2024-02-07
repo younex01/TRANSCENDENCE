@@ -13,7 +13,9 @@ export default function Profile() {
   
       <div className='relative mt-2 w-full h-[30%] flex gap-3 justify-between items-center'>
         <div className='flex items-center gap-3 ml-2'>
-          <img className='w-[60px] h-[60px] rounded-[50%] object-contain' src={data?.avatar} alt={data?.avatar} />
+          <div className=''>
+            <img className='w-[80px] h-[80px] rounded-full object-cover' src={data?.avatar} alt={data?.avatar} />
+          </div>
           <div>
             <div>{data?.firstName}</div>
             <div className='font-light'>{data?.username}</div>

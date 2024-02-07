@@ -22,7 +22,7 @@ export default function freinds() {
   // }, []);
 
   return (
-    <div className='friends grid grid-cols-1 gap-5 p-[15px] bg-white h-[60vh] sm:h-[69vh]  lg:w-[100%] rounded-xl mb-5'>
+    <div className='friends grid grid-cols-1 gap-5 p-[15px] bg-white lg:w-[100%] rounded-xl mb-5'>
     
     <div className="flex justify-start items-start w-full gap-[20px] p-[3%] h-[20%]">
         <div
@@ -32,7 +32,7 @@ export default function freinds() {
           freinds
         </div>
         <div
-          className={`border-b-2 cursor-pointer ${activeTab === 'requests' ? 'border-[#8292D7]' : null} w-[100%] mb-2 text-xl ml-[12%]`}
+          className={`border-b-2 cursor-pointer ${activeTab === 'requests' ? 'border-[#8292D7]' : null} w-[max-content] mb-2 text-xl ml-[12%]`}
           onClick={() => handleTabChange('requests')}
         >
           freinds Requests

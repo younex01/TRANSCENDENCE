@@ -16,9 +16,9 @@ const TeamCard = (
     image:string
   }) => {
   return (
-    <div className="border border-1 border-gray-900 w-[50%] lg:w-[80%] lg:mt-[30%] flex flex-col justify-around items-center">
+    <div className="w-[50%] lg:w-[80%] flex flex-col justify-center items-center">
       <div className="w-full mb-2"></div>
-      <div>
+      <div className='w-[80px] h-[80px] rounded-[50%]'>
         <Image src={image} alt={name} width={80} height={80} className='rounded-[50%]' />
       </div>
       <div className='mt-2'><p>{name}</p></div>

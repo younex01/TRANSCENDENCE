@@ -19,13 +19,13 @@ export default function FreindsRequests() {
   const array = useSelector(selectFreindRequestInfo);
   console.log("my arrraaaay:",array)
   return (
-    <div className='lg:mt-[-7%] border-2 border-black'>
+    <div className='w-full h-full flex justify-center items-center'>
         <Swiper
             spaceBetween={3}
             slidesPerView={6}
             breakpoints={{
             0: {
-                slidesPerView: 1,
+                slidesPerView: 2,
             },
             768: {
                 slidesPerView: 2,
@@ -37,7 +37,7 @@ export default function FreindsRequests() {
                 slidesPerView: 4,
             },
             }}
-            className="w-full h-ufll cursor-grab !pl-[30px] !pt-[40px]  ">
+            className="w-full h-full cursor-grab !pl-[30px]">
             {
                 array.map((value:any, index:number) =>{
                     return (

@@ -40,8 +40,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="h-[100vh] flex">
-      <div className="">
+    <div className="h-[100vh] w-full flex">
+      <div className="flex-1 p-4">
         <SearchPanel />
       </div>
     </div>
