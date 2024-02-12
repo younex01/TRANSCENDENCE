@@ -1,11 +1,16 @@
 import LastGames from './LastGames'
 import Link from 'next/link'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '../../redux/features/profile/profileSlice';
+import axios from 'axios';
+import { setQrData } from '@/app/redux/features/qrcode/qrCodeSlice';
+import { use, useEffect } from 'react';
 
 export default function Profile() {
 
   const data = useSelector(selectProfileInfo);
+
+  
 
   return (
     <>

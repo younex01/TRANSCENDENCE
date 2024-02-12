@@ -18,6 +18,8 @@ model User {
   lastName  String
   messages  Message[]
   twoFactorAuthCode String?
+  twoFactorAuthEnabled Boolean @default(false)
+  firstLogin Boolean @default(true)
   groups    ChatGroup[] @relation("UserGroup")
 }
 
