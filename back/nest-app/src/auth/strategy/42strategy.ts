@@ -43,6 +43,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
             avatar: profile._json.image.link,
             firstName: profile._json.first_name,
             lastName: profile._json.last_name,
+            // twoFactorAuthCode: secret.base32,
         }
         console.log("-------------------------**********", dto.id);    
         const user = await this.service.findOrCreate(dto);

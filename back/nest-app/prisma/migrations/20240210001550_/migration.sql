@@ -5,6 +5,7 @@ CREATE TABLE "User" (
     "avatar" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "twoFactorAuthCode" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

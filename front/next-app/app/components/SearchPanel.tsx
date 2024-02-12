@@ -1,7 +1,7 @@
 import React from 'react';
-import PersonnelInfo from './PersonnelInfo';
-import QRcode from './QRcode';
-import CloseAccont from './CloseAccont';
+import PersonnelInfo from './settings/PersonnelInfo';
+import QRcode from './settings/QRcode';
+import CloseAccont from './settings/CloseAccont';
 
 export default function SearchPanel() {
   return (

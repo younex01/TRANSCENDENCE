@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image'; // Make sure to import your image component/library
 import { selectFreindInfo, selectFreindRequestInfo } from '../../../redux/features/freinds/requestSlice';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 
 const TeamCard = (
   {
@@ -19,7 +20,9 @@ const TeamCard = (
     <div className="w-[50%] lg:w-[80%] flex flex-col justify-center items-center">
       <div className="w-full mb-2"></div>
       <div className='w-[80px] h-[80px] rounded-[50%]'>
-        <Image src={image} alt={name} width={80} height={80} className='rounded-[50%]' />
+        <Link href={'./OtherUsers'}>
+          <Image src={image} alt={name} width={80} height={80} className='rounded-[50%]' />
+        </Link>
       </div>
       <div className='mt-2'><p>{name}</p></div>
       <div className='flex flex-row justify-around mt-2'>

@@ -15,4 +15,7 @@ export class AuthDto{
 
     @IsString()
     lastName: string;
+
+    //@IsString()
+    //twoFactorAuthCode: string;
 }

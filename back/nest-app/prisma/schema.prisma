@@ -17,7 +17,7 @@ model User {
   firstName String
   lastName  String
   messages  Message[]
-
+  twoFactorAuthCode String?
   groups    ChatGroup[] @relation("UserGroup")
 }
 

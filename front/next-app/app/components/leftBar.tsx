@@ -1,15 +1,30 @@
 "use client"
+import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react'
+
 
 export default function LeftBar() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // const navigate = useRouter();
+  const logout = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/auth/logout');
+      console.log('Logout response:', response);
+      return response.data.token;
+
+    }
+    catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
 
   return (
     <div
@@ -28,7 +43,9 @@ export default function LeftBar() {
   
         </div>
         <div className="w-full pb-[55%] ml-[20%] ">
-          <Image src="./images/Login.svg" alt="logo" width={50} height={50} />
+          <button onClick={logout} > 
+            <Image src="./images/Login.svg" alt="logo" width={50} height={50} />
+          </button>
         </div>
       </div>
       <button

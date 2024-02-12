@@ -49,7 +49,7 @@ export default function page() {
   return (
     <>
       <div className='w-full bg-[#dbe0f6] overflow-y-auto'>
-        <Home />
+        <Home  />
       </div>
     </>
   )

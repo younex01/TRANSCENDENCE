@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import SearchPanel from './SearchPanel';
+import SearchPanel from '../SearchPanel';
 import { setFreindRequestInfo, setFreindInfo } from '../../redux/features/freinds/requestSlice';
 import { useDispatch} from "react-redux"
 import { useState } from 'react';

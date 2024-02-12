@@ -9,6 +9,8 @@ import { profile } from 'console';
 export default function PersonnelInfo() {
   const ProfileData = useSelector(selectProfileInfo);
   const [isEmpty, setIsEmpty] = useState(false);
+  // const [isValid, setIsValid] = useState(true);
+ 
   
   const presetKey = 'r0th9bpt';
   const cloudName = 'dfcgherll';
@@ -23,6 +25,21 @@ export default function PersonnelInfo() {
       ...ProfileData,
       [e.target.id]: e.target.value,
     }))
+  
+    // const validNameRegex = /^[^\s]+$/;
+    // const isValidFirstName = validNameRegex.test(ProfileData.firstName);
+    // const isValidLastName = validNameRegex.test(ProfileData.lastName);
+    // const isValidUsername = validNameRegex.test(ProfileData.username);
+  
+    // if (!isValidFirstName || !isValidLastName || !isValidUsername) {
+    //   console.log("Invalid input detected");
+    //   setIsValid(false);
+    //   return;
+    // }
+  
+    // Reset the isEmpty state if all fields are filled and valid
+    // setIsEmpty(false);
+
     console.log("select", ProfileData);
   }
   
@@ -46,7 +63,6 @@ export default function PersonnelInfo() {
         avatar: imageUrl
       }));
       
-      
     }catch(error){
       console.log("error", error);
     }
@@ -56,11 +72,16 @@ export default function PersonnelInfo() {
   const dispatch = useDispatch();
   const onSubmit = async () => {
     try {
-      if(!ProfileData.avatar || !ProfileData.firstName || !ProfileData.lastName || !ProfileData.username){
+      if (
+        !ProfileData.firstName ||
+        !ProfileData.lastName ||
+        !ProfileData.username
+      ) {
         setIsEmpty(true);
-        console.log("all the fields are required");
+        console.log("All fields are required");
         return;
       }
+      setIsEmpty(false);
       console.log("ProfileData", ProfileData);
       const res = await axios.post(`http://localhost:4000/user/changeInfos`, ProfileData);
         console.log("res", res);
@@ -70,6 +91,10 @@ export default function PersonnelInfo() {
         console.log(error)
       }
     }
+    
+    // block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
+    //                   appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer
+    // ${isEmpty  && "border-red-500"
 
     //give a regex to validate a username
   return (
@@ -100,16 +125,18 @@ export default function PersonnelInfo() {
         </div>
         <div className="w-full flex flex-col gap-[24px]  rounded-[8px] px-[60px] ">
           <div className="flex w-full gap-[24px] flex-col md:flex-row">
-            <div className=" w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
+
+            <div className= {(ProfileData.firstName) ? `w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]` : `w-full relative bg-inherit border-[1px] border-red-500 rounded-[10px]`} >
               <input type="text"
                       onChange={handleChange}
                       defaultValue={ProfileData.firstName}
                       id="firstName" 
-                      className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
-                      appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />   
-              <label htmlFor="firstName" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Firstname</label>
+                      className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
+                      appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder=" " />   
+                      {!ProfileData.firstName ? <div className="text-red-500 text-xs mb-7 absolute">All fields are required</div> : null}
+              <label htmlFor="firstName" className={(ProfileData.firstName) ? `absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`
+                                        : `absolute text-sm text-[#c9c9c9] dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-red-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}>Firstname</label>
             </div>
-                {isEmpty && <div className="text-red-500 text-xs mb-3 absolute">All fields are required</div>}
                 
               <div className="  w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
               <input type="text" 
@@ -120,13 +147,15 @@ export default function PersonnelInfo() {
             <label htmlFor="lastName" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text- [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Last name</label>
               </div>
           </div>
-          <div className="w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]">
+          <div className={(ProfileData?.username) ? `w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]` : `w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-red-500 rounded-[10px]`}>
           <input type="text"
                   onChange={handleChange}
                   defaultValue={ProfileData?.username}
                   id="username" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 
             appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500        focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-            <label htmlFor="username" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Nickname</label>
+            {!ProfileData?.username ? <div className="text-red-500 text-xs mb-3 absolute">All fields are required</div> : null}
+            <label htmlFor="username" className={(ProfileData?.username) ? `absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`
+                                        : `absolute text-sm text-[#c9c9c9] dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-        [#c9c9c9] peer-focus:dark:text-red-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}>Nickname</label>
           </div>
         </div>
           <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row sm:justify-end px-[60px] w-full">
