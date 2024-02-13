@@ -12,9 +12,11 @@ CREATE TABLE "ChatGroup" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
+    "password" TEXT,
     "status" TEXT NOT NULL,
     "owner" TEXT NOT NULL,
     "modes" TEXT[],
+    "mutedUsers" TEXT[],
 
     CONSTRAINT "ChatGroup_pkey" PRIMARY KEY ("id")
 );

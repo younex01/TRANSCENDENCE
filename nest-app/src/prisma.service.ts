@@ -7,178 +7,253 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  async getRoom(groupId:string) {
-    console.log("ldakhl dyal getRooms: ", groupId)
-      return this.chatGroup.findUnique({
-        where: {
-          id: groupId,
-        }
-      });
-  }
+  // async getRoom(groupId:string) {
+  //     return this.chatGroup.findUnique({
+  //       where: {
+  //         id: groupId,
+  //       }
+  //     });
+  // }
 
-  async addUserToRoom(userId: string, groupId: string) {
-    return this.chatGroup.update({
-      where: { id: groupId},
-      data: {
-        members: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
-  }
+  // async addUserToRoom(userId: string, groupId: string) {
+  //   return this.chatGroup.update({
+  //     where: { id: groupId},
+  //     data: {
+  //       members: {
+  //         connect: {
+  //           id: userId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
-  async addRoomToUser(userId: string, groupId: string) {
-    return this.user.update({
-      where: { id: userId},
-      data: {
-        groups: {
-          connect: {
-            id: groupId,
-          },
-        },
-      },
-    });
-  }
+  // async addRoomToUser(userId: string, groupId: string) {
+  //   return this.user.update({
+  //     where: { id: userId},
+  //     data: {
+  //       groups: {
+  //         connect: {
+  //           id: groupId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
-  async getGroupsByUserId(userId: string) {
-    return this.chatGroup.findMany({
-      where: { 
-        members: {
-          some: {
-            id: userId,
-          }
-        }
-      },
-    });
-  }
+  // async getGroupsByUserId(userId: string) {
+  //   return this.chatGroup.findMany({
+  //     where: { 
+  //       members: {
+  //         some: {
+  //           id: userId,
+  //         }
+  //       }
+  //     },
+  //   });
+  // }
 
-  async getUser(userId: string) {
-    return this.user.findUnique({
-      where: {  id: userId },
-      include: {groups: true}
-    });
-  }
+  // async getUser(userId: string) {
+  //   return this.user.findUnique({
+  //     where: {  id: userId },
+  //     include: {groups: true}
+  //   });
+  // }
 
-  async getGroupWithMembers(groupId: string) {
-    return this.chatGroup.findUnique({
-      where: { id: groupId},
-      include: {members: true},
-    });
-  }
+  // async getGroupWithMembers(groupId: string) {
+  //   return this.chatGroup.findUnique({
+  //     where: { id: groupId},
+  //     include: {members: true},
+  //   });
+  // }
 
-  async addMessagesToRoom(payload:any) {
-    return this.chatGroup.update({
-      where: { id: payload.room},
-      data: {
-        messages: {
-          create: {
-            content: payload.message,
-            userId: payload.userId,
-          },
-        },
-      },
-    });
-  }
+  // async addMessagesToRoom(payload:any) {
+  //   return this.chatGroup.update({
+  //     where: { id: payload.roomId},
+  //     data: {
+  //       messages: {
+  //         create: {
+  //           content: payload.message,
+  //           userId: payload.userId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
-  async getGroupMessages(roomId:string) {
-    return this.message.findMany({
-      where: { chatGroupId: roomId},
-    });
-  }
+  // async getGroupMessages(roomId:string) {
+  //   return this.message.findMany({
+  //     where: { chatGroupId: roomId},
+  //   });
+  // }
 
-  async removeUserFromRoom(userId:string, roomId:string) {
+  // async removeUserFromRoom(userId:string, roomId:string) {
 
-    const room = await this.getGroupWithMembers(roomId);
-    const user = await this.getUser(userId);
+  //   const room = await this.getGroupWithMembers(roomId);
+  //   const user = await this.getUser(userId);
 
-    if (!room || !user) {
-      console.log('the User or the Room is not found');
-      return;
-    }
+  //   if (!room || !user) return;
 
-    const userIndex = room.members.findIndex((member) => member.id === user.id);
+  //   const userIndex = room.members.findIndex((member) => member.id === user.id);
 
-    if (userIndex === -1) {
-      console.log('User not found in the room');
-      return;
-    }
+  //   if (userIndex === -1) return;
 
-    return this.chatGroup.update({
-      where: { id: roomId },
-      data: {
-        members: {
-            disconnect: { id: userId }
-        }
-      }
-    });
-  }
-  
-  async MuteUserFromRoom(userId:string, roomId:string) {
-
-    const room = await this.getGroupWithMembers(roomId);
-    const user = await this.getUser(userId);
-
-    if (!room || !user) {
-      console.log('the User or the Room is not found');
-      return;
-    }
-    const userIndex = room.members.findIndex((member) => member.id === user.id);
-
-    if (userIndex === -1) {
-      console.log('User not found in the room');
-      return;
-    }
-    console.log('userIndex', userIndex);
-    
-    return this.chatGroup.update({
-      where: { id: roomId },
-      data: {
-        mutedUsers:{
-          push: user.id
-        }
-      }
-    });
-  }
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: {
+  //       members: {
+  //           disconnect: { id: userId }
+  //       }
+  //     }
+  //   });
+  // }
   
     
-  async checkIfMuted(userId:string, roomId:string) {
-    return this.chatGroup.count({
-      where: { id: roomId, mutedUsers: {has: userId}},
-    });
-  }
+  // async checkIfMuted(userId:string, roomId:string) {
+  //   return this.chatGroup.count({
+  //     where: { id: roomId, mutedUsers: {has: userId}},
+  //   });
+  // }
 
 
-  async UnmuteUserFromRoom(userId:string, roomId:string) {
-console.log("---------------- ldakhl dyal UnmuteUserFromRoom ----------------");
-    const room = await this.getGroupWithMembers(roomId);
-    const user = await this.getUser(userId);
-
-    if (!room || !user) {
-      console.log('the User or the Room is not found');
-      return;
-    }
-    const userIndex = room.members.findIndex((member) => member.id === user.id);
-
-    if (userIndex === -1) {
-      console.log('User not found in the room');
-      return;
-    }
-    console.log('userIndex', userIndex);
-
-    const newMutedList = room.mutedUsers.filter((user) => user != userId);
+  // async checkIfMember(userId:string, roomId:string) {
+  //   return this.chatGroup.count({
+  //     where:
+  //     {
+  //       AND: [
+  //         {id:roomId},
+  //         {members: {some: {id: userId}}}
+  //       ]
+  //     }
+  //   });
+  // }
     
-    return this.chatGroup.update({
-      where: { id: roomId },
-      data: {
-        mutedUsers:{
-          push: newMutedList
-        }
-      }
-    });
+  // async checkIfAlreadyAdmin(userId:string, roomId:string) {
+  //   return this.chatGroup.count({
+  //     where: { id: roomId, modes: {has: userId}},
+  //   });
+  // }
 
-  }
+
+  // async MuteUserFromRoom(userId:string, roomId:string) {
+
+  //   const room = await this.getGroupWithMembers(roomId);
+  //   const user = await this.getUser(userId);
+
+  //   if (!room || !user) return;
+  //   const userIndex = room.members.findIndex((member) => member.id === user.id);
+
+  //   if (userIndex === -1) return;
+  //   if (await this.checkIfMuted(userId ,roomId) < 1)
+  //   {
+  //     return this.chatGroup.update({
+  //       where: { id: roomId },
+  //       data: {
+  //         mutedUsers:{
+  //           push: user.id
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+  
+
+  // async UnmuteUserFromRoom(userId:string, roomId:string) {
+  //   const room = await this.getGroupWithMembers(roomId);
+  //   const user = await this.getUser(userId);
+
+  //   if (!room || !user) return;
+
+  //   const userIndex = room.members.findIndex((member) => member.id === user.id);
+
+  //   if (userIndex === -1) return;
+
+  //   const newMutedList = room.mutedUsers.filter((user) => user != userId);
+    
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: {
+  //       mutedUsers:{
+  //         set: newMutedList
+  //       }
+  //     }
+  //   });
+  // }
+
+
+  // async makeAdminOnRoom(userId:string, roomId:string) {
+  //   const room = await this.getGroupWithMembers(roomId);
+  //   const user = await this.getUser(userId);
+
+  //   if (!room || !user) return;
+
+  //   const userIndex = room.members.findIndex((member) => member.id === user.id);
+
+  //   if (userIndex === -1) return;
+
+  //   if (await this.checkIfAlreadyAdmin(userId ,roomId) < 1)
+  //   {
+  //     return this.chatGroup.update({
+  //       where: { id: roomId },
+  //       data: {
+  //         modes:{
+  //           push: user.id
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+
+
+  // async removeAdminOnRoom(userId:string, roomId:string) {
+  //   const room = await this.getGroupWithMembers(roomId);
+  //   const user = await this.getUser(userId);
+
+  //   if (!room || !user) return;
+  //   const userIndex = room.members.findIndex((member) => member.id === user.id);
+  //   if (userIndex === -1) return;
+  //   const adminsList = room.modes.filter((user) => user != userId);
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: {
+  //       modes:{
+  //         set: adminsList
+  //       }
+  //     }
+  //   });
+  // }
+
+  // async setRoomToPublic(roomId:string) {
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: {
+  //       password: "",
+  //       status: "Public"
+  //     }
+  //   });
+  // }
+
+  // async setRoomToProtected(roomId:string, password:string) {
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: {
+  //       password: password,
+  //       status: "Protected"
+  //     }
+  //   });
+  // }
+
+  // async changePassword(roomId:string, password:string) {
+  //   return this.chatGroup.update({
+  //     where: { id: roomId },
+  //     data: { password: password }
+  //   });
+  // }
+
+
+
+
+
 
 
 

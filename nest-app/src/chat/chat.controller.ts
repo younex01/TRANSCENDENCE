@@ -5,12 +5,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import {v4 as uuidv4} from 'uuid'
-import { PrismaService } from 'src/prisma.service';
 
 @Controller('/chat')
 export class ChatController {
     
-  constructor(private readonly chatService: ChatService, private prisma: PrismaService) {}
+  constructor(private readonly chatService: ChatService) {}
 
   @Get('/getChatGroups')
   async getChatGroups() {
@@ -45,7 +44,7 @@ export class ChatController {
   @Get('/getGroupsByUserId')
   async getGroupsByUserId(@Query('userId') userId: string) {
     try {
-      const groups = await this.prisma.getGroupsByUserId(userId);
+      const groups = await this.chatService.getGroupsByUserId(userId);
       return { success: true, data: groups };
     } catch (error) {
       console.error('Error :', error.message);
@@ -55,7 +54,7 @@ export class ChatController {
   @Get('/getGroupByGroupId')
   async getGroupByGroupId(@Query('groupId') groupId: string) {
     try {
-      const groups = await this.prisma.getGroupWithMembers(groupId);
+      const groups = await this.chatService.getGroupWithMembers(groupId);
       return {data: groups };
     } catch (error) {
       console.error('Error :', error.message);
@@ -65,7 +64,7 @@ export class ChatController {
   @Get('/getMsgsByGroupId')
   async getMsgsByGroupId(@Query('groupId') groupId: string) {
     try {
-      const message = await this.prisma.getGroupMessages(groupId);
+      const message = await this.chatService.getGroupMessages(groupId);
       return {message };
     } catch (error) {
       console.error('Error :', error.message);
@@ -74,10 +73,19 @@ export class ChatController {
 
   @Get('/getIsMuted')
   async getIsMuted(@Query('userId') userId: string, @Query('groupId') groupId: string) {
-    const isMuted = await this.prisma.checkIfMuted(userId, groupId);
-    console.log("userId", userId);
-    console.log("groupId", groupId);
-    console.log("isMuted", isMuted);
+    const isMuted = await this.chatService.checkIfMuted(userId, groupId);
     return isMuted;
   }
+
+  @Get('/checkIfMember')
+  async getIfMember(@Query('userId') userId: string, @Query('groupId') groupId: string) {
+    const isMember = await this.chatService.checkIfMember(userId, groupId);
+    return isMember;
+  }
+
+
+
+
+
+
 }

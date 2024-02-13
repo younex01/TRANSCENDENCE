@@ -1,16 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { RootState } from '@/redux/store';
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { setJoinGroup } from '@/redux/features/create_join_GroupSlice';
-import { setConvolist } from '@/redux/features/updateConvosSlice';
+import { toast } from 'sonner';
 
 export default function JoinGroupChat(props:any) {
 
   const dispatch = useDispatch();
-  const [groups, setGroups] = useState<any[]>([]);
-  const updatedConversationlist = useSelector((state:RootState) => state.updateConvolist.isClicked);
+  const [groups, setGroups] = useState<any>([]);
+  const [password, setPassword] = useState<string>("");
 
 
   useEffect(() => {
@@ -32,12 +31,36 @@ export default function JoinGroupChat(props:any) {
     fetchChatGroups();
   }, []);
   
-  function joinGroupChat(groupId:string){
-    dispatch(setConvolist(!updatedConversationlist));
-    console.log("join",updatedConversationlist);
-    props.socket.emit("joinGroupChat", {userId: props.userData.id, groupId});
+
+  useEffect(() => {
+
+    props.socket.on("joinFailed", (errorMessage:string) =>{
+      toast.error(`error: ${errorMessage}`);
+    });
+    props.socket.on("joinSuccessfull", (successMessage:string) =>{
+      toast.success(`${successMessage}`);
+    });
+
+    return () => {
+      props.socket.off("joinFailed");
+      props.socket.off("joinSuccessfull");
+    };
+  }, []); 
+
+  function joinGroupChat(groupId: string, groupChatsname:string) {
+    props.socket.emit("joinGroupChat", { userId: props.userData.id, groupId, roomName: groupChatsname});
   }
-  return (
+
+  function joinProtectedGroupChat(groupId: string, groupChatsname: string) {
+    if (!password) {
+      toast.error("error: Required Password");
+    }
+    if (password) {
+      props.socket.emit("joinGroupChat", { userId: props.userData.id, groupId, password, roomName: groupChatsname});
+    }
+  }  
+
+    return (
     <div className='fixed h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-20'>
       <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-[20px] w-[70%] h-[70%] bg-[#6e7aaa]  overflow-hidden'>
         <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"shape1.svg"} alt="../piblic/shape1.svg" /></div>
@@ -55,22 +78,29 @@ export default function JoinGroupChat(props:any) {
             </div>
           </button>
 
-          <div className='mt-[24px] flex flex-col items-center overflow-y-auto overflow-x-hidden no-scrollbar' >
+          <div className='mt-[24px] flex flex-col items-center no-scrollbar' >
             {groups.map((groupChats:any) => groupChats.status !== "Private" && (
-            <div className='flex flex-col justify-between sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ' key={groupChats.id}>
-              <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:3000/${groupChats.avatar}`} alt={groupChats.avatar} />
-                <div className='flex flex-col '>
-                  <div className='text-[25px] font-normal text-[#2e2e2e] font-sans-only test'> {groupChats.name}</div>
-                  <div className='text-[15px] font-normal sans-serif text-[#2e2e2e]'>{groupChats.status}</div>
+              <div className='flex flex-col justify-between sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ' key={groupChats.id}>
+                <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:3000/${groupChats.avatar}`} alt={groupChats.avatar} />
+                  <div className='flex flex-col '>
+                    <div className='text-[25px] font-normal text-[#2e2e2e] font-sans-only test'> {groupChats.name}</div>
+                    <div className='text-[15px] font-normal sans-serif text-[#2e2e2e]'>{groupChats.status}</div>
+                  </div>
                 </div>
+                {groupChats.status === "Protected" ? 
+                (
+                  <div className='flex flex-col h-[150px] gap-2 justify-center items-center'>
+                    <input className='w-[170px] h-[50px] rounded-[15px] ml-6 text-center' type="text"  placeholder='Enter Passwprd' onChange={(e) => setPassword(e.target.value)} />
+                    <button className='w-[100px] h-[50px] bg-[#6E7AAE] text-[24px] text-[#D7D7D7] rounded-[15px] ml-6 self-end' onClick={() => joinProtectedGroupChat(groupChats.id, groupChats.name)  }>Join</button>
+                  </div>
+                )
+                : <button className='w-[139px] h-[50px] bg-[#6E7AAE] text-[24px] text-[#D7D7D7] rounded-[15px] ml-6 ' onClick={() => joinGroupChat(groupChats.id, groupChats.name)}>Join</button>
+                }
               </div>
-                <button className='w-[139px] h-[50px] bg-[#6E7AAE] text-[24px] text-[#D7D7D7] flex items-center justify-center rounded-[15px] ml-6 ' onClick={() => joinGroupChat(groupChats.id)}>Join</button>
-            </div>
             ))}
+            </div>
           </div>
         </div>
-
-      </div>
     </div>
   )
 }

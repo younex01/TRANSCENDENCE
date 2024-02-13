@@ -1,9 +1,7 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { setCreateGroup } from '@/redux/features/create_join_GroupSlice';
-import { setConvolist } from '@/redux/features/updateConvosSlice';
 
 export default function createGroupChat(props:any) {
   const[passWord, setPassWord] = useState("hidden");
@@ -17,7 +15,6 @@ export default function createGroupChat(props:any) {
 
   const dispatch = useDispatch();
 
-  const updatedConversationlist = useSelector((state:RootState) => state.updateConvolist.isClicked);
   const addGroupChat = async () => {
     if(channelName && ((!channelStatus || channelStatus === "Private") || (channelStatus === "Protected" && channelPassWord))) {
 
@@ -30,10 +27,11 @@ export default function createGroupChat(props:any) {
             name: channelName,
             avatar: backEndImagePath.data,
             status: !channelStatus ? "Public" : channelStatus,
+            password: channelPassWord,
             owner: props.userData.id
           };
           const response =  await axios.post('http://localhost:3000/chat/createGroup', groupChatInfo);
-            props.socket.emit("joinGroupChat", {userId: props.userData.id, groupId: response.data.id});
+          props.socket.emit("joinGroupChat", {userId: props.userData.id, groupId: response.data.id});
         }
       } catch (error: any) {
         console.error('Error sending data to the backend:', error.message);
@@ -43,9 +41,7 @@ export default function createGroupChat(props:any) {
       setChannelName("");
       setPassWord("hidden");
       
-      dispatch(setConvolist(!updatedConversationlist));
       dispatch(setCreateGroup(false));
-      console.log(updatedConversationlist);
 
     }
   }

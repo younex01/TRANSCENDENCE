@@ -23,6 +23,7 @@ model ChatGroup {
   name       String
   members    User[]    @relation("UserGroup")
   avatar     String
+  password   String?
   status     String
   messages   Message[]
   owner      String

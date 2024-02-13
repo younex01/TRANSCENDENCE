@@ -1,4 +1,4 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
 import { Socket, Server} from 'socket.io';
 import { PrismaService } from 'src/prisma.service';
 import { ChatService } from './chat.service';
@@ -13,58 +13,162 @@ import { ChatService } from './chat.service';
 )
 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private prisma: PrismaService) {}
+  constructor(private chatService: ChatService) {}
   @WebSocketServer()
   server: Server;
   
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, payload:any) {
-    console.log("payload", payload);
-    await this.prisma.addMessagesToRoom(payload);
-    const message = await this.prisma.getGroupMessages(payload.room);
-    // console.log("9bel", message);
-    console.log('room name ', payload.room)
-    console.log('use id is :' , payload.userId)
-    // client.in(payload.room).emit('iwa3ndak',message);
-    this.server.to(payload.room).emit('getAllMessages',message);
+    await this.chatService.addMessagesToRoom(payload);
+    const message = await this.chatService.getGroupMessages(payload.roomId);
+    this.server.to(payload.roomId).emit('getAllMessages',message);
   }
   
   @SubscribeMessage('joinGroupChat')
   async handleJoiningGroupChat(client: Socket, payload:any) {
-    await this.prisma.addRoomToUser(payload.userId, payload.groupId)
-    const groupData = await this.prisma.getRoom(payload.groupId);
-    await this.prisma.addUserToRoom(payload.userId, payload.groupId)
+    const groupData = await this.chatService.getRoom(payload.groupId);
+    if (payload.password && payload.password !== groupData.password)
+    {
+      client.emit("joinFailed", "Wrong Password");
+      return;
+    }
+    await this.chatService.addRoomToUser(payload.userId, payload.groupId)
+    await this.chatService.addUserToRoom(payload.userId, payload.groupId)
 
-    console.log("when joining, room ;", payload.groupId)
     client.join(payload.groupId);
+    client.emit("joinSuccessfull", `You Joined ${payload.roomName}`);
+    this.server.to(payload.groupId).emit("refresh");
   }
 
   @SubscribeMessage('kick')
   async kick(client: Socket, payload:any) {
-    console.log("ldakhl dyal kick")
-    await this.prisma.removeUserFromRoom(payload.userId, payload.groupId)
-    this.server.to(payload.groupId).emit("refresh");
+    payload.message = `announcement ${payload.userId.split('-')[0]} has kicked ${payload.target.split('-')[0]} from this room`
+    await this.chatService.removeUserFromRoom(payload.target, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit("refresh");
   }
   
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload:any) {
-    console.log("ldakhl dyal mute")
-    await this.prisma.MuteUserFromRoom(payload.userId, payload.groupId)
-    this.server.to(payload.groupId).emit("refresh");
+    payload.message = `announcement ${payload.userId.split('-')[0]} has muted ${payload.target.split('-')[0]}`
+    await this.chatService.MuteUserFromRoom(payload.target, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit("refresh");
   }
-
+  
   @SubscribeMessage('unmute')
   async Unmute(client: Socket, payload:any) {
-    console.log("ldakhl dyalunmuuuu mute")
-    await this.prisma.UnmuteUserFromRoom(payload.userId, payload.groupId)
-    this.server.to(payload.groupId).emit("refresh");
+    payload.message = `announcement ${payload.userId.split('-')[0]} has unmuted ${payload.target.split('-')[0]}`
+    await this.chatService.UnmuteUserFromRoom(payload.target, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit("refresh");
   }
 
+  @SubscribeMessage('makeAdmin')
+  async makeAdmin(client: Socket, payload:any) {
+    payload.message = `announcement ${payload.target.split('-')[0]} in now an admin on this room`
+    await this.chatService.makeAdminOnRoom(payload.target, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit("refresh");
+  }
+
+  @SubscribeMessage('removeAdmin')
+  async removeAdmin(client: Socket, payload:any) {
+    payload.message = `announcement ${payload.target.split('-')[0]} in no longer an admin on this room`
+    await this.chatService.removeAdminOnRoom(payload.target, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit("refresh");
+  }
+
+
+  @SubscribeMessage('setRoomToPublic')
+  async setRoomToPublic(client: Socket, payload:any) {
+    await this.chatService.setRoomToPublic(payload.roomId);
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit('refresh', "Public");
+  }
+
+  @SubscribeMessage('setRoomToProtected')
+  async setRoomToProtected(client: Socket, payload:any) {
+    await this.chatService.setRoomToProtected(payload.roomId, payload.password);
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit('refresh');
+  }
+
+
+  @SubscribeMessage('changePassword')
+  async changePassword(client: Socket, payload:any) {
+    await this.chatService.changePassword(payload.roomId, payload.password);
+    this.server.to(payload.roomId).emit('refresh');
+  }
+
+  @SubscribeMessage('leave')
+  async leave(client: Socket, payload:any) {
+    payload.message = `announcement ${payload.userId.split('-')[0]} has left the room`
+    await this.chatService.removeUserFromRoom(payload.userId, payload.roomId)
+    await this.handleSendMessage(client, payload)
+    this.server.to(payload.roomId).emit('refresh');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   handleConnection(client: any) {
-    console.log(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: any) {
-    console.log(`Client disconnected: ${client.id}`);
   }
+
 }
+

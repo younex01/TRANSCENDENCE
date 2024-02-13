@@ -1,20 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { useDispatch} from 'react-redux';
-import { setConvolist } from '@/redux/features/updateConvosSlice';
 import { selctedConversation } from '@/redux/features/selecConvoSlice';
 
 export default function Convos(props:any) {
 
   const [myGroups, setMyGroups] = useState<any[]>([]);
-  const updatedConversationlist = useSelector((state:RootState) => state.updateConvolist.isClicked);
+  const [refresh, setRefresh] = useState(true);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("ldakhl dyal useeffect", updatedConversationlist);
     const fetchChatGroups = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/chat/getGroupsByUserId?userId=${props.userData.id}`);
@@ -25,8 +21,15 @@ export default function Convos(props:any) {
     };
   
     fetchChatGroups();
-  }, [updatedConversationlist]);
-  
+  }, [refresh]);
+
+
+
+  props.socket?.on("refresh", () =>{
+    setRefresh(!refresh);
+    props.socket?.off("refresh");
+  });
+
   return (
     <>
       {myGroups.map((myGroupChats:any) => (
