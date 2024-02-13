@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function this is qr page() {
+export default function page() {
   return (
     <div>this is qr page</div>
   )

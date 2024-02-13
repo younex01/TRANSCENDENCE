@@ -84,7 +84,7 @@ export class AuthController {
             encoding: 'base32',
             token: body.code,
         });
-        if(user.twoFactorAuthCode){
+        if(user.twoFactorAuthEnabled){
             return res.json({ message: 'Two-factor authentication is already enabled' });
         }
         if (isVerified) {
