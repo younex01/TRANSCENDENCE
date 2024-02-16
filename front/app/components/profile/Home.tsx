@@ -17,30 +17,42 @@ import LeftBar from '../leftBar';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 
-const login = async (username:string, password:string) => {
-  try {
-    const response = await axios.post('http://localhost:4000/auth/redirect');
-    return response.data.token;
-  } catch (error) {
-    console.error('Login failed:', error);
-  }
-};
+// const login = async (username:string, password:string) => {
+
+
+//   useEffect(() => {
+
+//     axios.post('http://localhost:4000/auth/redirect')
+//     .then(response => {
+//       // Handle successful response
+//       const data = response.data.token;
+//       console.log(data);
+//       return data;
+//       // Process the data here
+//     })
+//     .catch(error => {
+//       // Handle errors
+//       console.error('Error:', error);
+//     });
+//   }, [])
+// };
 
 
 const Home = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   
-  useEffect(() => {
-    dispatch(setFreindRequestInfo(
-      FreindData.data
-      ));
-      dispatch(setFreindInfo(
-        allFreinds.data
-        ));
-        dispatch(setAchievementInfo(
-          AchievementData.achievements
-          ));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(setFreindRequestInfo(
+  //     FreindData.data
+  //   ));
+  //   dispatch(setFreindInfo(
+  //     allFreinds.data
+  //   ));
+  //   dispatch(setAchievementInfo(
+  //     AchievementData.achievements
+  //   ));
+  //   }, 
+  // []);
 
   return (
     <div className="h-[100vh] w-full flex">
@@ -61,7 +73,7 @@ const Home = () => {
             <div className="">
               <Freinds />
             </div>
-          </div>
+          </div> 
         </div>
       </div>
     </div>

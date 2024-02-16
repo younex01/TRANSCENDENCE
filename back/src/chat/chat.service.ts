@@ -97,6 +97,7 @@ async addMessagesToRoom(payload:any) {
 async getGroupMessages(roomId:string) {
   return this.prisma.message.findMany({
     where: { chatGroupId: roomId},
+    include: {sender: true}
   });
 }
 

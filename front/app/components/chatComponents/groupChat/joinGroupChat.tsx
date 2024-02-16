@@ -1,21 +1,25 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useDispatch} from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import { setJoinGroup } from '@/redux/features/chatSlices/create_join_GroupSlice';
 import { toast } from 'sonner';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import { RootState } from '@/redux/store/store';
 
 export default function JoinGroupChat(props:any) {
 
+  const socket = useSelector((state:RootState) => state.socket.socket);
   const dispatch = useDispatch();
   const [groups, setGroups] = useState<any>([]);
   const [password, setPassword] = useState<string>("");
 
+  const userData = useSelector(selectProfileInfo);
 
   useEffect(() => {
     const fetchChatGroups = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/chat/getChatGroups');
+        const response = await axios.get('http://localhost:4000/chat/getChatGroups');
   
         if (response.status === 200) {
           const data = response.data;
@@ -34,21 +38,27 @@ export default function JoinGroupChat(props:any) {
 
   useEffect(() => {
 
-    props.socket.on("joinFailed", (errorMessage:string) =>{
+    socket?.on("joinFailed", (errorMessage:string) =>{
       toast.error(`error: ${errorMessage}`);
     });
-    props.socket.on("joinSuccessfull", (successMessage:string) =>{
+    socket?.on("joinSuccessfull", (successMessage:string) =>{
       toast.success(`${successMessage}`);
+    });
+    socket?.on("alreadyJoined", (successMessage:string) =>{
+      toast(`${successMessage}`);
     });
 
     return () => {
-      props.socket.off("joinFailed");
-      props.socket.off("joinSuccessfull");
+      socket?.off("joinFailed");
+      socket?.off("joinSuccessfull");
+      socket?.off("alreadyJoined");
     };
   }, []); 
 
   function joinGroupChat(groupId: string, groupChatsname:string) {
-    props.socket.emit("joinGroupChat", { userId: props.userData.id, groupId, roomName: groupChatsname});
+    console.log("userData", userData)
+    console.log("userData", socket)
+    socket?.emit("joinGroupChat", { userId: userData.id, groupId, roomName: groupChatsname});
   }
 
   function joinProtectedGroupChat(groupId: string, groupChatsname: string) {
@@ -56,7 +66,7 @@ export default function JoinGroupChat(props:any) {
       toast.error("error: Required Password");
     }
     if (password) {
-      props.socket.emit("joinGroupChat", { userId: props.userData.id, groupId, password, roomName: groupChatsname});
+      socket?.emit("joinGroupChat", { userId: userData.id, groupId, password, roomName: groupChatsname});
     }
   }  
 
@@ -81,7 +91,7 @@ export default function JoinGroupChat(props:any) {
           <div className='mt-[24px] flex flex-col items-center no-scrollbar' >
             {groups.map((groupChats:any) => groupChats.status !== "Private" && (
               <div className='flex flex-col justify-between sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ' key={groupChats.id}>
-                <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:3000/${groupChats.avatar}`} alt={groupChats.avatar} />
+                <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:4000/${groupChats.avatar}`} alt={groupChats.avatar} />
                   <div className='flex flex-col '>
                     <div className='text-[25px] font-normal text-[#2e2e2e] font-sans-only test'> {groupChats.name}</div>
                     <div className='text-[15px] font-normal sans-serif text-[#2e2e2e]'>{groupChats.status}</div>

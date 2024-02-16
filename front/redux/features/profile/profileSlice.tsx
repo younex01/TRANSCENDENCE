@@ -3,14 +3,17 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 export const profileSlice = createSlice({
   name: 'profile',
   initialState: {
-    profileData: {},
+    profileData: {
+      // firstName:'23232',
+      // lastName:'2323',
+      // username:'2323',
+      // avatar:'2332',
+      // id:'22323'
+    },
     
   },
   reducers: {
       setProfileData: (state, action) => {
-        // console.log("action.payload", action.payload);
-        
-        
         return {
           ...state,
           profileData: action.payload

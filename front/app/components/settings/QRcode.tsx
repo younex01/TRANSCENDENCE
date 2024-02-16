@@ -14,7 +14,6 @@ export default function QRcode() {
 
   useEffect(() => {
     axios.post('http://localhost:4000/auth/generateTwoFactorAuthCode').then((response) => {
-      console.log('response: from the profile ', response.data.qrCodeImageUrl);
       setImage(response.data.qrCodeImageUrl);
       // dispatch(setQrData(response))
     }).catch((error) => {
@@ -27,8 +26,6 @@ export default function QRcode() {
       const response = await axios.post('http://localhost:4000/auth/enableTwoFactorAuth', {
         code: qrData
       });
-      console.log('response:', response);
-      console.log('response:', qrData);
     } catch (error) { 
       console.error('Error fetching user data:', error);
     }
@@ -38,7 +35,6 @@ export default function QRcode() {
   const onDisable2fa = async () =>{
     axios.post('http://localhost:4000/auth/disableTwoFactorAuth').then((response) => {
       // dispatch(setQrData(response))
-      console.log('qr code is diabled', response);
     }).catch((error) => {
       console.error('Error fetching user data:', error);
     })}

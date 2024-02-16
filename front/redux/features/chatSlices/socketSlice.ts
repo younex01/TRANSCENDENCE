@@ -1,20 +1,35 @@
+// socketSlice.ts
 'use client'
+// socketSlice.ts
 
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit';
+import { io } from 'socket.io-client';
 
+const initialState: any = {
+  socket: null,
+};
 
-export const socketSlice = createSlice({
-  name: "socket",
-  initialState: {
-    socketId: null,
-  },
+const socketSlice = createSlice({
+  name: 'socket',
+  initialState,
   reducers: {
-    setSocketId: (state, action: PayloadAction<any>) => {
-      state.socketId = action.payload;
+    initializeSocket: (state, action) => {
+      const { userId } = action.payload;
+      state.socket = io("http://localhost:4000/");
+      console.log("state.socket", state.socket)
+      if (state.socket) {
+        state.socket.emit('addSocketToThisUserRoom', userId);
+      }
+    },
+    closeSocket: (state) => {
+      if (state.socket) {
+        state.socket.disconnect();
+        state.socket = null;
+      }
     },
   },
 });
 
 
-export const { setSocketId } = socketSlice.actions;
+export const { initializeSocket, closeSocket } = socketSlice.actions;
 export default socketSlice.reducer;

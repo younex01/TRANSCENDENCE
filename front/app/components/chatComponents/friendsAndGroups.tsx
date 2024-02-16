@@ -15,11 +15,11 @@ export default function FriendsAndGroups(props:any) {
   const groupOptions = useSelector((state:RootState) => state.group.groupOptions);
 
   return (
-    <div className='w-0 relative overflow-y-auto overflow-x-hidden border-r-[2px] bg-[#fafcff] md:w-full transition-all duration-500 '>
-      {createGroup && (<CreateGroupChat socket={props.socket} userData={props.userData}/>)}
-      {joinGroup && (<JoinGroupChat socket={props.socket} userData={props.userData}/>)}
+    <div className='md:block hidden w-[400px]'>
+      {createGroup && (<CreateGroupChat socket={props.socket}/>)}
+      {joinGroup && (<JoinGroupChat socket={props.socket}/>)}
 
-      <div className='mt-4 ml-2 w-full h-[60px] flex items-center relative '>
+      <div className='mt-4 ml-2 w-full h-[60px] flex items-center relative'>
         <img className='h-[50px] w-[50px] object-contain ml-1' src={"mini-luffy.jpeg"} alt="../piblic/mini-luffy.jpeg" />
         <div  className='chattxt ml-4 font-light text-[36px] text-[#6e7aaa] text-opacity-100'>Chat</div>
         <div className='active:bg-[#c2c2c2] active:bg-opacity-[60%] absolute right-[8px] rounded-[20px]'> <button onClick={() => dispatch(setGroupOptions(!groupOptions))} className='w-[50px] h-[50px] flex items-center justify-center'> <img src="3no9at.svg" alt="3no9at.svg" /> </button> </div>
@@ -33,8 +33,8 @@ export default function FriendsAndGroups(props:any) {
         )}
       </div>
       <div className='pt-2 flex justify-center items-center'> <input className='searchBar w-[88%] h-[45px] pl-5 rounded-2xl bg-gray-200 ' type="text" placeholder="Search in chat" /> </div>
-      <div className='mt-[25px] grid no-scrollbar'>
-        <Convos socket={props.socket} userData={props.userData}/>
+      <div className='mt-[25px] w-[100%] flex flex-col items-center no-scrollbar'>
+        <Convos socket={props.socket}/>
       </div>
     </div>
   )

@@ -1,38 +1,39 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import Providers from "../redux/store/Providers"
-import React from "react";
-import { Toaster } from 'sonner'
-import {NextUIProvider} from "@nextui-org/system";
+// layout.tsx
+
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Providers from "../redux/store/Providers";
+import React, { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+// import { initializeSocket } from '@/redux/features/chatSlices/socketSlice';
+import { Toaster } from 'sonner';
+import SocketInitializer from './socket';
 
 const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'ft_transcendence',
-  description: 'issam salah younes anas',
-}
 
 function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   console.log("layout~~~~~!!!!")
+  //   dispatch(initializeSocket());
+  // }, [dispatch]);
+
   return (
-
-      <html lang="en">
-        <body>
-            <Providers>
-              <React.StrictMode>
-              <NextUIProvider>
-                {children}
-              </NextUIProvider>
-              </React.StrictMode>
-              <Toaster richColors closeButton/>
-            </Providers>
-        </body>
-      </html>
-
+    <html lang="en">
+      <body>
+        <Providers>
+          <SocketInitializer/>
+          {children}
+          <Toaster richColors closeButton/>
+        </Providers>
+      </body>
+    </html>
   )
 }
-export default RootLayout
+
+export default RootLayout;

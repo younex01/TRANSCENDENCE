@@ -1,14 +1,19 @@
+'use client'
 import LastGames from './LastGames'
 import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '../../../redux/features/profile/profileSlice';
 import axios from 'axios';
 import { setQrData } from '@/redux/features/qrcode/qrCodeSlice';
-import { use, useEffect } from 'react';
+import { use, useEffect, useState } from 'react';
 
 export default function Profile() {
 
-  const data = useSelector(selectProfileInfo);
+  const [data, setData] = useState<any>();
+  const re = useSelector(selectProfileInfo)
+  useEffect(() =>{
+    setData(re)
+  }, [])
 
   
 
@@ -22,14 +27,14 @@ export default function Profile() {
               <img className='w-[80px] h-[80px] rounded-full object-cover' src={data?.avatar} alt={data?.avatar} />
             </div>
             <div>
-              <div>{data?.firstName}</div>
-              <div className='font-light'>{data?.username}</div>
+                <div>{data?.firstName}</div>
+                <div className='font-light'>{data?.username}</div>
             </div>
           </div>
           <div>
             <Link href='./../Settings'>
               <div className='mr-4'>
-                <img className='w-[30px] h-[30px] object-contain' src="./images/mdi_settings.svg" alt="settingsLogo" />
+                <img className='w-[30px] h-[30px] object-cover' src="./images/mdi_settings.svg" alt="settingsLogo" />
               </div>
             </Link>
           </div>

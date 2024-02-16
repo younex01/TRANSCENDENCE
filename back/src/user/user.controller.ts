@@ -50,7 +50,7 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async changeUsername(@Req() req, @Res() res, @Body() Obj: {username: string, lastName: string, firstName:string, avatar: string})
     {
-        console.log("aywaaaaaaa")
+        console.log("aywaaaaaaa", Obj)
         try {
             const user = req.user;
             await this.prisma.user.update({

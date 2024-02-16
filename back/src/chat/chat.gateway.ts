@@ -26,12 +26,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('joinGroupChat')
   async handleJoiningGroupChat(client: Socket, payload:any) {
+    if (await this.chatService.checkIfMember(payload.userId, payload.groupId) === 1)
+    {
+      client.emit("alreadyJoined", `You are already on that channel`);
+      return;
+    }
     const groupData = await this.chatService.getRoom(payload.groupId);
     if (payload.password && payload.password !== groupData.password)
     {
       client.emit("joinFailed", "Wrong Password");
       return;
     }
+    console.log("paylaod", payload)
     await this.chatService.addRoomToUser(payload.userId, payload.groupId)
     await this.chatService.addUserToRoom(payload.userId, payload.groupId)
 
@@ -108,6 +114,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await this.chatService.removeUserFromRoom(payload.userId, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit('refresh');
+  }
+
+  @SubscribeMessage('addSocketToThisUserRoom')
+  async addSocketToThisUserRoom(client: Socket, userId:any) {
+    const rooms = await this.chatService.getGroupsByUserId(userId);
+    if (rooms){
+      rooms.map((room) => {
+        client.join(room.id);
+      })
+    }
   }
 
 

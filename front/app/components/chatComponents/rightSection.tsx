@@ -5,9 +5,11 @@ import { useState } from 'react'
 import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 export const RightSection = (props:any) => {
 
+  const socket = useSelector((state:RootState) => state.socket.socket);
   const [message, setMssage] = useState("");
   const [changePassword, setChangePassword] = useState(false);
   const [Password, setPassword] = useState<string>("");
@@ -16,6 +18,7 @@ export const RightSection = (props:any) => {
   const [refresh, setRefresh] = useState(true);
   const [isMuted, setIsMuted] = useState<any>(false);
 
+  const userData = useSelector(selectProfileInfo);
   const conversationId = useSelector((state: RootState) => state.seelctedConversation.conversationId);
   const [memberSettings, setMemberSettings] = useState(Array(groupData.members?.length || 0).fill(false));
   
@@ -23,10 +26,11 @@ export const RightSection = (props:any) => {
   useEffect(() => {
     const fetchChatGroups = async () => {
       try {
-        const msgs = await axios.get(`http://localhost:3000/chat/getMsgsByGroupId?groupId=${conversationId}`);
+        const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${conversationId}`);
+        console.log("whaaaaaat", msgs.data.message)
         setMessages(msgs.data.message);
-        const response = await axios.get(`http://localhost:3000/chat/getGroupByGroupId?groupId=${conversationId}`);
-        setIsMuted((await axios.get(`http://localhost:3000/chat/getIsMuted?userId=${props.userData.id}&groupId=${conversationId}`)).data);
+        const response = await axios.get(`http://localhost:4000/chat/getGroupByGroupId?groupId=${conversationId}`);
+        setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${conversationId}`)).data);
         if (response.status === 200) {
           const data = response.data;
           setGroupData(data.data);
@@ -57,9 +61,9 @@ export const RightSection = (props:any) => {
   };
   
   function handleChannelCommands(arg:string, data:any, index:any) {
-    props.socket.emit(arg, {
+    socket?.emit(arg, {
       message: "",
-      userId: props.userData.id,
+      userId: userData.id,
       target: data.id,
       roomId: groupData.id
     })
@@ -68,26 +72,26 @@ export const RightSection = (props:any) => {
 
 
   useEffect(()=>{
-    props.socket.on("refresh", (channelStatus:any) =>{
+    socket?.on("refresh", (channelStatus:any) =>{
       setRefresh(!refresh);
       if (channelStatus) toast.success(`This channel has beem set to ${channelStatus}`)
     });
-    props.socket.on('getAllMessages', (data:any) =>{
+    socket?.on('getAllMessages', (data:any) =>{
       setMessages(data);
     })
     return () => {
-      props.socket.off("refresh");
-      props.socket.off("getAllMessages");
+      socket?.off("refresh");
+      socket?.off("getAllMessages");
     };
   });
   
   function sendMessage(){
     setMssage("");
     if (message){
-      props.socket.emit("sendMessage", {
+      socket?.emit("sendMessage", {
         message,
         roomId: groupData.id,
-        userId: props.userData.id,
+        userId: userData.id,
       });
     }
   };
@@ -106,10 +110,10 @@ export const RightSection = (props:any) => {
   }
 
   function setToPublic (){
-    props.socket.emit("setRoomToPublic", {
-      message: `announcement ${props.userData.id.split('-')[0]} has set this room to Public`,
+    socket?.emit("setRoomToPublic", {
+      message: `announcement ${userData.id.split('-')[0]} has set this room to Public`,
       roomId: groupData.id,
-      userId: props.userData.id,
+      userId: userData.id,
     });
   }
 
@@ -118,10 +122,10 @@ export const RightSection = (props:any) => {
       toast.error("Password required!")
       return;
     }
-    props.socket.emit("setRoomToProtected", {
-      message: `announcement ${props.userData.id.split('-')[0]} has set this room to Protected`,
+    socket?.emit("setRoomToProtected", {
+      message: `announcement ${userData.id.split('-')[0]} has set this room to Protected`,
       roomId: groupData.id,
-      userId: props.userData.id,
+      userId: userData.id,
       password: Password
     });
     setPassword("");
@@ -137,7 +141,7 @@ export const RightSection = (props:any) => {
       toast.error("Can't change the password to the cuurent one. Chose a different Password!")
       return;
     }
-    props.socket.emit("changePassword", {
+    socket?.emit("changePassword", {
       roomId: groupData.id,
       password: Password
     });
@@ -146,10 +150,10 @@ export const RightSection = (props:any) => {
   }
 
   function leave () {
-    props.socket.emit("leave", {
+    socket?.emit("leave", {
       message: "",
       roomId: groupData.id,
-      userId: props.userData.id,
+      userId: userData.id,
     });
   }
 
@@ -159,55 +163,73 @@ export const RightSection = (props:any) => {
       <div className='w-full h-full relative'>
         <div className='header flex items-center h-[130px] border-b-[2px] bg-opacity-[50%]'>
           <div><button className='ml-3 mr-6' onClick={() => props.setSideBar3(true)}> <img className='double-right2 border-black border-[3px] rounded-[20px] h-[40px] w-[40px] hidden' src="double-right.svg" alt="double-right.svg" /> </button> </div>
-          <div> <img className='h-[90px] w-[90px] ml-1 mr-3 rounded-[50px] object-fill' src={`http://localhost:3000/${groupData.avatar}`} alt={`http://localhost:3000/${groupData.avatar}`} /></div>
+          <div> <img className='h-[90px] w-[90px] ml-1 mr-3 rounded-[50px] object-fill' src={`http://localhost:4000/${groupData.avatar}`} alt={`http://localhost:4000/${groupData.avatar}`} /></div>
           <div className='text-[40px] font-sans-only text-[#2E2E2E] opacity-[76%]'>{groupData.name}</div>
         </div>
       
         <div className='chatHeight overflow-hidden overflow-y-visible overflow-x-hidden no-scrollbar mt-[20px] '>
           <div className='flex flex-col'>
             {messages?.map((missage,index) => (
-              <> 
+              <div key={index} className='flex w-full'> 
 
-                {(missage.userId === props.userData.id) && 
-                  <>
-                    {missage.content.startsWith('announcement') ? 
-                      <div key={missage.id} className='bg-red-400 mb-4 mt-4 self-center rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px]'>
-                          {missage.content.split(' ').slice(1).join(' ')}
-                      </div>
-                      
-                      :  <div className='flex pr-[16px] self-end lg:max-w-[50%] max-w-[100%] '>
-                          <div className='flex flex-col items-end mb-1'>
-                            <div key={missage.id} className='rounded-b-[24px] rounded-tl-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:min-w-[100%] max-w-[70%]'>{missage.content}  </div>
+                {(missage.userId === userData.id) && 
+                  (userData.id !== messages[index - 1]?.userId ?
+                      <div className='w-full flex justify-end items-end pt-[40px]'>
+                        {missage.content.startsWith('announcement') ? 
+                          <div key={missage.id} className='bg-red-400 mb-4 mt-4 self-center rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px]'>
+                              {missage.content.split(' ').slice(1).join(' ')}
                           </div>
-                        </div>
-                    }
-                  </>
+                          
+                          :  
+                          <div className='flex pr-[16px] justify-end  md:w-[70%] lg:w-[50%]'>
+                            <div className='flex flex-col items-end mb-1'>
+                              <div key={missage.id} className='rounded-b-[24px] rounded-tl-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:min-w-[100%] max-w-[70%]'>{missage.content}  </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                      :
+                      <div className='w-full flex justify-end items-end'>
+                        {missage.content.startsWith('announcement') ? 
+                          <div key={missage.id} className='bg-red-400 mb-4 mt-4 self-center rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px]'>
+                              {missage.content.split(' ').slice(1).join(' ')}
+                          </div>
+                          
+                          :  
+                          <div className='flex pr-[16px] justify-end  md:w-[70%] lg:w-[50%]'>
+                            <div className='flex flex-col items-end mb-1'>
+                              <div key={missage.id} className='rounded-b-[24px] rounded-tl-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:min-w-[100%] max-w-[70%]'>{missage.content}  </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                  )
                 }
-                {(missage.userId !== props.userData.id) && 
+                {(missage.userId !== userData.id) && 
                   (missage.content.startsWith('announcement') ? 
-                  <div className='bg-red-400 mb-4 mt-4 self-center rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px]'>
+                    <div className='bg-red-400 mb-4 mt-4 self-center rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px]'>
                       {missage.content.split(' ').slice(1).join(' ')}
                     </div>
                     : 
-                      <div className='flex pl-[16px] pt-[4px] gap-[16px] lg:max-w-[50%] max-w-[70%]'>
-                        {index > 0 && ((missage.userId === messages[index - 1].userId) && (!messages[index - 1].content.startsWith('announcement')))? 
-                          <div key={missage.id} className='ml-[62px] self-start rounded-b-[24px] rounded-tr-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:w-fit max-w-[100%]'> {missage.content} </div>
-                          : <div className='mt-7 border-black flex'>
-                              <div className='h-[50px] min-w-[50px] border-[1px] rounded-[25px]  mr-[10px] overflow-hidden'> <img className='object-cover h-[50px] min-w-[50px] max-w-[50px]  ' src="tlou.jpg" alt="" /></div>
-                              <div className='rounded-tr-[24px] rounded-b-[24px]  '>
-                                <div className='flex h-[45px] items-start '>
-                                  <div className='text-[21px] font-bold text-teal-700 break-all ' >user name</div>
-                                  {(groupData.owner == missage.userId) && <div className='text-[14px] mt-[2px] ml-[3px] rounded-[9px] font-light text-white py-[6px] px-[10px] bg-[#d33939]' >owner</div> }
-                                  {(checkIfAdmin(missage.userId)) && <div className='text-[14px] mt-[2px] ml-[3px] rounded-[9px] font-light text-white py-[6px] px-[10px] bg-[#7239D3]' >admin</div> }
-                                </div>
-                                <div key={missage.id} className='rounded-b-[24px] rounded-tr-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:w-fit max-w-[100%]'>{missage.content}</div>
+                    <div className='flex items-end pl-[16px] pb-[4px] gap-[16px] md:w-[70%] lg:w-[50%]'>
+                      {index > 0 && ((missage.userId === messages[index - 1].userId) && (!messages[index - 1].content.startsWith('announcement')))? 
+                        <div key={missage.id} className='ml-[62px] rounded-b-[24px] rounded-tr-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:max-w-[100%] max-w-[70%]'> {missage.content} </div>
+                        : <div className='mt-7 border-black flex'>
+                            <div className='h-[50px] min-w-[50px] border-[1px] rounded-[25px]  mr-[10px] overflow-hidden'> <img className='object-cover h-[50px] min-w-[50px] max-w-[50px]  ' src={`${missage?.sender?.avatar}`} alt="" /></div>
+                            <div className='rounded-tr-[24px] rounded-b-[24px]  '>
+                              <div className='flex h-[45px]'>
+                                <div className='text-[21px] font-bold text-teal-700 break-all ' >{missage?.sender?.username}</div>
+                                {(groupData.owner == missage.userId) && <div className='text-[14px] mt-[2px] ml-[3px] rounded-[9px] font-light text-white py-[6px] px-[10px] bg-[#d33939]' >owner</div> }
+                                {(checkIfAdmin(missage.userId)) && <div className='text-[14px] mt-[2px] ml-[3px] rounded-[9px] font-light text-white py-[6px] px-[10px] bg-[#7239D3]' >admin</div> }
                               </div>
+                              <div key={missage.id} className='rounded-b-[24px] rounded-tr-[24px] w-fit font-normal text-[18px] font-sans-only break-all bg-gray-100 p-[16px] lg:w-fit max-w-[100%]'>{missage.content}</div>
                             </div>
-                        }
-                        </div>
+                          </div>
+                      }
+                    </div>
                   )
                 }
-              </>
+              </div>
             ))}
           </div>
 
@@ -243,7 +265,7 @@ export const RightSection = (props:any) => {
       <div className="fixed top-0 right-0 z-20 w-full backdrop-blur-[8px] h-full transition-all duration-500 transform translate-x-full shadow-lg peer-checked:translate-x-0">
         <div className="flex absolute right-0 px-6 py-4 w-[400px] border-l-[1px] h-full bg-[#eff5ff]">
           <div className='flex flex-1 flex-col items-center  backdrop-blur-sm '>
-            <div> <img className=' h-[150px] w-[150px] rounded-[50%] mt-[100px]' src={`http://localhost:3000/${groupData.avatar}`} alt={`http://localhost:3000/${groupData.avatar}`} /></div>
+            <div> <img className=' h-[150px] w-[150px] rounded-[50%] mt-[100px]' src={`http://localhost:4000/${groupData.avatar}`} alt={`http://localhost:4000/${groupData.avatar}`} /></div>
             <div className='font-normal text-[40px] font-sans-only text-[#2E2E2E] mb-9'>{groupData.name}</div>
             <div className='flex flex-col h-[100%] relative w-[100%] gap-8'>
               <div className='flex flex-col max-h-[30%] bg-[#e6ebfe] rounded-[13px] pb-4 hover:bg-[#d6dbed] transition-all duration-500'> 
@@ -255,11 +277,11 @@ export const RightSection = (props:any) => {
 
                   </div> */}
                   {(groupData.members) && groupData.members.map((members:any, index:any) =>(
-                    <div className='w-[100%] py-4 mb-1 mt-1 flex items-center justify-between bg-white max-w-[350px] px-4 rounded-[10px] relative'>
+                    <div key={index} className='w-[100%] py-4 mb-1 mt-1 flex items-center justify-between bg-white max-w-[350px] px-4 rounded-[10px] relative'>
                       <div className='flex overflow-visible'>
-                        <div className='z-10'><img className='min-w-[50px] max-w-[50px]  h-[50px] rounded-[25px] mr-3' src={`http://localhost:3000/uploads/groupsImages/aywaaaa.jpg`} alt={`http://localhost:3000/uploads/groupsImages/aywaaaa.jpg`}/></div>
+                        <div className='z-10'><img className='min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3' src={`${members.avatar}`} alt={`${members.avatar}`}/></div>
                         <div className='z-20'>
-                          <div className='font-bold'>{index}</div>
+                          <div className='font-bold'>{members.username}</div>
                           {
                             (groupData.owner === members.id) ? ( <div className='text-gray-400 text-[14px] self-start'>Owner</div> ) 
                             : ( (checkIfAdmin(members.id)) ? ( <div className='text-gray-400 text-[14px] self-start'>Admin</div> ) 
@@ -269,7 +291,7 @@ export const RightSection = (props:any) => {
                         { memberSettings[index] && (
 
                           <div className='font-semibold absolute right-12 top-4 z-50 bg-[#e6ebfe] flex flex-col border-[1px] rounded-[10px] p-1 '>
-                            {((groupData.owner === props.userData.id) || (checkIfAdmin(props.userData.id))) ? 
+                            {((groupData.owner === userData.id) || (checkIfAdmin(userData.id))) ? 
                             <>
                               {checkIfUserMuted(groupData.members[index].id)?
                                 <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => {handleChannelCommands("unmute",groupData.members[index], index)}}>unmute</div>
@@ -307,7 +329,7 @@ export const RightSection = (props:any) => {
                     <div className='text-gray-500 text-[12px]'>{groupData.status}</div>
                   </div>
                 </div>
-                {(checkIfAdmin(props.userData.id) || props.userData.id === groupData.owner) && (
+                {(checkIfAdmin(userData.id) || userData.id === groupData.owner) && (
                   
                   <div className='flex flex-col gap-4'>  
                     <div className='rounded-t-[15px] rounded-b-[15px] p-3 bg-white flex flex-col w-full'>

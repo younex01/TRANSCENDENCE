@@ -9,13 +9,16 @@ export default function SideBar(props:any) {
       const userData = {
         id: uuidv4(),
         username: uuidv4(),
+        firstName: uuidv4(),
+        lastName: uuidv4(),
         avatar: "null"
       }
       props.setUserData(userData);
       console.log(userData);
       try {
         
-        const response =  await axios.post('http://localhost:3000/chat/createUser', userData);
+        const response =  await axios.post('http://localhost:4000/chat/createUser', userData);
+        console.log("aywaaa")
       } catch (error) {
         
         console.log("error :", error);

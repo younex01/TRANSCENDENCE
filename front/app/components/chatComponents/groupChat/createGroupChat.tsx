@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setCreateGroup } from '@/redux/features/chatSlices/create_join_GroupSlice';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import { RootState } from '@/redux/store/store';
 
 export default function createGroupChat(props:any) {
   const[passWord, setPassWord] = useState("hidden");
@@ -12,9 +14,13 @@ export default function createGroupChat(props:any) {
   const[channelPassWord, setChannelPassWord] = useState<string>();
   const[photoPath, setPhotoPath] = useState<any>();
   const[avatar, setAvatar] = useState<File | null>(null);
-
+  
   const dispatch = useDispatch();
-
+  const userData = useSelector(selectProfileInfo);
+  const socket = useSelector((state:RootState) => state.socket.socket);
+  // console.log(data);
+  
+  console.log("userDataberra", userData);
   const addGroupChat = async () => {
     if(channelName && ((!channelStatus || channelStatus === "Private") || (channelStatus === "Protected" && channelPassWord))) {
 
@@ -22,16 +28,18 @@ export default function createGroupChat(props:any) {
         if (avatar) {
           const formData = new FormData();
           formData.append('file', avatar);
-          const backEndImagePath = await axios.post(`http://localhost:3000/chat/uploads`, formData);
+          const backEndImagePath = await axios.post(`http://localhost:4000/chat/uploads`, formData);
           const groupChatInfo = {
             name: channelName,
             avatar: backEndImagePath.data,
             status: !channelStatus ? "Public" : channelStatus,
             password: channelPassWord,
-            owner: props.userData.id
+            owner: userData.id
           };
-          const response =  await axios.post('http://localhost:3000/chat/createGroup', groupChatInfo);
-          props.socket.emit("joinGroupChat", {userId: props.userData.id, groupId: response.data.id});
+          console.log("groupChatInfo", groupChatInfo);
+          console.log("userData", userData);
+          const response =  await axios.post('http://localhost:4000/chat/createGroup', groupChatInfo);
+          props.socket.emit("joinGroupChat", {userId: userData.id, groupId: response.data.id});
         }
       } catch (error: any) {
         console.error('Error sending data to the backend:', error.message);
@@ -40,6 +48,7 @@ export default function createGroupChat(props:any) {
       setChannelPassWord("");
       setChannelName("");
       setPassWord("hidden");
+      console.log(socket.id)
       
       dispatch(setCreateGroup(false));
 
