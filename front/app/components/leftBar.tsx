@@ -34,7 +34,7 @@ export default function LeftBar() {
           <Image src="/images/ping_pong.png" alt="logo" width={160} height={60} className='md:mt-[0%] mt-[55%]' />
         </div>
         <div className="flex flex-col gap-20 items-center justify-center">
-          <Link href="./../../HomePage">
+          <Link href="./../../Profile">
             <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
                 src="./images/Profile.svg" 

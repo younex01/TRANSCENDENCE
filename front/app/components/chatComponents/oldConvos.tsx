@@ -27,21 +27,25 @@ export default function Convos() {
     };
 
     fetchChatGroups();
-  }, [refresh]);
 
+    socket?.on("refresh", () => {
+      console.log("aadsfadsfdsafadsf")
+      setRefresh(!refresh);
+      socket?.off("refresh");
+    });
 
+    return () => {
+      socket?.off("refresh");
+    };
+  }, [refresh, socket, userData.id]);
 
-  socket?.on("refresh", () => {
-    console.log("aadsfadsfdsafadsf")
-    setRefresh(!refresh);
-    socket?.off("refresh");
-  });
 
   return (
     <>
       {myGroups.map((myGroupChats: any) => (
 
         <button className='mr-[10px] mb-[10px] ml-[15px] rounded-[11px] w-[90%] border-[1px] p-2' key={myGroupChats.id} onClick={() => { dispatch(selctedConversation(myGroupChats.id)) }}>
+          <Link href={`/Chat/${conversationId}`}>
             <div className='flex '>
               <div> <img className='h-[50px] w-[50px] ml-1 rounded-[25px] object-fill' src={`http://localhost:4000/${myGroupChats.avatar}`} alt={myGroupChats.avatar} /></div>
               <div className='pl-2 flex flex-col items-start'>
@@ -49,6 +53,7 @@ export default function Convos() {
                 <div className='text-[11px] font-normal sans-serif text-[#2e2e2e]'>MESSAGEs</div>
               </div>
             </div>
+          </Link>
         </button>
       ))}
     </>

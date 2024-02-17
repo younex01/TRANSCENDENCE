@@ -43,12 +43,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(payload.groupId);
     client.emit("joinSuccessfull", `You Joined ${payload.roomName}`);
-    this.server.to(payload.groupId).emit("refresh");
+    this.server.emit("refresh");
   }
 
   @SubscribeMessage('kick')
   async kick(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.userId.split('-')[0]} has kicked ${payload.target.split('-')[0]} from this room`
+    payload.message = `announcement ${payload.username} has kicked ${payload.target_username} from this room`
     await this.chatService.removeUserFromRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
@@ -56,7 +56,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.userId.split('-')[0]} has muted ${payload.target.split('-')[0]}`
+    payload.message = `announcement ${payload.username} has muted ${payload.target_username}`
     await this.chatService.MuteUserFromRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
@@ -64,7 +64,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('unmute')
   async Unmute(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.userId.split('-')[0]} has unmuted ${payload.target.split('-')[0]}`
+    payload.message = `announcement ${payload.username} has unmuted ${payload.target_username}`
     await this.chatService.UnmuteUserFromRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
@@ -72,7 +72,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('makeAdmin')
   async makeAdmin(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.target.split('-')[0]} in now an admin on this room`
+    payload.message = `announcement ${payload.target_username} in now an admin on this room`
     await this.chatService.makeAdminOnRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
@@ -80,7 +80,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('removeAdmin')
   async removeAdmin(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.target.split('-')[0]} in no longer an admin on this room`
+    payload.message = `announcement ${payload.target_username} in no longer an admin on this room`
     await this.chatService.removeAdminOnRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
@@ -110,7 +110,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('leave')
   async leave(client: Socket, payload:any) {
-    payload.message = `announcement ${payload.userId.split('-')[0]} has left the room`
+    payload.message = `announcement ${payload.username} has left the room`
     await this.chatService.removeUserFromRoom(payload.userId, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit('refresh');

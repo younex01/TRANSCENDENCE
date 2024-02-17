@@ -73,7 +73,7 @@ export default function PersonnelInfo() {
             htmlFor="upload"
             className=" cursor-pointer z-50 absolute top-0 right-0"
           >
-            
+
             <img id="imageUpload" src="/changeicon.svg" className=" transform hover:scale-125 transition-transform duration-300" />
           </label>
           <input
@@ -83,20 +83,20 @@ export default function PersonnelInfo() {
             className="absolute hidden cursor-pointer"
             onChange={handleAvatarChange}
           />
-        {isLoading ? (
-          <div>
-            <Skeleton className="flex rounded-full w-[100px] h-[100px]"/>
-          </div>  
-        ) : (
-          <div className='w-[100px] h-[100px] rounded-full overflow-hidden'>
-            <img src={`${imagePath}`} alt={`${profileSelector.avatar}`} id='avatar' className='object-cover w-full h-full' />
-          </div>
-        )}
+          {isLoading ? (
+            <div>
+              <Skeleton className="flex rounded-full w-[100px] h-[100px]" />
+            </div>
+          ) : (
+            <div className='w-[100px] h-[100px] rounded-full overflow-hidden'>
+              <img src={`${imagePath}`} alt={`${profileSelector.avatar}`} id='avatar' className='object-cover w-full h-full' />
+            </div>
+          )}
         </div>
       </div>
       <div className="w-full flex flex-col gap-[24px]  rounded-[8px] px-[60px] ">
         <div className="flex w-full gap-[24px] flex-col md:flex-row">
-          <div className={(profileSelector.firstName) ? `w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]` : `w-full relative bg-inherit border-[1px] border-red-500 rounded-[10px]`} >
+          <div className="w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]" >
             <input type="text"
               onChange={(e) => setFirstName(e.target.value)}
               defaultValue={profileSelector.firstName}
@@ -104,7 +104,7 @@ export default function PersonnelInfo() {
               className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder=" " />
             <label htmlFor="firstName" className={(profileSelector.firstName) ? `absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto` : `absolute text-sm text-[#c9c9c9] dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-red-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}>Firstname</label>
           </div>
-          <div className="  w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
+          <div className="w-full relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px] ">
             <input type="text"
               onChange={(e) => setLastName(e.target.value)}
               defaultValue={profileSelector.lastName}
@@ -112,7 +112,7 @@ export default function PersonnelInfo() {
             <label htmlFor="lastName" className="absolute text-sm text-[#c9c9c9] dark:text-[#c9c9c9] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-[#c9c9c9] peer-focus:dark:text-[#c9c9c9] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-[5px] peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Last name</label>
           </div>
         </div>
-        <div className={(profileSelector.username) ? `w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]` : `w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-red-500 rounded-[10px]`}>
+        <div className="w-full md:w-[47%] xl:w-[48.5%] relative bg-inherit border-[1px] border-[#c9c9c9] rounded-[10px]">
           <input type="text"
             onChange={(e) => setNickName(e.target.value)}
             defaultValue={profileSelector.username}
@@ -124,7 +124,6 @@ export default function PersonnelInfo() {
         <button className="w-32 h-10 bg-[#909DC8] text-white rounded-lg"
           onClick={() => onSubmit()}
         >Save Changes</button>
-        <button className="w-28 h-10 bg-[#BCC1C5] text-white rounded-lg">Discard</button>
       </div>
     </div>
   );

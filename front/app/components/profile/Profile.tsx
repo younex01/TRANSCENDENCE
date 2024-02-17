@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '../../../redux/features/profile/profileSlice';
 import axios from 'axios';
-import { setQrData } from '@/redux/features/qrcode/qrCodeSlice';
 import { use, useEffect, useState } from 'react';
 
 export default function Profile() {

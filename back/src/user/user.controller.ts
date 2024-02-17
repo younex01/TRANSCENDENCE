@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Headers, Req, Res,Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Req, Res,Post, UnauthorizedException, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma.service';
+import Fuse from 'fuse.js';
 
 @Controller('user')
 export class UserController {
@@ -64,6 +65,32 @@ export class UserController {
             return await res.send({info: false, message: "Error while updating username"});
         }
     }
+
+
+    @Get('getUserByUserId')
+    @UseGuards(AuthGuard('jwt'))
+    async getUserByUserId(@Query('user') user: string)
+    {
+        const users = await this.prisma.getUserByUserId(user);
+        return users;
+    }
+
+    @Get('getAllUsers')
+    @UseGuards(AuthGuard('jwt'))
+    async getAllUsers(@Query('input') input: string)
+    {
+        const users = await this.prisma.getAllUsers();
+        const options = {
+            keys: ['username', 'firstName', 'lastName'], 
+            threshold: 0.2
+        }
+          const fuse = new Fuse(users,options);
+          const filtered = fuse.search(input).map((elem) => elem.item);
+          const modifiedFiltered = filtered.map(user => {
+            const { twoFactorAuthCode, twoFactorAuthEnabled, firstLogin, ...rest } = user;
+            return rest;
+        });
+        return modifiedFiltered;
+    }
     
 }
-

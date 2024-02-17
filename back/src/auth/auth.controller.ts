@@ -1,9 +1,11 @@
-import { Controller, Get, Param, Req, Res, Post, UseGuards, Body } from '@nestjs/common';
+    import { Controller, Get, Param, Req, Res, Post, UseGuards, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import speakeasy from 'speakeasy';
+// import { authenticator } from 'otplib';
 import * as qrcode from 'qrcode';
+import { log } from 'console';
 
 @Controller('auth')
 export class AuthController {
@@ -13,11 +15,6 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async ft_redirect(@Req() req, @Res() res)
     {
-        // if (req.user.twoFactorAuthEnabled){
-            // const token = await this.jwtService.signAsync(payload);
-            // res.cookie('JWT_TOKEN', token);
-        //     return res.redirect('http://localhost:3000/QRcode');
-        // }
         const payload = { sub: req.user.id };
         if(req.user.firstLogin){
             const token = await this.jwtService.signAsync(payload);
@@ -25,10 +22,15 @@ export class AuthController {
             await this.prisma.user.update({ where: { id: req.user.id }, data: { firstLogin: false } });
             return res.redirect('http://localhost:3000/Settings');
         }
+        else if (req.user.twoFactorAuthEnabled){
+            const token = await this.jwtService.signAsync(payload);
+            res.cookie('JWT_TOKEN', token);
+            return res.redirect('http://localhost:3000/QRcode');
+        }
         console.log('in the auth controller');  
         const token = await this.jwtService.signAsync(payload);
         res.cookie('JWT_TOKEN', token);
-        return res.redirect('http://localhost:3000/HomePage');
+        return res.redirect('http://localhost:3000/Profile');
     }
 
     @Post('logout')
@@ -59,15 +61,18 @@ export class AuthController {
 
     @Post('verifyTwoFactorAuthCode')
     @UseGuards(AuthGuard('jwt'))
-    async verifyTwoFactorAuthCode(@Req() req, @Res() res, @Body() body: { code: string }) {
+    async verifyTwoFactorAuthCode(@Req() req, @Res() res, @Body('code') code: string) {
         const user = req.user;
 
         const isVerified = speakeasy.totp.verify({
             secret: user.twoFactorAuthCode,
             encoding: 'base32',
-            token: body.code,
+            token: code,
         });
 
+        console.log(`code in the bacak` , code);        
+
+        log('isVerified', isVerified);
         if (isVerified) {
             return res.json({ message: 'User is verified' });
         } else {
@@ -84,14 +89,14 @@ export class AuthController {
             encoding: 'base32',
             token: body.code,
         });
-        if(user.twoFactorAuthCode){
-            return res.json({ message: 'Two-factor authentication is already enabled' });
+        if(user.twoFactorAuthEnabled){
+            return res.json({status: true, message: 'Two-factor authentication is already enabled' });
         }
         if (isVerified) {
             await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: true } });
-            return res.json({obj: true, message: 'Two-factor authentication is enabled' });
+            return res.json({status: true, message: 'Two-factor authentication is enabled' });
         } else {
-            return res.json({obj: false, message: 'invalide code' });
+            return res.json({status: false, message: 'invalide code' });
         }
     }
     

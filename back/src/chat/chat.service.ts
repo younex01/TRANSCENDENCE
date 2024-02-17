@@ -81,6 +81,7 @@ async getGroupWithMembers(groupId: string) {
 }
 
 async addMessagesToRoom(payload:any) {
+  console.log("ldakhl dyal addMessagesToRoom", payload)
   return this.prisma.chatGroup.update({
     where: { id: payload.roomId},
     data: {
@@ -95,6 +96,7 @@ async addMessagesToRoom(payload:any) {
 }
 
 async getGroupMessages(roomId:string) {
+  console.log("ldakhl dyal getGroupMessages", roomId)
   return this.prisma.message.findMany({
     where: { chatGroupId: roomId},
     include: {sender: true}

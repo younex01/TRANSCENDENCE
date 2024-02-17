@@ -21,33 +21,30 @@ axios.defaults.withCredentials = true;
 
 export default function page() {
 
-  // const dispatch = useDispatch();
-  // let user;
-  // const router = useRouter();
-  // const [id , setId] = useState();
+  const dispatch = useDispatch();
+  let user;
+  const router = useRouter();
+  const [id , setId] = useState();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:4000/user/me', {
-  //         // withCredentials: true,
-  //         // headers: {
-  //         //   'Content-Type': 'application/json',
-  //         //   'Authorization': `Bearer ${token}`,
-  //         // },
-  //       });
-  //       setId(response.data.user.id);
-  //       user = response.data.user;
-  //       dispatch(setProfileData(user));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/user/me', {
+        });
+        setId(response.data.user.id);
+        user = response.data.user;
+        console.log('user:', user);
         
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error);
-  //       router.push('/');
+        dispatch(setProfileData(user));
         
-  //     }
-  //   };
-  //   fetchData();
-  // }, [id]);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        router.push('/');
+        
+      }
+    };
+    fetchData();
+  }, [id]);
  
 
   return (

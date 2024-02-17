@@ -57,10 +57,8 @@ const Home = () => {
   return (
     <div className="h-[100vh] w-full flex">
       <div className="flex-1 p-4">
-        <div className='w-full h-[8%] flex flex-row justify-around items-center '>
-
+        <div className='w-full h-[8%] flex flex-row justify-between items-center'>
           <SearchPanel />
-
         </div>
         <div className="flex flex-col lg:flex-row gap-10">
           <div className="w-[100%] h-full ">

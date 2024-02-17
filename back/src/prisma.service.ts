@@ -19,4 +19,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     return user;
   }
 
+  async getUserByUserId(user:string){
+    const users = await this.user.findMany({
+      where: {id: user},
+    });
+    return users;
+  }
+
+  async getAllUsers(){
+    const users = await this.user.findMany({});
+    return users;
+  }
+
 }

@@ -15,7 +15,7 @@ export default function FriendsAndGroups(props: any) {
   const groupOptions = useSelector((state: RootState) => state.group.groupOptions);
 
   return (
-    <div className='flex w-0 relative border-r-[2px] bg-[#fafcff]  md:w-[300px] lg:w-[400px] h-full transition-all duration-500'>
+    <div className='flex w-0 relative border-r-[2px] bg-[#fafcff]  md:w-[300px] lg:w-[400px] h-screen transition-all duration-500'>
 
       <div className='md:block hidden w-[400px]'>
         {createGroup && (<CreateGroupChat />)}

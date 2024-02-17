@@ -6,7 +6,6 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist
 import { requestSlice } from '../features/freinds/requestSlice';
 import { achievementSlice } from '../features/achievement/achievementSlice';
 import { profileSlice } from '../features/profile/profileSlice';
-import { qrCodeSlice } from '../features/qrcode/qrCodeSlice';
 import socketReducer from "../features/chatSlices/socketSlice";
 import groupReducer from "../features/chatSlices/create_join_GroupSlice";
 import selectConvoReducer from "../features/chatSlices/selecConvoSlice";
@@ -21,7 +20,6 @@ const store = configureStore({
         request: requestSlice.reducer,
         achievement: achievementSlice.reducer,
         profile: persistedProfileReducer,
-        qrCode: qrCodeSlice.reducer,
         socket: socketReducer,
         group: groupReducer,
         seelctedConversation:  selectConvoReducer

@@ -39,7 +39,7 @@ export default function createGroupChat(props:any) {
           console.log("groupChatInfo", groupChatInfo);
           console.log("userData", userData);
           const response =  await axios.post('http://localhost:4000/chat/createGroup', groupChatInfo);
-          props.socket.emit("joinGroupChat", {userId: userData.id, groupId: response.data.id});
+          socket.emit("joinGroupChat", {userId: userData.id, groupId: response.data.id});
         }
       } catch (error: any) {
         console.error('Error sending data to the backend:', error.message);

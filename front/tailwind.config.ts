@@ -24,7 +24,7 @@ const config: Config = {
       },
       screens: {
         'mmd': '830px',
-        '3xl': '1800px',
+        '2sm': '300px',
       },
     },
   },
