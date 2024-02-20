@@ -22,6 +22,8 @@ export default function FirstPage() {
   );
 }
 
+{/* <iframe src="https://giphy.com/embed/hpFceZhFTWzU1eeHNv" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/pong-ping-pingpong-hpFceZhFTWzU1eeHNv">via GIPHY</a></p> */}
+
 
 
 

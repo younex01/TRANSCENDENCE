@@ -26,10 +26,10 @@ export default function Page() {
   useEffect(() => {
     const fetchChatGroups = async () => {
       try {
-        const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${conversationId}`);
+        const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${conversationId}`, { withCredentials: true });
         setMessages(msgs.data.message);
-        const response = await axios.get(`http://localhost:4000/chat/getGroupByGroupId?groupId=${conversationId}`);
-        setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${conversationId}`)).data);
+        const response = await axios.get(`http://localhost:4000/chat/getGroupByGroupId?groupId=${conversationId}`, { withCredentials: true });
+        setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${conversationId}`, { withCredentials: true })).data);
         if (response.status === 200) {
           const data = response.data;
           setGroupData(data.data);

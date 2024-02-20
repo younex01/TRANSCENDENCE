@@ -20,7 +20,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async getUserByUserId(user:string){
-    const users = await this.user.findMany({
+    const users = await this.user.findUnique({
       where: {id: user},
     });
     return users;

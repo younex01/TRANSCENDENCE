@@ -21,6 +21,22 @@ model User {
   twoFactorAuthEnabled Boolean @default(false)
   firstLogin Boolean @default(true)
   groups    ChatGroup[] @relation("UserGroup")
+  sentRequests  friendRequest[] @relation("sent")
+  receivedRequests  friendRequest[] @relation("received")
+  friends User[] @relation("friend")
+  symmenticfriends User[] @relation("friend")
+  blockedByUsers String[]
+  blockedUsers String[]
+}
+
+model friendRequest {
+  id        String @id @default(uuid())
+  sender    User   @relation("sent", fields: [senderId], references: [id])
+  senderId  String
+  receiver  User   @relation("received", fields: [receiverId], references: [id])
+  createdAt   DateTime  @default(now())
+  receiverId String
+  status    String
 }
 
 model ChatGroup {
@@ -44,4 +60,10 @@ model Message {
   userId      String 
   chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
   chatGroupId String
+}
+
+enum REQUEST_TYPE {
+  PENDING
+  ACCEPTED
+  DECLINED
 }

@@ -1,4 +1,4 @@
-    import { Controller, Get, Param, Req, Res, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, UseGuards, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
@@ -23,8 +23,9 @@ export class AuthController {
             return res.redirect('http://localhost:3000/Settings');
         }
         else if (req.user.twoFactorAuthEnabled){
-            const token = await this.jwtService.signAsync(payload);
-            res.cookie('JWT_TOKEN', token);
+            await this.jwtService.signAsync(payload);
+            //res.cookie('JWT_TOKEN', token);
+            res.cookie('USER_ID', req.user.id);
             return res.redirect('http://localhost:3000/QRcode');
         }
         console.log('in the auth controller');  
@@ -60,10 +61,9 @@ export class AuthController {
     }
 
     @Post('verifyTwoFactorAuthCode')
-    @UseGuards(AuthGuard('jwt'))
     async verifyTwoFactorAuthCode(@Req() req, @Res() res, @Body('code') code: string) {
-        const user = req.user;
-
+        //const user = req.user;
+        const user = await this.prisma.user.findFirst({ where: { id: req.cookies.USER_ID } });
         const isVerified = speakeasy.totp.verify({
             secret: user.twoFactorAuthCode,
             encoding: 'base32',
@@ -74,6 +74,9 @@ export class AuthController {
 
         log('isVerified', isVerified);
         if (isVerified) {
+            const payload = { sub: req.cookies.USER_ID };
+            const token = await this.jwtService.signAsync(payload);
+            res.cookie('JWT_TOKEN', token);
             return res.json({ message: 'User is verified' });
         } else {
             return res.status(400).json({ message: 'Invalid token' });
@@ -110,6 +113,7 @@ export class AuthController {
         await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: false } });
         return res.json({ message: 'Two-factor authentication is disabled' });
     }
+
 }
 
    

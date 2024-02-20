@@ -1,10 +1,11 @@
-import { Controller, Req, Get, Body, Post, UploadedFile, UseInterceptors, Query} from '@nestjs/common';
+import { Controller, Req, Get, Body, Post, UploadedFile, UseInterceptors, Query, UseGuards} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Prisma } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import {v4 as uuidv4} from 'uuid'
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/chat')
 export class ChatController {
@@ -12,6 +13,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get('/getChatGroups')
+  @UseGuards(AuthGuard('jwt'))
   async getChatGroups() {
     return this.chatService.getChatGroups();
   }
@@ -23,11 +25,13 @@ export class ChatController {
   }
 
   @Post('/createUser')
+  @UseGuards(AuthGuard('jwt'))
   async createUser(@Body() user:any) {
     return this.chatService.createUser(user);
   }
 
   @Post('uploads')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: './uploads/groupsImages',
@@ -43,6 +47,7 @@ export class ChatController {
   }
 
   @Get('/getGroupsByUserId')
+  @UseGuards(AuthGuard('jwt'))
   async getGroupsByUserId(@Query('userId') userId: string) {
     try {
       const groups = await this.chatService.getGroupsByUserId(userId);
@@ -53,6 +58,7 @@ export class ChatController {
   }
 
   @Get('/getGroupByGroupId')
+  @UseGuards(AuthGuard('jwt'))
   async getGroupByGroupId(@Query('groupId') groupId: string) {
     try {
       const groups = await this.chatService.getGroupWithMembers(groupId);
@@ -63,6 +69,7 @@ export class ChatController {
   }
 
   @Get('/getMsgsByGroupId')
+  @UseGuards(AuthGuard('jwt'))
   async getMsgsByGroupId(@Query('groupId') groupId: string) {
     try {
       const message = await this.chatService.getGroupMessages(groupId);
@@ -73,12 +80,14 @@ export class ChatController {
   }
 
   @Get('/getIsMuted')
+  @UseGuards(AuthGuard('jwt'))
   async getIsMuted(@Query('userId') userId: string, @Query('groupId') groupId: string) {
     const isMuted = await this.chatService.checkIfMuted(userId, groupId);
     return isMuted;
   }
 
   @Get('/checkIfMember')
+  @UseGuards(AuthGuard('jwt'))
   async getIfMember(@Query('userId') userId: string, @Query('groupId') groupId: string) {
     const isMember = await this.chatService.checkIfMember(userId, groupId);
     return isMember;

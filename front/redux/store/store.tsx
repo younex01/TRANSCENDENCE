@@ -9,6 +9,8 @@ import { profileSlice } from '../features/profile/profileSlice';
 import socketReducer from "../features/chatSlices/socketSlice";
 import groupReducer from "../features/chatSlices/create_join_GroupSlice";
 import selectConvoReducer from "../features/chatSlices/selecConvoSlice";
+import { lastGameSlice } from '../features/lastGamesSlice/lastGameSlice';
+import notificationsReducer from '../features/notificationsSlice';
 
 const persistProfileConfig = {
     key: "profile",
@@ -20,9 +22,12 @@ const store = configureStore({
         request: requestSlice.reducer,
         achievement: achievementSlice.reducer,
         profile: persistedProfileReducer,
+        lastGame: lastGameSlice.reducer,
         socket: socketReducer,
         group: groupReducer,
-        seelctedConversation:  selectConvoReducer
+        seelctedConversation:  selectConvoReducer,
+        refreshNotifs: notificationsReducer
+        
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

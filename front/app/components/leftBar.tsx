@@ -37,7 +37,8 @@ export default function LeftBar() {
           <Link href="./../../Profile">
             <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
-                src="./images/Profile.svg" 
+                src="../../../images/Profile.svg" 
+                // <img className='object-cover h-[50px] min-w-[50px] max-w-[50px]  ' src={`${message?.sender?.avatar}`} alt="" />
                 alt="logo" 
                 width={35}
                 height={50}
@@ -49,7 +50,7 @@ export default function LeftBar() {
           <Link href="./../../Chat">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
-                src="./images/Chat.svg" 
+                src="../../../images/Chat.svg" 
                 alt="logo" 
                 width={35}
                 height={50}
@@ -61,7 +62,7 @@ export default function LeftBar() {
           <Link href="./../../Game">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
-                src="./images/Game.svg" 
+                src="../../../images/Game.svg" 
                 alt="logo" 
                 width={35}
                 height={50}
@@ -74,7 +75,7 @@ export default function LeftBar() {
           <Link href="./../../Settings">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
-                src="./images/Chat.svg" 
+                src="../../../images/Chat.svg" 
                 alt="logo" 
                 width={35}
                 height={50}
@@ -89,7 +90,7 @@ export default function LeftBar() {
         </div>
         <div className="pb-[55%] ">
           <button onClick={logout} >
-            <Image src="./images/Login.svg" alt="logo" width={50} height={50} />
+            <Image src="../../../images/Login.svg" alt="logo" width={50} height={50} />
           </button>
         </div>
       </div>

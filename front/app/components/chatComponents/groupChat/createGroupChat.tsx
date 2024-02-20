@@ -20,7 +20,6 @@ export default function createGroupChat(props:any) {
   const socket = useSelector((state:RootState) => state.socket.socket);
   // console.log(data);
   
-  console.log("userDataberra", userData);
   const addGroupChat = async () => {
     if(channelName && ((!channelStatus || channelStatus === "Private") || (channelStatus === "Protected" && channelPassWord))) {
 
@@ -28,7 +27,7 @@ export default function createGroupChat(props:any) {
         if (avatar) {
           const formData = new FormData();
           formData.append('file', avatar);
-          const backEndImagePath = await axios.post(`http://localhost:4000/chat/uploads`, formData);
+          const backEndImagePath = await axios.post(`http://localhost:4000/chat/uploads`, formData, { withCredentials: true });
           const groupChatInfo = {
             name: channelName,
             avatar: backEndImagePath.data,
@@ -37,8 +36,7 @@ export default function createGroupChat(props:any) {
             owner: userData.id
           };
           console.log("groupChatInfo", groupChatInfo);
-          console.log("userData", userData);
-          const response =  await axios.post('http://localhost:4000/chat/createGroup', groupChatInfo);
+          const response =  await axios.post('http://localhost:4000/chat/createGroup', groupChatInfo, { withCredentials: true });
           socket.emit("joinGroupChat", {userId: userData.id, groupId: response.data.id});
         }
       } catch (error: any) {

@@ -1,16 +1,22 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import PersonnelInfo from './settings/PersonnelInfo';
-import QRcode from './settings/QRcode';
-import CloseAccont from './settings/CloseAccont';
 import axios from 'axios';
 import Link from 'next/link';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store/store';
 
 export default function SearchPanel() {
+
+  const dispatch = useDispatch();
+  const myData = useSelector(selectProfileInfo);
+  const socket = useSelector((state: RootState) => state.socket.socket);
 
   const [isClicked, setIsClicked] = useState(false)
   const [searchForUser, setSearchForUser] = useState("")
   const [allUsers, setAllUsers] = useState([])
+  const [refreshNotifs, setRefreshNoifications] = useState<boolean>()
+  const [myNotification, setMyNotifications] = useState<[]>();
 
   useEffect(() => {
     const getUsers = async (searchForUser: string) => {
@@ -18,10 +24,9 @@ export default function SearchPanel() {
         try {
           console.log("---------------------------------------------");
 
-          const response = await axios.get(`http://localhost:4000/user/getAllUsers?input=${searchForUser}`);
+          const response = await axios.get(`http://localhost:4000/user/getAllUsers?input=${searchForUser}`, { withCredentials: true });
 
           setAllUsers(response.data);
-          console.log("Filtered users:", response.data);
         } catch (error) {
           console.error("Error fetching users:", error);
         }
@@ -31,14 +36,61 @@ export default function SearchPanel() {
     getUsers(searchForUser);
   }, [searchForUser]);
 
+  useEffect(() => {
+    const getMyNotifications = async () => {
+      try {
+        console.log("---------------      refreshing   ------------------------------");
+        const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
+        setMyNotifications(notifications.data);
+        console.log(notifications.data)
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    getMyNotifications();
+  }, [refreshNotifs]);
+
+  useEffect(() => {
+    socket?.on("refreshFrontNotifications", (channelStatus: any) => {
+      console.log("wtffffffff")
+      setRefreshNoifications(!refreshNotifs);
+    });
+    return () => {
+      socket?.off("refreshFrontNotifications");
+    };
+  });
+
+  const acceptFriendRequest = async (notif: any) => {
+    try {
+      axios.post(`http://localhost:4000/user/acceptFriendRequest`, { notif, myId: myData.id }, { withCredentials: true });
+      setRefreshNoifications(!refreshNotifs);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+  const declineFriendRequest = async (notif: any) => {
+    console.log("aywaaaasdasdasdasdasdasd")
+    try {
+      axios.post(`http://localhost:4000/user/declineFriendRequest`, { notif, myId: myData.id }, { withCredentials: true });
+      setRefreshNoifications(!refreshNotifs);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+
+
+
 
   return (
-    <>
-      <div className='searchBar w-6/12 lg:w-4/12 max-w-md'>
+    <div className='flex flex-row items-center justify-around sm:justify-around mt-14 w-[100%] '>
+      <div className='searchBar w-6/12 lg:w-4/12 max-w-md '>
         <form className="w-full">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <img src="./images/Research.svg" alt="searchicon" className="w-4 h-4" />
+              <img src="../../../images/Research.svg" alt="searchicon" className="w-4 h-4" />
             </div>
             <input
               type="search"
@@ -52,8 +104,8 @@ export default function SearchPanel() {
 
           <div className='absolute h-[400px] w-[400px] bg-white z-[1000] p-4'>
             <div className='flex flex-col gap-4 w-full'>{allUsers?.map((user: any, index: any) => (
-              <Link href={`/Profile/${user.id}`}>
-                <div key={index} className='flex justify-start items-center  border-black border-[1px] bg-[#e9edff] h-[90px] gap-2 p-6 cursor-pointer'>
+              <Link href={`/Profile/${user.id}`} key={index} >
+                <div className='flex justify-start items-center  border-black border-[1px] bg-[#e9edff] h-[90px] gap-2 p-6 cursor-pointer'>
                   <div className='h-[70px] w-[70px]'><img className='h-[70px] w-[70px] rounded-[35px]' src={`${user.avatar}`} alt="" /></div>
                   <div>
                     <div>{user.firstName} {user.lastName}</div>
@@ -67,79 +119,122 @@ export default function SearchPanel() {
         )}
       </div>
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
-      <div className='notifications'>
-        <img src="./images/Bell.svg" alt="notif" className='w-8 h-8' onClick={() => setIsClicked(!isClicked)} />
+      <div className='notifications relative '>
+        <img src="../../../images/Bell.svg" alt="../../../images/Bell.svg" className='w-8 h-8' onClick={() => { setIsClicked(!isClicked); setRefreshNoifications(!refreshNotifs) }} />
         {isClicked && (
-          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute right-2 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[2px]'>
-            <div className='flex w-[95%]  justify-between items-center rounded-[10px] border-black border-[1px]  bg-[#e9edff]'>
-              <div className=' flex  p-3  gap-4' >
-                <div className='h-[50px] w-[50px] rounded-[25px] border-black border-[3px]'></div>
-                <div className='flex flex-col '>
-                  <div>You have a new friend request:</div>
-                  <div>full name</div>
-                </div>
-              </div>
-              <div className='flex flex-col gap-1 pr-3'>
-                <div className='border-[1px] rounded-[5px] bg-green-400 border-black w-[78px] text-center'>accept</div>
-                <div className='border-[1px] rounded-[5px] bg-red-400 border-black w-[78px] text-center'>decline</div>
-              </div>
-            </div>
-            <div className='flex w-[95%] justify-between items-center rounded-[10px] border-black border-[1px]  bg-[#e9edff]'>
-              <div className=' flex  p-3  gap-4' >
-                <div className='h-[50px] w-[50px] rounded-[25px] border-black border-[3px]'></div>
-                <div className='flex flex-col'>
-                  <div>You have a new game invite:</div>
-                  <div>full name</div>
-                </div>
-              </div>
-              <div className='flex flex-col gap-1 pr-3'>
-                <div className='border-[1px] rounded-[5px] bg-green-400 border-black w-[78px] text-center'>accept</div>
-                <div className='border-[1px] rounded-[5px] bg-red-400 border-black w-[78px] text-center'>decline</div>
-              </div>
-            </div>
-            <div className='flex w-[95%] justify-between items-center rounded-[10px] border-black border-[1px]  bg-[#e9edff]'>
-              <div className=' flex  p-3  gap-4' >
-                <div className='h-[50px] w-[50px] rounded-[25px] border-black border-[3px]'></div>
-                <div className='flex flex-col'>
-                  <div>You have a new friend request:</div>
-                  <div>full name</div>
-                </div>
-              </div>
-              <div className='flex flex-col gap-1 pr-3'>
-                <div className='border-[1px] rounded-[5px] bg-green-400 border-black w-[78px] text-center'>accept</div>
-                <div className='border-[1px] rounded-[5px] bg-red-400 border-black w-[78px] text-center'>decline</div>
-              </div>
-            </div>
-            <div className='flex w-[95%] justify-between items-center rounded-[10px] border-black border-[1px]  bg-[#e9edff]'>
-              <div className=' flex  p-3  gap-4' >
-                <div className='h-[50px] w-[50px] rounded-[25px] border-black border-[3px]'></div>
-                <div className='flex flex-col'>
-                  <div>You have a new friend request:</div>
-                  <div>full name</div>
-                </div>
-              </div>
-              <div className='flex flex-col gap-1 pr-3'>
-                <div className='border-[1px] rounded-[5px] bg-green-400 border-black w-[78px] text-center'>accept</div>
-                <div className='border-[1px] rounded-[5px] bg-red-400 border-black w-[78px] text-center'>decline</div>
-              </div>
-            </div>
-            <div className='flex w-[95%] justify-between items-center rounded-[10px] border-black border-[1px]  bg-[#e9edff]'>
-              <div className=' flex  p-3  gap-4' >
-                <div className='h-[50px] w-[50px] rounded-[25px] border-black border-[3px]'></div>
-                <div className='flex flex-col'>
-                  <div>You have a new friend request:</div>
-                  <div>full name</div>
-                </div>
-              </div>
-              <div className='flex flex-col gap-1 pr-3'>
-                <div className='border-[1px] rounded-[5px] bg-green-400 border-black w-[78px] text-center'>accept</div>
-                <div className='border-[1px] rounded-[5px] bg-red-400 border-black w-[78px] text-center'>decline</div>
-              </div>
-            </div>
+          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[2px]'>
+            {myNotification && myNotification.reverse().map((notif: any, index: any) =>
+              <>
+                {notif.status === "Pending" ? (
+                  <>
+
+                    {notif.receiverId === myData.id && (
+                      <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
+                        <div className=' flex  p-3  gap-4' >
+                          <div className='relative h-[50px] w-[50px]'>
+                            <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
+                              <img className='h-full w-full object-cover' src={`${notif.sender.avatar}`} alt={`${notif.sender.avatar}`} />
+                            </div>
+                            <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                              <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                            </div>
+                          </div>
+                          <div className='flex flex-col '>
+                            <div className='font-bold text-[#452975]'>New friend request</div>
+                            <div className='text-[15px]'>{notif.sender.firstName} {notif.sender.lastName}</div>
+                          </div>
+                        </div>
+                        <div className='flex flex-col sm:flex-row gap-1 pr-3'>
+                          <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-white  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#7449c0] bg-[#7239D3]' onClick={() => acceptFriendRequest(notif)}>accept</button>
+                          <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-[#452b72]  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#d9d8db]  bg-[#e5e2e9]' onClick={() => declineFriendRequest(notif)}>decline</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {notif.senderId === myData.id && (
+
+                      <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
+                        <div className=' flex  p-3  gap-4' >
+                          <div className='relative h-[50px] w-[50px]'>
+                            <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
+                              <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
+                            </div>
+                            <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                              <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                            </div>
+                          </div>
+                          <div className='flex flex-col '>
+                            <div className='font-bold text-[#452975]'>You sent Friend request to:</div>
+                            <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
+                          </div>
+                        </div>
+                        <div className='flex flex-col sm:flex-row gap-1 pr-3'>
+                          <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-white  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#7449c0] bg-[#7239D3]'>Pending...</button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
+                  :
+                  notif.status === "Declined" ? (
+
+                    notif.senderId === myData.id && (
+                      <>
+                        <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
+                          <div className=' flex  p-3  gap-4' >
+                            <div className='relative h-[50px] w-[50px]'>
+                              <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
+                                <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
+                              </div>
+                              <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                                <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                              </div>
+                            </div>
+                            <div className='flex flex-col '>
+                              <div className='font-bold text-[#452975]'>Your friend request have been Declined:</div>
+                              <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )
+
+                  )
+                    :
+                    notif.status === "Accepted" && (
+
+                      notif.senderId === myData.id && (
+                        <>
+                          <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff] relative'>
+                            <div className=' flex  p-3  gap-4 ' >
+                              <div className='relative h-[50px] w-[50px]'>
+                                <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
+                                  <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
+                                </div>
+                                <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                                  <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                                </div>
+                              </div>
+                              <div className='flex flex-col '>
+                                <div className='font-bold text-[#452975]'>You are now friends with:</div>
+                                <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
+                              </div>
+                            </div>
+                            <div className='absolute right-2 bottom-1 flex flex-col text-[10px]'> {new Date(notif.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+
+                          </div>
+                        </>
+                      )
+
+                    )
+                }
+
+              </>
+            )}
           </div>
         )}
       </div>
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
-    </>
+    </div>
   )
 }

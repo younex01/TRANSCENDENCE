@@ -1,6 +1,5 @@
 import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
 import { Socket, Server} from 'socket.io';
-import { PrismaService } from 'src/prisma.service';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway(
@@ -181,9 +180,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   handleConnection(client: any) {
+    console.log("chat connected")
   }
 
   handleDisconnect(client: any) {
+    console.log("chat disconnected")
   }
 
 }

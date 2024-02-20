@@ -17,7 +17,7 @@ export default function SideBar(props:any) {
       console.log(userData);
       try {
         
-        const response =  await axios.post('http://localhost:4000/chat/createUser', userData);
+        const response =  await axios.post('http://localhost:4000/chat/createUser', userData, { withCredentials: true });
         console.log("aywaaa")
       } catch (error) {
         

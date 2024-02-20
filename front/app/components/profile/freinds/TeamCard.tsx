@@ -28,7 +28,7 @@ const TeamCard = (
       <div className='flex flex-row justify-around mt-2'>
         <button className="border p-2 rounded-md cursor-pointer">
           <div className="flex items-center">
-            <Image src="./images/accept.svg" alt='accept' width={30} height={30} />
+            <Image src="../../../images/accept.svg" alt='accept' width={30} height={30} />
             <h5 className="ml-2">Add</h5>
           </div>
         </button>
@@ -36,7 +36,7 @@ const TeamCard = (
       <div className='flex flex-row justify-between mt-2'>
         <button className="border p-2 rounded-md cursor-pointer">
           <div className="flex items-center">
-            <Image src="./images/remove.svg" alt='remove' width={30} height={30} />
+            <Image src="../../../images/remove.svg" alt='remove' width={30} height={30} />
             <h5 className="ml-2">Remove</h5>
           </div>
         </button>

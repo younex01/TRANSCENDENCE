@@ -11,7 +11,7 @@ export default function Achievements() {
     // console.log("name : ", name);
     return (
         <>
-            <div className='achievements lg:grid lg:grid-cols-2 lg:grid-rows md:flex md:flex-col gap-[15px] p-[15px] bg-white lg:w-[100%] md:w-[100%] overflow-hidden rounded-xl'>
+            <div className='lg:h-full lg:grid lg:grid-cols-2 lg:grid-rows md:flex md:flex-col gap-[15px] p-[15px] bg-white lg:w-[100%] md:w-[100%] overflow-hidden rounded-xl max-w-[900px] '>
                 <div className="col-span-2 flex justify-center font-bold text-xl "><h1>Achievements</h1></div>
                 {
                     array?.map((value:any, index:number) => (

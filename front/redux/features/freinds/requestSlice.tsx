@@ -9,14 +9,14 @@ export const requestSlice = createSlice({
   },
   reducers: {
     setFreindInfo: (state, action) => {
-        console.log("data from reducer freinds",action.payload)
+        // console.log("data from reducer freinds",action.payload)
         return{
           ...state,
           freindInfo: action.payload
         }
       },
       setFreindRequestInfo: (state, action) => {
-      console.log("data from reducer freinds req",action.payload)
+      // console.log("data from reducer freinds req",action.payload)
       return {
         ...state,
         freindRequestInfo: action.payload

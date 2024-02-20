@@ -1,4 +1,3 @@
-import { selectQrCode } from '@/redux/features/qrcode/qrCodeSlice';
 import axios from 'axios';
 import React, { use, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
