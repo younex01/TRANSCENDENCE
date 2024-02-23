@@ -1,0 +1,40 @@
+{
+    "achievements": [
+      {
+        "name": "King",
+        "achived": "Achived",
+        "imagePath": "/luffy.jpeg",
+        "achivedDate": "20/1/2023"
+      },
+      {
+        "name": "Cooker",
+        "achived": "Achived",
+        "imagePath": "/sangi.jpeg",
+        "achivedDate": "20/1/2023"
+      },
+      {
+        "name": "Stealer",
+        "achived": "Achived",
+        "imagePath": "/nami.jpeg",
+        "achivedDate": "20/1/2023"
+      },
+      {
+        "name": "Stronger",
+        "achived": "Achived",
+        "imagePath": "/shanks.jpeg",
+        "achivedDate": "20/1/2023"
+      },
+      {
+        "name": "PongLyph",
+        "achived": "Achived",
+        "imagePath": "/robiin.jpeg",
+        "achivedDate": "20/1/2023"
+      },
+      {
+        "name": "sixth",
+        "achived": "Achived",
+        "imagePath": "/franky.jpeg",
+        "achivedDate": "20/1/2023"
+      }
+    ]
+  }
