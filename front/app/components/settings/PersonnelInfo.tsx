@@ -14,7 +14,7 @@ export default function PersonnelInfo() {
   const [lastName, setLastName] = useState<string>(profileSelector.lastName || '');
   const [nickName, setNickName] = useState<string>(profileSelector.username || '');
   const dispatch = useDispatch();
-  const presetKey = 'r0th9bpt';
+  const presetKey = 'r0th9bpt'; //doit in evn
   const cloudName = 'dfcgherll';
   const _api = axios.create();
 
@@ -40,7 +40,7 @@ export default function PersonnelInfo() {
 
   const onSubmit = async () => {
     try {
-      if (!firstName || !lastName || !nickName) {
+      if (!firstName.trim() || !lastName.trim() || !nickName.trim()) {
         toast.error("All fields are required");
         return;
       }

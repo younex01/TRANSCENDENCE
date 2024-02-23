@@ -11,33 +11,45 @@ datasource db {
 }
 
 model User {
-  id        String     @id
-  username  String     @unique
-  avatar    String
-  firstName String
-  lastName  String
-  messages  Message[]
-  twoFactorAuthCode String?
-  twoFactorAuthEnabled Boolean @default(false)
-  firstLogin Boolean @default(true)
-  groups    ChatGroup[] @relation("UserGroup")
-  sentRequests  friendRequest[] @relation("sent")
-  receivedRequests  friendRequest[] @relation("received")
-  friends User[] @relation("friend")
-  symmenticfriends User[] @relation("friend")
-  blockedByUsers String[]
-  blockedUsers String[]
+  id                   String          @id
+  username             String          @unique
+  avatar               String
+  firstName            String
+  lastName             String
+  messages             Message[]
+  twoFactorAuthCode    String?
+  twoFactorAuthEnabled Boolean         @default(false)
+  firstLogin           Boolean         @default(true)
+  groups               ChatGroup[]     @relation("UserGroup")
+  sentRequests         friendRequest[] @relation("sent")
+  receivedRequests     friendRequest[] @relation("received")
+  friends              User[]          @relation("friend")
+  symmenticfriends     User[]          @relation("friend")
+  blockedByUsers       String[]
+  blockedUsers         String[]
+  // notifications        Notification[]
 }
 
 model friendRequest {
-  id        String @id @default(uuid())
-  sender    User   @relation("sent", fields: [senderId], references: [id])
-  senderId  String
-  receiver  User   @relation("received", fields: [receiverId], references: [id])
-  createdAt   DateTime  @default(now())
-  receiverId String
-  status    String
+  id            String         @id @default(uuid())
+  sender        User           @relation("sent", fields: [senderId], references: [id])
+  senderId      String
+  receiver      User           @relation("received", fields: [receiverId], references: [id])
+  receiverId    String
+  status        String
+  createdAt     DateTime       @default(now())
+  // notifications Notification[]
 }
+
+// model Notification {
+//   id              String        @id @default(uuid())
+//   createdAt       DateTime      @default(now())
+//   type            String
+//   user            User          @relation(fields: [userId], references: [id])
+//   userId          String
+//   friendRequest   friendRequest @relation(fields: [friendRequestId], references: [id])
+//   friendRequestId String
+// }
 
 model ChatGroup {
   id         String    @id @default(uuid())
@@ -57,7 +69,7 @@ model Message {
   content     String
   createdAt   DateTime  @default(now())
   sender      User      @relation(fields: [userId], references: [id])
-  userId      String 
+  userId      String
   chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
   chatGroupId String
 }

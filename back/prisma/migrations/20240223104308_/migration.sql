@@ -11,8 +11,8 @@ CREATE TABLE "User" (
     "twoFactorAuthCode" TEXT,
     "twoFactorAuthEnabled" BOOLEAN NOT NULL DEFAULT false,
     "firstLogin" BOOLEAN NOT NULL DEFAULT true,
-    "blockedBy" TEXT[],
-    "blockedMe" TEXT[],
+    "blockedByUsers" TEXT[],
+    "blockedUsers" TEXT[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

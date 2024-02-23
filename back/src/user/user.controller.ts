@@ -85,16 +85,31 @@ export class UserController {
         return modifiedFiltered;
     }
 
+    
+
 
     @Post('sendFriendRequest')
     @UseGuards(AuthGuard('jwt'))
     async sendFriendRequest(@Body() req: any) {
         const user = await this.UserService.getUser(req.target);
 
+        console.log("test1");
+
         if (!user) return;
-        const isAlreadySent = await this.UserService.isAlreadySent(req.target, req.sender);
-        if (isAlreadySent > 0) return;
-        await this.UserService.createFriendRequest(req.target, req.sender);
+        console.log("test2");
+        const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
+        console.log("test3");
+        console.log("isRequestExist", isRequestExist);
+        if (isRequestExist && isRequestExist.status === "Declined") {
+            console.log("test4");
+
+            await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
+        }
+        else {
+            console.log("test5");
+
+            await this.UserService.createFriendRequest(req.target, req.sender);
+        }
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
     }
@@ -104,7 +119,7 @@ export class UserController {
     async acceptFriendRequest(@Body() req: any) {
         const isExiste = await this.UserService.isRequestExistAndPending(req.notif.id, req.myId);
         if (isExiste !== 1) return;
-        
+
         await this.UserService.acceptFriendRequest(req.notif.id);
         await this.UserService.makeFriends1(req.myId, req.notif.senderId);
         await this.UserService.makeFriends2(req.myId, req.notif.senderId);
@@ -122,6 +137,7 @@ export class UserController {
         if (isExiste !== 1) return;
         // await this.UserService.a(req.notif.id);
         await this.UserService.declineFriendRequest(req.notif.id);
+        console.log("declin..........")
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
         // return myNotifications;
@@ -150,7 +166,7 @@ export class UserController {
     async checkIfFriend(@Query('myId') myId: string, @Query('receiverId') otherUser: string) {
         const checkIfFriend = await this.UserService.checkIfFriend(myId, otherUser);
         // this.eventEmitter.emit("refreshfriendShip");
-        return(checkIfFriend);
+        return (checkIfFriend);
     }
 
     @Post('blockUser')
@@ -158,18 +174,17 @@ export class UserController {
     async blockUser(@Body() req: any) {
         const user = await this.UserService.getUser(req.target);
         if (!user) return;
-        
+
         const isRequestExist = await this.UserService.isRequestExist(req.myId, req.target);
         if (isRequestExist) {
             const checkIfFriend = await this.UserService.checkIfFriend(req.myId, req.target);
-            if (checkIfFriend ) 
-            {
+            if (checkIfFriend) {
                 await this.UserService.removeFriendShip1(isRequestExist.senderId, isRequestExist.receiverId);
                 await this.UserService.removeFriendShip2(isRequestExist.receiverId, isRequestExist.senderId);
             }
             await this.UserService.removeFriendRequest(isRequestExist.id);
         };
-        
+
 
         await this.UserService.blockedUsers(req.myId, req.target);
         await this.UserService.blockedByUsers(req.myId, req.target);

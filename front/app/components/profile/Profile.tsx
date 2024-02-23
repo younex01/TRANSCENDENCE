@@ -19,7 +19,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className='bg-white flex flex-col rounded-[20px] overflow-hidden max-w-[800px] '>
+      <div className='bg-white flex flex-col rounded-[20px] overflow-hidden w-full '>
 
         <div className='relative mt-2 w-full h-[30%] flex gap-3 justify-between items-center px-3 border-black border-b-[1px] pb-2'>
           <div className='flex items-center gap-3 ml-2'>
@@ -34,7 +34,7 @@ export default function Profile() {
           <div>
             <Link href='./../Settings'>
               <div className='mr-4'>
-                <img className='w-[30px] h-[30px] object-cover' src="../../../images/mdi_settings.svg" alt="settingsLogo" />
+                <img className='w-[30px] h-[30px] object-cover' src="./../../../../settings.svg" alt="settingsLogo" />
               </div>
             </Link>
           </div>

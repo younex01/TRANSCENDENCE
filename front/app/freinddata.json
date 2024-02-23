@@ -1,9 +1,10 @@
 {"data":[
     {
       "id": 1,
-      "name": "John Doe",
-      "nickname": "Johnny",
-      "image": "/images/Ace.png"
+      "firstName": "John Doe",
+      "lastName": "John Doe",
+      "username": "Johnny",
+      "avatar": "/images/Ace.png"
     },
     {
       "id": 2,

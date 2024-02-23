@@ -9,7 +9,7 @@ export default function FirstPage() {
 
 
   return (
-    <div className="w-full h-screen bg-black/40 flex flex-col items-center justify-center">
+    <div className="w-full h-screen bg-black/40 flex flex-col items-center justify-center bg-[url('')]">
       <h1 className="text-5xl pb-3 text-white font-bold text-center"> PingPong </h1>
       <Link href={"http://localhost:4000/auth/redirect"}>
       {/* <Link href="/QRcode"> */}
@@ -21,8 +21,6 @@ export default function FirstPage() {
     </div>
   );
 }
-
-{/* <iframe src="https://giphy.com/embed/hpFceZhFTWzU1eeHNv" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/pong-ping-pingpong-hpFceZhFTWzU1eeHNv">via GIPHY</a></p> */}
 
 
 

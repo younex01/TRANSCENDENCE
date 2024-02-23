@@ -1,39 +1,39 @@
 {
     "achievements": [
       {
-        "name": "First",
+        "name": "King",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/luffy.jpeg",
         "achivedDate": "20/1/2023"
       },
       {
-        "name": "second",
+        "name": "Cooker",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/sangi.jpeg",
         "achivedDate": "20/1/2023"
       },
       {
-        "name": "third",
+        "name": "Stealer",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/nami.jpeg",
         "achivedDate": "20/1/2023"
       },
       {
-        "name": "fourth",
+        "name": "Stronger",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/shanks.jpeg",
         "achivedDate": "20/1/2023"
       },
       {
-        "name": "fifth",
+        "name": "PongLyph",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/robiin.jpeg",
         "achivedDate": "20/1/2023"
       },
       {
         "name": "sixth",
         "achived": "Achived",
-        "imagePath": "/images/VectorSURVIVOR.svg",
+        "imagePath": "/franky.jpeg",
         "achivedDate": "20/1/2023"
       }
     ]

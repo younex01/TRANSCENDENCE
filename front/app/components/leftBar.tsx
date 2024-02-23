@@ -75,7 +75,7 @@ export default function LeftBar() {
           <Link href="./../../Settings">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
-                src="../../../images/Chat.svg" 
+                src="/../../../setting.svg" 
                 alt="logo" 
                 width={35}
                 height={50}
@@ -95,7 +95,8 @@ export default function LeftBar() {
         </div>
       </div>
       <button
-        className="md:hidden p-2 absolute left-[20px] "
+      // md:hidden pt-12 absolute left-[20px]
+        className={isSidebarOpen ? `md:hidden p-3 absolute left-[20px]` : `md:hidden pt-14 absolute left-[20px]` }
         onClick={toggleSidebar}
         style={{ zIndex: 1 }}>
         {isSidebarOpen ? (

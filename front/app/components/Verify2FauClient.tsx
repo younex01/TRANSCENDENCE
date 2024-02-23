@@ -13,9 +13,9 @@ export default function Verify2FauClient() {
 
     const Verify2fa = async () => {
         axios.post('http://localhost:4000/auth/verifyTwoFactorAuthCode', {code}, { withCredentials: true }).then((response) => {
-            console.log('response: from the profile ', response.data);
+            console.log('response: from the profile ', response);
             // if (response.data.succees)
-                route.push('http://localhost:3000/HomePage');
+                route.push('http://localhost:3000/Profile');
         }).catch((error) => {
             console.log('code incorrect');
             

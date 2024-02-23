@@ -12,7 +12,7 @@ import allFreinds from '../../freinddata.json';
 import lastGameData from '../../lastGame.json';
 import Profile from './Profile'
 import Achievements from './achiemements/Achievements'
-import Freinds from './freinds/Freinds'
+import Freinds from './friends/Freinds'
 import axios from 'axios';
 import LeftBar from '../leftBar';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
@@ -64,19 +64,19 @@ const Home = () => {
         <div className='w-full h-[8%] flex flex-row justify-around items-center  '>
           <SearchPanel />
         </div>
-      <div className="flex flex-col items-center  lg:w-full gap-5 pt-20">
+      <div className="flex flex-col items-center lg:w-full gap-5 pt-20">
 
 
-          <div className='flex lg:flex-row flex-col items-center justify-center w-[90%] gap-5'>
-            <div className="lg:w-[900px] w-[80%] h-full ">
+          <div className='flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5 '>
+            <div className="xl:w-[900px] w-[100%] h-full  ">
               <Profile />
             </div>
-            <div className="lg:w-[900px] w-[80%] h-full">
+            <div className=" xl:w-[900px] w-[100%] h-full ">
               <Achievements />
             </div>
           </div>
 
-          <div className="lg:w-[1200px] h-full flex w-[72%] justify-center">
+          <div className="xl:w-[1000px] h-[440px] flex w-[90%]  justify-center">
               <Freinds />
         </div>
       </div>

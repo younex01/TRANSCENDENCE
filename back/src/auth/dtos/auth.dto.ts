@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsBoolean, IsString } from "class-validator";
 
 export class AuthDto{
     @IsString()
@@ -15,6 +15,9 @@ export class AuthDto{
 
     @IsString()
     lastName: string;
+
+    @IsBoolean()
+    twoFactorAuthEnabled: boolean;
 
     //@IsString()
     //twoFactorAuthCode: string;

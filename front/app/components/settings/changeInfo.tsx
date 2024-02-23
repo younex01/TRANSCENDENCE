@@ -24,7 +24,7 @@ const ChangeInfo = () => {
           <SearchPanel />
         </div>
         <div className='flex lg:flex-row flex-col justify-center items-center h-full w-full  gap-[24px] px-[24px]'>
-          <div className="w-10/12 lg:w-6/12 h-[40vh] flex justify-evenly items-center  flex-col bg-white rounded-[40px] ">
+          <div className="w-10/12 lg:w-[500px] h-[40vh] flex justify-evenly items-center  flex-col bg-white rounded-[40px] ">
             <PersonnelInfo />
           </div>
           <div className='bg-white flex flex-col justify-center items-center w-10/12 lg:w-[500px] h-[40vh] lg:h-[40vh] rounded-[40px] gap-[30px]'>

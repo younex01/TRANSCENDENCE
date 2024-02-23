@@ -62,7 +62,17 @@ export class UserService {
       },
     });
   }
+  async pendFriendRequest(notifId: string, sender:string, target:string) {
 
+    return this.prisma.friendRequest.update({
+      where: { id: notifId },
+      data: {
+        senderId: sender,
+        receiverId: target,
+        status: "Pending"
+      }
+    });
+  }
   async acceptFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({
