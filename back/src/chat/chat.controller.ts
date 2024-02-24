@@ -19,6 +19,7 @@ export class ChatController {
   }
   
   @Post('/createGroup')
+  @UseGuards(AuthGuard('jwt'))
   async createGroup(@Body() chatGroup:any) {
     console.log(chatGroup)
     return this.chatService.createGroup(chatGroup);

@@ -2,9 +2,11 @@
 
 # dependencies
 node_modules
+.next
 dist
 /.pnp
 .pnp.js
+prisma/migrations
 .yarn/install-state.gz
 /backend
 

@@ -1,4 +1,5 @@
 "use client"
+import { profilePersistor } from '@/redux/store/store';
 import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link';
@@ -17,9 +18,12 @@ export default function LeftBar() {
 
   const logout = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/auth/logout');
+      const response = await axios.post('http://localhost:4000/auth/logout', {withCredentials: true});
       console.log('Logout response:', response);
       router.push('/');
+      console.log("prooofille", profilePersistor);
+      
+      await profilePersistor.purge();
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -59,7 +63,7 @@ export default function LeftBar() {
                 />
             </div>
           </Link>
-          <Link href="./../../Game">
+          <Link href="./../../game">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
                 src="../../../images/Game.svg" 

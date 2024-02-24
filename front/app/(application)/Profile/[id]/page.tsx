@@ -160,9 +160,9 @@ export default function Profile(props: any) {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <div className="w-full h-[100vh] bg-[#dbe0f6] overflow-y-auto pt-[150px] flex flex-col items-center gap-5">
+        <div className="w-full h-[100vh] bg-[#dbe0f6] overflow-y-auto pt-[130px] flex flex-col items-center gap-5">
           <div className="flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5">
-            <div className="bg-white flex flex-col w-full xl:w-[900px] gap-10 rounded-xl">
+            <div className="bg-white flex flex-col w-full xl:w-[900px] gap-10 rounded-xl h-full">
               <div className="relative mt-2 w-full flex gap-3 items-start">
                 <div className="flex flex-row items-center gap-6 ml-2">
                   <div className="">
@@ -255,7 +255,7 @@ export default function Profile(props: any) {
             </div>
           </div>
 
-          <div className="xl:w-[1000px] h-[440px] flex w-[90%]  justify-center">
+          <div className="xl:w-[1000px] h-full flex w-[90%]  justify-center">
               <Freinds />
         </div>
         </div>

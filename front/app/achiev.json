@@ -2,39 +2,51 @@
     "achievements": [
       {
         "name": "King",
-        "achived": "Achived",
-        "imagePath": "/luffy.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "one",
+        "achieved": false,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/luffy.jpeg"
       },
       {
         "name": "Cooker",
-        "achived": "Achived",
-        "imagePath": "/sangi.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "two",
+        "achieved": false,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/sangi.jpeg"
       },
       {
         "name": "Stealer",
-        "achived": "Achived",
-        "imagePath": "/nami.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "three",
+        "achieved": true,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/nami.jpeg"
       },
       {
         "name": "Stronger",
-        "achived": "Achived",
-        "imagePath": "/shanks.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "four",
+        "achieved": true,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/shanks.jpeg"
       },
       {
         "name": "PongLyph",
-        "achived": "Achived",
-        "imagePath": "/robiin.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "five",
+        "achieved": true,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/robiin.jpeg"
       },
       {
         "name": "sixth",
-        "achived": "Achived",
-        "imagePath": "/franky.jpeg",
-        "achivedDate": "20/1/2023"
+        "status": "six",
+        "achieved": true,
+        "achievedpic": "/images/achived.svg",
+        "notAchivedpic": "/lock-svg.svg",
+        "imagePath": "/franky.jpeg"
       }
     ]
   }

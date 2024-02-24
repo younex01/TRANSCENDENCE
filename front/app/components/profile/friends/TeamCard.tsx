@@ -75,48 +75,6 @@ const TeamCard = ({
           </svg>
         </button>
       </div>
-      {/* <div className="w-[80px] h-[80px] rounded-[50%]">
-        <Link href={`./../../Profile/${userId}`}>
-          <div>
-            <div className="relative bg-white">
-              <label
-                htmlFor="status"
-                className="z-50 absolute px-3"
-              >
-                <img
-                  id="userStatus"
-                  src="/green.png"
-                  alt="status"
-                  className="w-[5px] h-[5px] object-cover rounded-[50%]"
-                />
-              </label>
-            </div>
-            <Image
-              src={image}
-              alt={name}
-              width={80}
-              height={80}
-              className="rounded-[50%]"
-            />
-          </div>
-        </Link>
-      </div>
-      <div className="mt-2">
-        <p>{name}</p>
-      </div>
-      <div className="flex flex-row justify-between mt-2">
-        <button className="border p-2 rounded-md cursor-pointer">
-          <div className="flex items-center">
-            <Image
-              src="../../../images/remove.svg"
-              alt="remove"
-              width={30}
-              height={30}
-            />
-            <h5 className="ml-2">Block</h5>
-          </div>
-        </button>
-      </div> */}
     </div>
   );
 };

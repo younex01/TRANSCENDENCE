@@ -25,7 +25,7 @@ export default function freinds() {
   // }, []);
 
   return (
-    <div className='friends h-full  gap-5 p-[15px] bg-white w-[100%] rounded-xl mb-5 flex flex-col justify-center '>
+    <div className='friends h-[430px]  gap-5 p-[15px] bg-white w-[100%] rounded-xl mb-5 flex flex-col justify-center '>
 
       <div className="flex justify-start items-start gap-[20px] ">
         <div

@@ -14,7 +14,7 @@ export default function LastGames() {
 
   return (
     <div className="flex flex-col items-center justify-center h-[100%] w-[100%]">
-      <div className="text-gray font-bold text-xl mb-3">Last Games</div>
+      <div className="text-gray font-bold w-full h-[40px] text-center text-xl mb-3 sticky top-0 bg-white">Last Games</div>
 
       <div className='flex flex-col items-center justify-center w-full h-max-content'>
         {lastGames && lastGames.map((game: any, index: number) => (
@@ -30,9 +30,9 @@ export default function LastGames() {
               <img src="../../../hh1.jpg " alt="sangi" className="w-[80px] h-[80px] object-cover rounded-full" />
               <h4>{game.score.opponent}</h4>
             </div>
-            <div className={`${game.result === "victory" ? "bg-green-500" : "bg-red-500"} w-[130px] mb-[18px] h-[40px] rounded-lg flex justify-center items-center`}>
+            {/* <div className={`${game.result === "victory" ? "bg-green-500" : "bg-red-500"} w-[130px] mb-[18px] h-[40px] rounded-lg flex justify-center items-center`}>
               <h4 className="">{game.result === "victory" ? "Victory" : "Loss"}</h4>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
