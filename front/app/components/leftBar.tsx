@@ -1,13 +1,18 @@
 "use client"
+import { selectProfileInfo, setProfileData } from '@/redux/features/profile/profileSlice';
+import { profilePersistor } from '@/redux/store/store';
 import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export default function LeftBar() {
-
+  
+  const dispatch = useDispatch();
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -19,6 +24,7 @@ export default function LeftBar() {
     try {
       const response = await axios.post('http://localhost:4000/auth/logout');
       console.log('Logout response:', response);
+      await profilePersistor.purge();
       router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);

@@ -63,6 +63,7 @@ export class ChatService {
           }
         }
       },
+      include: {members:true}
     });
   }
 
@@ -265,5 +266,33 @@ export class ChatService {
   }
 
 
+  async createDM(userId1: string, userId2: string) {
+    console.log("user1; ", userId1)
+    console.log("user2; ", userId2)
+    const user1 = await this.getUser(userId1)
+    const user2 = await this.getUser(userId2)
+    console.log("user1; ", user1)
+    console.log("user2; ", user2)
+    if (!user1 || !user2) return;
+
+
+    return this.prisma.chatGroup.create({
+      data: {
+        name: "",
+        avatar: null,
+        status: null,
+        password: null,
+        owner: null,
+        type: "DM",
+        members: {
+          connect: [
+            {id:userId1 },
+            {id:userId2 }
+          ]
+        }
+      },
+      
+    });
+  }
 
 }
