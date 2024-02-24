@@ -1,33 +1,33 @@
-import { Controller, Req, Get, Body, Post, UploadedFile, UseInterceptors, Query, UseGuards} from '@nestjs/common';
+import { Controller, Req, Get, Body, Post, UploadedFile, UseInterceptors, Query, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Prisma } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/chat')
 export class ChatController {
-    
-  constructor(private readonly chatService: ChatService) {}
+
+  constructor(private readonly chatService: ChatService) { }
 
   @Get('/getChatGroups')
   @UseGuards(AuthGuard('jwt'))
   async getChatGroups() {
     return this.chatService.getChatGroups();
   }
-  
+
   @Post('/createGroup')
   @UseGuards(AuthGuard('jwt'))
-  async createGroup(@Body() chatGroup:any) {
+  async createGroup(@Body() chatGroup: any) {
     console.log(chatGroup)
     return this.chatService.createGroup(chatGroup);
   }
 
   @Post('/createUser')
   @UseGuards(AuthGuard('jwt'))
-  async createUser(@Body() user:any) {
+  async createUser(@Body() user: any) {
     return this.chatService.createUser(user);
   }
 
@@ -52,6 +52,17 @@ export class ChatController {
   async getGroupsByUserId(@Query('userId') userId: string) {
     try {
       const groups = await this.chatService.getGroupsByUserId(userId);
+      for (let group of groups) {
+        if (group.type === 'DM') {
+          const otherMember = group.members.find(member => member.id !== userId);
+
+          if (otherMember) {
+            group.name = otherMember.username;
+            group.avatar = otherMember.avatar;
+          }
+          group.members = group.members.filter(member => member.id !== userId);
+        }
+      }
       return { success: true, data: groups };
     } catch (error) {
       console.error('Error :', error.message);
@@ -60,10 +71,20 @@ export class ChatController {
 
   @Get('/getGroupByGroupId')
   @UseGuards(AuthGuard('jwt'))
-  async getGroupByGroupId(@Query('groupId') groupId: string) {
+  async getGroupByGroupId(@Query('groupId') groupId: string, @Query('myId') myId: string) {
     try {
-      const groups = await this.chatService.getGroupWithMembers(groupId);
-      return {data: groups };
+      const group = await this.chatService.getGroupWithMembers(groupId);
+      console.log("group: ", group)
+      if (group.type === 'DM') {
+        const otherMember = group.members.find(member => member.id !== myId);
+
+        if (otherMember) {
+          group.name = otherMember.username;
+          group.avatar = otherMember.avatar;
+        }
+        group.members = group.members.filter(member => member.id !== myId);
+      }
+      return { data: group };
     } catch (error) {
       console.error('Error :', error.message);
     }
@@ -73,8 +94,9 @@ export class ChatController {
   @UseGuards(AuthGuard('jwt'))
   async getMsgsByGroupId(@Query('groupId') groupId: string) {
     try {
+      console.log("traaaaaash")
       const message = await this.chatService.getGroupMessages(groupId);
-      return {message };
+      return { message };
     } catch (error) {
       console.error('Error :', error.message);
     }
@@ -95,8 +117,6 @@ export class ChatController {
   }
 
 
-
-
-
+  
 
 }

@@ -166,7 +166,7 @@ export const RightSection = (props: any) => {
     <div className='h-full w-full flex flex-1 relative z-10'>
       <div className='w-full h-full relative'>
         <div className='header flex items-center h-[130px] border-b-[2px] bg-opacity-[50%]'>
-          <div><button className='ml-3 mr-6' onClick={() => props.setSideBar3(true)}> <img className='double-right2 border-black border-[3px] rounded-[20px] h-[40px] w-[40px] hidden' src="double-right.svg" alt="double-right.svg" /> </button> </div>
+          {/* <div><button className='ml-3 mr-6' onClick={() => props.setSideBar3(true)}> <img className='double-right2 border-black border-[3px] rounded-[20px] h-[40px] w-[40px] hidden' src="double-right.svg" alt="double-right.svg" /> </button> </div> */}
           <div> <img className='h-[90px] w-[90px] ml-1 mr-3 rounded-[50px] object-fill' src={`http://localhost:4000/${groupData.avatar}`} alt={`http://localhost:4000/${groupData.avatar}`} /></div>
           <div className='text-[40px] font-sans-only text-[#2E2E2E] opacity-[76%]'>{groupData.name}</div>
         </div>
@@ -325,7 +325,7 @@ export const RightSection = (props: any) => {
                             </div>
                           )}
                         </div>
-                        <button onClick={() => handleToggleSettings(index)}> <img className='w-[20px] h-[20px] ' src="3no9at.svg" alt="3no9at.svg" /></button>
+                        <button onClick={() => handleToggleSettings(index)}> <img className='w-[20px] h-[20px] ' src="../../../3no9at.svg" alt="../../../3no9at.svg" /></button>
                       </div>
                     ))}
                   </div>

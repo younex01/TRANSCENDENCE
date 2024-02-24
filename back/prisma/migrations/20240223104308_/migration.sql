@@ -21,9 +21,9 @@ CREATE TABLE "User" (
 CREATE TABLE "friendRequest" (
     "id" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "receiverId" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "friendRequest_pkey" PRIMARY KEY ("id")
 );

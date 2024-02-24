@@ -4,10 +4,12 @@ import { PrismaService } from 'src/prisma.service';
 import Fuse from 'fuse.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserService } from './user.service';
+import { ChatController } from 'src/chat/chat.controller';
+import { ChatService } from 'src/chat/chat.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly prisma: PrismaService, private eventEmitter: EventEmitter2, private UserService: UserService) { }
+    constructor(private readonly prisma: PrismaService, private eventEmitter: EventEmitter2, private UserService: UserService, private readonly ChatService: ChatService) { }
     @Get('me')
     @UseGuards(AuthGuard('jwt'))
     async Getme(@Req() req, @Res() res, @Headers() headers) {
@@ -123,6 +125,8 @@ export class UserController {
         await this.UserService.acceptFriendRequest(req.notif.id);
         await this.UserService.makeFriends1(req.myId, req.notif.senderId);
         await this.UserService.makeFriends2(req.myId, req.notif.senderId);
+        await this.ChatService.createDM(req.myId, req.notif.senderId);
+        // await this.ChatService.createDM(req.notif.senderId);
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
 
@@ -219,20 +223,17 @@ export class UserController {
 
         req.notif = isRequestExist;
         if (isRequestExist) this.acceptFriendRequest(req);
- 
+
     }
-    
+
     @Post('userFreinds')
     @UseGuards(AuthGuard('jwt'))
     async displayFriends(@Body() req:any)
     {
-        console.log("helloooo", req);
-        // console.log("helloooo", req);
         const friendsList = await this.UserService.friendList(req.myId);
-        console.log("yesssss", friendsList);
-        
         return friendsList;
     }
+
 
 
     // sendRequest(receiver) //
