@@ -63,7 +63,7 @@ export class ChatService {
           }
         }
       },
-      include: {members:true}
+      include: { members: true }
     });
   }
 
@@ -82,7 +82,6 @@ export class ChatService {
   }
 
   async addMessagesToRoom(payload: any) {
-    console.log("ldakhl dyal addMessagesToRoom", payload)
     return this.prisma.chatGroup.update({
       where: { id: payload.roomId },
       data: {
@@ -97,7 +96,6 @@ export class ChatService {
   }
 
   async getGroupMessages(roomId: string) {
-    console.log("ldakhl dyal getGroupMessages", roomId)
     return this.prisma.message.findMany({
       where: { chatGroupId: roomId },
       include: { sender: true }
@@ -265,16 +263,38 @@ export class ChatService {
     });
   }
 
+  
+  async isDMalreadyexist(userId1: string, userId2: string) {
+    return await this.prisma.chatGroup.findFirst({
+      where: {
+        type: "DM",
+        AND: [
+          {
+            members: {
+              some: {
+                id: userId1
+              }
+            }
+          },
+          {
+            members: {
+              some: {
+                id: userId2
+              }
+            }
+          },
+        ]
+      }
+    });
+  }
 
   async createDM(userId1: string, userId2: string) {
-    console.log("user1; ", userId1)
-    console.log("user2; ", userId2)
     const user1 = await this.getUser(userId1)
     const user2 = await this.getUser(userId2)
-    console.log("user1; ", user1)
-    console.log("user2; ", user2)
     if (!user1 || !user2) return;
 
+    const isDMalreadyexist = await this.isDMalreadyexist(userId1, userId2);
+    if (isDMalreadyexist) return;
 
     return this.prisma.chatGroup.create({
       data: {
@@ -286,12 +306,12 @@ export class ChatService {
         type: "DM",
         members: {
           connect: [
-            {id:userId1 },
-            {id:userId2 }
+            { id: userId1 },
+            { id: userId2 }
           ]
         }
       },
-      
+
     });
   }
 

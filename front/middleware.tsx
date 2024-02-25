@@ -30,7 +30,6 @@ export const middleware = async (request: NextRequest) => {
 //       'Authorization': `Bearer ${cookie.value}`,
 //     },
 //   });
-//   console.log("res ok:", res.ok)
 
 //   if (!res.ok) return  NextResponse.redirect("http://localhost:3000/Signin");
 

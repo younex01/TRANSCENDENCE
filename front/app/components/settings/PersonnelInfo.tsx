@@ -46,6 +46,7 @@ export default function PersonnelInfo() {
 
   const handleAvatarChange = async (e: any) => {
     try {
+      setIsLoading(true);
       const file = e.target.files?.[0];
       if (!file) return;
       const formDate = new FormData();
@@ -57,9 +58,11 @@ export default function PersonnelInfo() {
         formDate,
         { withCredentials: false }
       );
+      setIsLoading(false);
       const imageUrl = res.data.secure_url;
       setImagePath(imageUrl);
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -67,6 +70,18 @@ export default function PersonnelInfo() {
     try {
       if (!firstName.trim() || !lastName.trim() || !nickName.trim()) {
         toast.error("All fields are required");
+        return;
+      }
+      else if (nickName.length > 7) {
+        toast.info("Username must be at least 6 characters");
+        return;
+      }
+      else if (firstName.length > 10) {
+        toast.info("firstName must be at least 10 characters");
+        return;
+      }
+      else if (lastName.length > 14) {
+        toast.info("lastName must be at least 14 characters");
         return;
       }
 

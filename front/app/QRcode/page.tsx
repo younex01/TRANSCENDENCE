@@ -13,7 +13,6 @@ export default function page() {
 //     const [qrData, setQrData] = useState(''); 
 //     const Verify2fa = async () => {
 //         axios.post('http://localhost:4000/auth/verifyTwoFactorAuthCode').then((response) => {
-//             console.log('response: from the profile ', response);
 //         }).catch((error) => {
 //             console.error('Error fetching user data:', error);
 //         });

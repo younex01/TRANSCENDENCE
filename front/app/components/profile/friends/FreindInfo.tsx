@@ -16,7 +16,7 @@ import axios from 'axios';
 import { Select } from '@nextui-org/react';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
-export default function FreindInfo({freinds}: {freinds: any}) {
+export default function FreindInfo({userId}: {userId: string}) {
   const profileInfo = useSelector(selectProfileInfo);
   const [myFreinds, setMyFreinds] = useState([]);
 
@@ -24,8 +24,10 @@ export default function FreindInfo({freinds}: {freinds: any}) {
 
     const listFriends = async () => {
       try {
-        // console.log("user.id:", user.id);
-        const response = await axios.post("http://localhost:4000/user/userFreinds", { myId: profileInfo.id }, { withCredentials: true });
+        
+        console.log("------------------->:(------------------->:userId", userId);
+        const response = await axios.post("http://localhost:4000/user/userFreinds", { userId: userId}, { withCredentials: true });
+        
         console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
       } catch (error) {
@@ -36,8 +38,6 @@ export default function FreindInfo({freinds}: {freinds: any}) {
     listFriends();
   }, [profileInfo]);
 
-  // const array = useSelector(selectFreindInfo);
-  // console.log("my arrraaaay freinds:",array);
   return (
     <>
     {myFreinds && myFreinds.length > 0 ? (

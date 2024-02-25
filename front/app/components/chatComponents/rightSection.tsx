@@ -28,13 +28,11 @@ export const RightSection = (props: any) => {
     const fetchChatGroups = async () => {
       try {
         const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${conversationId}`, { withCredentials: true });
-        console.log("whaaaaaat", msgs.data.message)
         setMessages(msgs.data.message);
         const response = await axios.get(`http://localhost:4000/chat/getGroupByGroupId?groupId=${conversationId}`, { withCredentials: true });
         setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${conversationId}`, { withCredentials: true })).data);
         if (response.status === 200) {
           const data = response.data;
-          console.log(data)
           setGroupData(data.data);
         } else {
           console.error('Failed to fetch chat groups:', response.statusText);
@@ -62,7 +60,6 @@ export const RightSection = (props: any) => {
   };
 
   function handleChannelCommands(arg: string, data: any, index: any) {
-    console.log("data", userData)
     socket?.emit(arg, {
       message: "",
       userId: userData.id,

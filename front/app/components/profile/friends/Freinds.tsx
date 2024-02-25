@@ -13,7 +13,7 @@ import FreindInfo from './FreindInfo';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useSelector } from 'react-redux';
 
-export default function freinds() {
+export default function freinds({userId} : {userId: any}) {
   const [activeTab, setActiveTab] = useState('freinds');
   const user = useSelector(selectProfileInfo);
 
@@ -41,7 +41,7 @@ export default function freinds() {
           freinds Requests
         </div>
       </div>
-      {activeTab === 'freinds' && <FreindInfo freinds={user.id} />}
+      {activeTab === 'freinds' && <FreindInfo userId={userId} />}
       {activeTab === 'requests' && <FreindsRequests />}
 
     </div>

@@ -5,9 +5,6 @@ import { Request } from 'express';
 import { PrismaService } from 'src/prisma.service';
 
 const extractCookie = (req: Request): string | null => {
-    // console.log("======>" ,req.headers.authorization);
-    // console.log("cookies", req.cookies);
-    // console.log("cookies", req.cookies.token);
   if (req.cookies && req.cookies.JWT_TOKEN ) {
     return req.cookies.JWT_TOKEN;
   }
@@ -26,10 +23,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
-    // console.log("payload", payload);
     try{
       const user = await this.prisma.user.findUnique({where: {id: payload.sub}});
-      // console.log("JWWWWWTTTTT " +user.username);
       if (!user) {
         throw new UnauthorizedException('1');
       }

@@ -19,9 +19,7 @@ export class ChatController {
   }
 
   @Post('/createGroup')
-  @UseGuards(AuthGuard('jwt'))
   async createGroup(@Body() chatGroup: any) {
-    console.log(chatGroup)
     return this.chatService.createGroup(chatGroup);
   }
 
@@ -74,7 +72,6 @@ export class ChatController {
   async getGroupByGroupId(@Query('groupId') groupId: string, @Query('myId') myId: string) {
     try {
       const group = await this.chatService.getGroupWithMembers(groupId);
-      console.log("group: ", group)
       if (group.type === 'DM') {
         const otherMember = group.members.find(member => member.id !== myId);
 
@@ -94,7 +91,6 @@ export class ChatController {
   @UseGuards(AuthGuard('jwt'))
   async getMsgsByGroupId(@Query('groupId') groupId: string) {
     try {
-      console.log("traaaaaash")
       const message = await this.chatService.getGroupMessages(groupId);
       return { message };
     } catch (error) {
@@ -116,7 +112,12 @@ export class ChatController {
     return isMember;
   }
 
+  @Get('/getDm')
+  @UseGuards(AuthGuard('jwt'))
+  async getDm(@Query('myId') myId: string, @Query('othersId') othersId: string) {
+    const groupId = await this.chatService.isDMalreadyexist(myId, othersId);
+    return groupId.id;
+  }
 
-  
 
 }

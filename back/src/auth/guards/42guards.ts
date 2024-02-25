@@ -16,7 +16,6 @@ export class FortyTwoAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
-    console.log('************************************Token:', token);
     
     // Assuming you have a JWT validation service or function
     const isValid = this.validateToken(token);

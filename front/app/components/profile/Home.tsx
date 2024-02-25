@@ -41,6 +41,7 @@ import { setLastGameInfo } from '@/redux/features/lastGamesSlice/lastGameSlice';
 
 
 const Home = () => {
+  const userid = useSelector(selectProfileInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -77,7 +78,7 @@ const Home = () => {
           </div>
 
           <div className="xl:w-[1000px] h-[440px] flex w-[90%]  justify-center">
-              <Freinds />
+              <Freinds userId={userid.id}/>
         </div>
       </div>
     </div>
