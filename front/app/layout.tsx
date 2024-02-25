@@ -19,7 +19,6 @@ function RootLayout({
   // const dispatch = useDispatch();
 
   // useEffect(() => {
-  //   console.log("layout~~~~~!!!!")
   //   dispatch(initializeSocket());
   // }, [dispatch]);
 

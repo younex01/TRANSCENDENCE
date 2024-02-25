@@ -9,7 +9,6 @@ axios.defaults.withCredentials = true;
 
 export default function QRcode() {
   const datauser = useSelector(selectProfileInfo);
-  console.log("datat user ", datauser);
   
   const [qrData, setQrData] = useState('');
   // const qrcode = useSelector(selectQrCode);
@@ -21,7 +20,6 @@ export default function QRcode() {
   useEffect(() => {
     console.error('generate code:');
     axios.post('http://localhost:4000/auth/generateTwoFactorAuthCode').then((response) => {
-      console.log('response: from the profile ', response.data.qrCodeImageUrl);
       setImage(response.data.qrCodeImageUrl);
       // setis2FaEnabled()
       // dispatch(setQrData(response))
@@ -34,8 +32,6 @@ export default function QRcode() {
       await axios.post('http://localhost:4000/auth/enableTwoFactorAuth', {
         code: qrData
       }).then((response)=>{
-        console.log('response:', response);
-        console.log('response:', qrData);
         dispatch(setProfileData(
           {
             ...datauser,
@@ -53,7 +49,6 @@ export default function QRcode() {
   const onDisable2fa = async () => {
     axios.post('http://localhost:4000/auth/disableTwoFactorAuth')
     .then((response) => {
-      console.log('qr code is diabled', response);
       dispatch(setProfileData(
         {
           ...datauser,
@@ -120,7 +115,6 @@ export default function QRcode() {
 
 //   useEffect(() => {
 //     axios.post('http://localhost:4000/auth/generateTwoFactorAuthCode').then((response) => {
-//       console.log('response: from the profile ', response.data.qrCodeImageUrl);
 //       setImage(response.data.qrCodeImageUrl);
 //       // dispatch(setQrData(response))
 //     }).catch((error) => {
@@ -137,8 +131,6 @@ export default function QRcode() {
 //       if (response.data.status){
 //         dispatch(profileSelector, { ...profileSelector, twoFactorAuthEnabled: false })
 //       }
-//         console.log('response:', response.data.status);
-//       console.log('response:', qrData);
 //     } catch (error) {
 //       console.error('Error fetching user data:', error);
 //     }
@@ -149,7 +141,6 @@ export default function QRcode() {
 //     axios.post('http://localhost:4000/auth/disableTwoFactorAuth').then((response) => {
 //       dispatch(setProfileData({ ...profileSelector, twoFactorAuthEnabled: true }));
 //       toast.info('Two factor authentication is disabeled');
-//       console.log('qr code is diabled', response);
 //     }).catch((error) => {
 //       console.error('Error fetching user data:', error);
 //     })

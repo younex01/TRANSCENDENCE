@@ -13,7 +13,7 @@ const SocketInitializer = () => {
     if (userData.id) {
       dispatch(initializeSocket({ userId: userData.id }));
     }
-  }, []);
+  }, [userData.id]);
 
   return null;
 };

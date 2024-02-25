@@ -22,7 +22,6 @@ export default function Profile(props: any) {
 
   useEffect(() => {
     const getUserData = async () => {
-      console.log("waaaaaach doooooookhlaaaaaaaaat11111")
       try {
         const response = await axios.get(`http://localhost:4000/user/getUserByUserId?user=${props.params.id}`, { withCredentials: true });
         setUserData(response.data);
@@ -52,19 +51,15 @@ export default function Profile(props: any) {
 
 
   useEffect(() => {
-    console.log("waaaaaach doooooookhlaaaaaaaaat2222")
     const requestStatus = async () => {
       try {
         const areFriends = await axios.get(`http://localhost:4000/user/checkIfFriend?myId=${myData.id}&&receiverId=${props.params.id}`, { withCredentials: true });
-        console.log("areFriends", areFriends)
         if (areFriends.data === 1) {
           setRequestStatuss("Accepted")
           return
         }
         const status = await axios.get(`http://localhost:4000/user/requestStatus?myId=${myData.id}&&receiverId=${props.params.id}`, { withCredentials: true });
         if (status.data) {
-          console.log("status.data", status.data)
-          console.log(`status.data.status  ${status.data.status}.`)
           if (status.data.senderId === myData.id && status.data.status === "Pending")
             setRequestStatuss("Pending")
           else if (status.data.receiverId === myData.id && status.data.status === "Pending")
@@ -86,7 +81,6 @@ export default function Profile(props: any) {
 
   useEffect(() => {
     socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
-      console.log("waaaaaach doooooookhlaaaaaaaaat")
       setRefreshNoifications(!refreshNotifs);
     });
     return () => {

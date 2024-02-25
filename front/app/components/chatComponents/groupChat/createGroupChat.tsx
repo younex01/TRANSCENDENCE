@@ -18,7 +18,6 @@ export default function createGroupChat(props:any) {
   const dispatch = useDispatch();
   const userData = useSelector(selectProfileInfo);
   const socket = useSelector((state:RootState) => state.socket.socket);
-  // console.log(data);
   
   const addGroupChat = async () => {
     if(channelName && ((!channelStatus || channelStatus === "Private") || (channelStatus === "Protected" && channelPassWord))) {
@@ -35,7 +34,6 @@ export default function createGroupChat(props:any) {
             password: channelPassWord,
             owner: userData.id
           };
-          console.log("groupChatInfo", groupChatInfo);
           const response =  await axios.post('http://localhost:4000/chat/createGroup', groupChatInfo, { withCredentials: true });
           socket.emit("joinGroupChat", {userId: userData.id, groupId: response.data.id});
         }
@@ -46,7 +44,6 @@ export default function createGroupChat(props:any) {
       setChannelPassWord("");
       setChannelName("");
       setPassWord("hidden");
-      console.log(socket.id)
       
       dispatch(setCreateGroup(false));
 

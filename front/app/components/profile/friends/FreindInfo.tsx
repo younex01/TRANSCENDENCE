@@ -24,9 +24,7 @@ export default function FreindInfo() {
 
     const listFriends = async () => {
       try {
-        // console.log("user.id:", user.id);
         const response = await axios.post("http://localhost:4000/user/userFreinds", { myId: profileInfo.id }, { withCredentials: true });
-        console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -37,7 +35,6 @@ export default function FreindInfo() {
   }, []);
 
   // const array = useSelector(selectFreindInfo);
-  // console.log("my arrraaaay freinds:",array);
   return (
     <div className='w-full flex justify-center items-center h-[85%]'>
       <Swiper

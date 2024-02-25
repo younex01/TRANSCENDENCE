@@ -20,7 +20,6 @@ export default function Convos() {
     const fetchChatGroups = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/chat/getGroupsByUserId?userId=${userData.id}`, { withCredentials: true });
-        console.log("response.data.data", response.data.data)
         setMyGroups(response.data.data)
       } catch (error: any) {
         console.error('Error fetching data:', error.message);
@@ -30,7 +29,6 @@ export default function Convos() {
     fetchChatGroups();
 
     socket?.on("refresh", () => {
-      console.log("aadsfadsfdsafadsf")
       setRefresh(!refresh);
       socket?.off("refresh");
     });
@@ -43,8 +41,8 @@ export default function Convos() {
 
   return (
     <>
-      {myGroups.map((myGroupChats: any) => (
-        <>
+      {myGroups.map((myGroupChats: any, index:any) => (
+        <React.Fragment key={index}>
           {myGroupChats.type === "DM" ?
             <button className='mr-[10px] mb-[10px] ml-[15px] rounded-[11px] w-[90%] border-[1px] p-2' key={myGroupChats.id} onClick={() => { dispatch(selctedConversation(myGroupChats.id)) }}>
               <Link href={`/Chat/${myGroupChats.id}`}>
@@ -70,7 +68,7 @@ export default function Convos() {
               </Link>
             </button>
           }
-        </>
+        </React.Fragment>
       ))}
     </>
   )

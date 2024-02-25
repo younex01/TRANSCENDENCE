@@ -8,7 +8,6 @@ import { selectAchievement } from '../../../../redux/features/achievement/achiev
 
 export default function Achievements() {
     const array = useSelector(selectAchievement);
-    // console.log("name : ", name);
     return (
         <>
             <div className='xl:h-full xl:grid xl:grid-cols-2 xl:grid-rows md:flex md:flex-col gap-[15px] p-[15px] bg-white overflow-hidden rounded-xl'>

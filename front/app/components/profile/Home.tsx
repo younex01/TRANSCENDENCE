@@ -28,7 +28,6 @@ import { setLastGameInfo } from '@/redux/features/lastGamesSlice/lastGameSlice';
 //     .then(response => {
 //       // Handle successful response
 //       const data = response.data.token;
-//       console.log(data);
 //       return data;
 //       // Process the data here
 //     })

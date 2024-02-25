@@ -16,7 +16,6 @@ const socketSlice = createSlice({
     initializeSocket: (state, action) => {
       const { userId } = action.payload;
       state.socket = io("http://localhost:4000/");
-      console.log("state.socket", state.socket)
       if (state.socket) {
         state.socket.emit('addSocketToThisUserRoom', userId);
       }

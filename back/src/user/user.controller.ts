@@ -95,20 +95,14 @@ export class UserController {
     async sendFriendRequest(@Body() req: any) {
         const user = await this.UserService.getUser(req.target);
 
-        console.log("test1");
 
         if (!user) return;
-        console.log("test2");
         const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
-        console.log("test3");
-        console.log("isRequestExist", isRequestExist);
         if (isRequestExist && isRequestExist.status === "Declined") {
-            console.log("test4");
 
             await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
         }
         else {
-            console.log("test5");
 
             await this.UserService.createFriendRequest(req.target, req.sender);
         }
@@ -141,7 +135,6 @@ export class UserController {
         if (isExiste !== 1) return;
         // await this.UserService.a(req.notif.id);
         await this.UserService.declineFriendRequest(req.notif.id);
-        console.log("declin..........")
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
         // return myNotifications;

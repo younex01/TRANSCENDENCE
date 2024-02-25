@@ -36,7 +36,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit("joinFailed", "Wrong Password");
       return;
     }
-    console.log("paylaod", payload)
     await this.chatService.addRoomToUser(payload.userId, payload.groupId)
     await this.chatService.addUserToRoom(payload.userId, payload.groupId)
 

@@ -14,7 +14,6 @@
 //     }
 
 //     async validate(accessToken: string, refreshToken: string, profile: any){
-    //        console.log(profile);
     //     }
     // }
 import { Injectable, UnauthorizedException } from "@nestjs/common";
@@ -46,9 +45,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
             twoFactorAuthEnabled: profile._json.twoFactorAuthEnabled,
             // twoFactorAuthCode: secret.base32,
         }
-        console.log("-------------------------**********", dto.id);    
         const user = await this.service.findOrCreate(dto);
-        console.log("-------------------", user);
         if (!user)
             throw new UnauthorizedException("User not found");
         return user;

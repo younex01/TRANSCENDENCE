@@ -33,7 +33,6 @@ export default function page() {
         });
         setId(response.data.user.id);
         user = response.data.user;
-        console.log('user:', user);
         
         dispatch(setProfileData(user));
         

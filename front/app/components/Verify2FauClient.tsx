@@ -13,16 +13,13 @@ export default function Verify2FauClient() {
 
     const Verify2fa = async () => {
         axios.post('http://localhost:4000/auth/verifyTwoFactorAuthCode', {code}, { withCredentials: true }).then((response) => {
-            console.log('response: from the profile ', response);
             // if (response.data.succees)
                 route.push('http://localhost:3000/Profile');
         }).catch((error) => {
-            console.log('code incorrect');
             
             console.error('Error fetching user data:', error);
         });
         // const res = axios.post('http://localhost:4000/auth/verifyTwoFactorAuthCode', {code});
-        // console.log('response: from the profile ', res);
     };
     return (
         <div className="w-full h-screen bg-black/40 flex flex-col items-center justify-center">

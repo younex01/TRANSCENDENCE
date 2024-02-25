@@ -22,7 +22,6 @@ export default function SearchPanel() {
     const getUsers = async (searchForUser: string) => {
       if (searchForUser.length > 0) {
         try {
-          console.log("---------------------------------------------");
 
           const response = await axios.get(`http://localhost:4000/user/getAllUsers?input=${searchForUser}`, { withCredentials: true });
 
@@ -39,10 +38,8 @@ export default function SearchPanel() {
   useEffect(() => {
     const getMyNotifications = async () => {
       try {
-        console.log("---------------      refreshing   ------------------------------");
         const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
         setMyNotifications(notifications.data);
-        console.log(notifications.data)
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -53,7 +50,6 @@ export default function SearchPanel() {
 
   useEffect(() => {
     socket?.on("refreshFrontNotifications", (channelStatus: any) => {
-      console.log("wtffffffff")
       setRefreshNoifications(!refreshNotifs);
     });
     return () => {
@@ -71,7 +67,6 @@ export default function SearchPanel() {
   }
 
   const declineFriendRequest = async (notif: any) => {
-    console.log("aywaaaasdasdasdasdasdasd")
     try {
       axios.post(`http://localhost:4000/user/declineFriendRequest`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);

@@ -238,8 +238,6 @@ export class UserService {
     });
   }
 
-
-
   async friendList(myId: string){
     const user = await this.prisma.user.findUnique({
       where: 

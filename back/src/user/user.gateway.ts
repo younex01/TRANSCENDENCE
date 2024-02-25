@@ -20,17 +20,21 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent('refreshNotifications')
   async refreshNotifications(client: Socket, payload:any) {
-    console.log("eaho dkhoool")
     this.server.emit("refreshFrontNotifications");
 
   } 
   @OnEvent('refreshfriendShip')
   async refreshfriendShip(client: Socket, payload:any) {
-    console.log("eaho wtfffff")
     this.server.emit("refreshFrontfriendShip");
+    this.server.emit("refresh");
 
   }
 
+  @OnEvent('refreshChat')
+  async refreshChat(client: Socket, payload:any) {
+    this.server.emit("refreshChatFront");
+
+  }
 
 
 

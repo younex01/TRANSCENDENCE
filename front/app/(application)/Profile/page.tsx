@@ -11,20 +11,17 @@ axios.defaults.withCredentials = true;
 export default function Page() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  const socket = useSelector((state:RootState) => state.socket.socket);
+  // const socket = useSelector((state:RootState) => state.socket.socket);
   
 
   // const listFriends = async () => {
-  //   console.log("friends list ");
   //   const ret = await axios.post(`http://localhost:4000/user/userFreinds`, { withCredentials: true });
-  //   console.log("freindss--------> ", ret);
     
   // }
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:4000/user/me');
-        console.log('response:', response);
         const userData = response.data.user;
         setUser(userData);
         dispatch(setProfileData(userData));

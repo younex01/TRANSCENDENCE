@@ -40,7 +40,6 @@ export class AuthController {
       res.cookie("USER_ID", req.user.id);
       return res.redirect("http://localhost:3000/QRcode");
     }
-    console.log("in the auth controller");
     const token = await this.jwtService.signAsync(payload);
     res.cookie("JWT_TOKEN", token);
     return res.redirect("http://localhost:3000/Profile");
@@ -59,18 +58,13 @@ export class AuthController {
     const user = req.user;
     if (!user.twoFactorAuthCode)
       user.twoFactorAuthCode = speakeasy.generateSecret();
-    console.log("ussser", user);
-    console.log("111111");
 
     await this.prisma.user.update({
       where: { id: user.id },
       data: { twoFactorAuthCode: user.twoFactorAuthCode.base32 },
     });
-    console.log('1213123123123');
-    console.log('1213123123123');
     
     if (user.twoFactorAuthCode) {
-        console.log('user.twoFactorAuthCode++++++', user.twoFactorAuthCode.base32);
       const otpauthUrl = speakeasy.otpauthURL({
         secret: user.twoFactorAuthCode,
         label: "MyApp",
@@ -78,7 +72,6 @@ export class AuthController {
         encoding: "base32",
       });
       const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
-      console.log("qrCodeImageUrl", qrCodeImageUrl);
       return res.json({ qrCodeImageUrl });
     }
   }
@@ -99,8 +92,6 @@ export class AuthController {
       token: code,
     });
 
-    console.log(`user`, user);
-    console.log(`code in the bacak`, code);
 
     log("isVerified", isVerified);
     if (isVerified) {
