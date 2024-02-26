@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   selectProfileInfo,
   setProfileData,
@@ -45,7 +45,7 @@ export default function QRcode() {
       .post("http://localhost:4000/auth/enableTwoFactorAuth", {
         code: qrData,
       })
-      .then((response) => {
+      .then(() => {
         // console.log('response:', response);
         // console.log('response:', qrData);
         dispatch(
@@ -94,22 +94,27 @@ export default function QRcode() {
               <img
                 src={image}
                 alt="Your Image Alt Text"
-                className={!datauser.twoFactorAuthEnabled ? `object-cover w-[250px] h-[250px]` : `object-cover w-[250px] h-[250px] blur-sm`}
+                className={
+                  !datauser.twoFactorAuthEnabled
+                    ? `object-cover w-[250px] h-[250px]`
+                    : `object-cover w-[250px] h-[250px] blur-sm`
+                }
               />
             </div>
           </div>
-
-          <div className="w-full flex items-center justify-center">
-            <input
-              type=""
-              value={qrData}
-              onChange={(e) => setQrData(e.target.value)}
-              className={datauser.twoFactorAuthEnabled  ? `w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center cursor-not-allowed pointer-events-none` : `w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center`}
-              placeholder="Enter your code"
-              pattern="\d{6}"
-              maxLength={6}
-            />
-          </div>
+          {!datauser.twoFactorAuthEnabled ? (
+            <div className="w-full flex items-center justify-center">
+              <input
+                type=""
+                value={qrData}
+                onChange={(e) => setQrData(e.target.value)}
+                className="w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center"
+                placeholder="Enter your code"
+                pattern="\d{6}"
+                maxLength={6}
+              />
+            </div>
+          ) : null}
 
           <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row  px-[60px] w-full">
             {datauser.twoFactorAuthEnabled ? (

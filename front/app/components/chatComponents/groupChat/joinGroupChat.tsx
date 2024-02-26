@@ -71,8 +71,8 @@ export default function JoinGroupChat(props:any) {
     return (
     <div className='fixed h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-20'>
       <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-[20px] w-[70%] h-[70%] bg-[#6e7aaa]  overflow-hidden'>
-        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"shape1.svg"} alt="../piblic/shape1.svg" /></div>
-        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"shape2.svg"} alt="../piblic/shape2.svg" /></div>
+        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"/shape1.svg"} alt="/shape1.svg" /></div>
+        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"/shape2.svg"} alt="/shape2.svg" /></div>
         <div className='flex flex-col w-[100%] h-[100%] overflow-hidden relative'>
           <div className='p-4 self-center text-[#D7D7D7] text-[38px] myfont'>Join a Channel</div>
           <button className='w-[50px] h-[50px] rounded-[15px] text-[30px] absolute right-[30px] top-[20px] bg-white' onClick={() => {dispatch(setJoinGroup(false))}}> 

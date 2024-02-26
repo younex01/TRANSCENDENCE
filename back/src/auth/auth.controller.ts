@@ -84,6 +84,9 @@ export class AuthController {
     @Res() res,
     @Body("code") code: string
   ) {
+    console.log("req.cookies.USER_ID", req.cookies.USER_ID);
+    console.log("req.cookies.USER_ID-----------", req.cookies);
+    // console.log("req.cookies.USER_ID------------============", req);
     //const user = req.user;
     const user = await this.prisma.user.findFirst({
       where: { id: req.cookies.USER_ID },

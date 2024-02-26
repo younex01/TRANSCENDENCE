@@ -8,9 +8,11 @@ import { PrismaService } from './prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
+import { GameService } from './random-friend/random-friend.service';
+import { GameModule } from './random-friend/game.module';
 
 @Module({
-  imports: [ChatModule, AuthModule, UserModule],
+  imports: [ChatModule, AuthModule, UserModule, GameModule],
   controllers: [AppController, ChatController],
   providers: [AppService, ChatService, UserService, PrismaService ],
 })

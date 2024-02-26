@@ -62,8 +62,8 @@ export default function createGroupChat(props:any) {
   return (
     <div className='fixed h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-20'>
       <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-[20px] w-[70%] h-[70%] bg-[#6e7aaa]  overflow-hidden'>
-        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"shape1.svg"} alt="../piblic/shape1.svg" /></div>
-        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"shape2.svg"} alt="../piblic/shape2.svg" /></div>
+        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"/shape1.svg"} alt="/shape1.svg" /></div>
+        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"/shape2.svg"} alt="/shape2.svg" /></div>
         <div className='flex justify-center  w-[100%] h-[100%] items-center overflow-hidden '>
           <div className='absolute top-[26px] left-[34px] text-[#D7D7D7] text-[34px] myfont'>Create New Channel</div>
           <div className='absolute mt-[10px] top-[91px] w-[100%] border-[1px] border-color1'></div>
@@ -86,7 +86,7 @@ export default function createGroupChat(props:any) {
                 <div className='text-[#d7d7d7] myfont text-[29px]'>Channel Status</div>
                 <div>
                   <button className='text-[#D7D7D7] text-[20px] font-serif bg-opacity-[50%] h-[57px] w-[200px] border-[1px] rounded-[10px] border-color1 bg-[#6e7aad] relative' onClick={()=> setStatus(!status)}>{channelStatus ? channelStatus : "Select Option"}
-                  <img className='absolute right-[10px] -mt-6' src="down-arrow.svg" alt="down-arrow.svg" />
+                  <img className='absolute right-[10px] -mt-6' src="/down-arrow.svg" alt="/down-arrow.svg" />
                   {status && (
                     <div className='absolute text-[#D7D7D7] text-[20px] font-serif mt-[6px] pt-4 pb-4 -left-[1px] w-[200px] bg-[#75a565] border-t border-color1 rounded-bl-[16px] rounded-br-[16px]'>
                     <button className='hover:border-l hover:border-r border-white pl-2 pb-2 w-full flex' onClick={() => {setChannelStatus("Protected"); setStatus(false), setPassWord("")}}>Protected</button>
@@ -116,7 +116,7 @@ export default function createGroupChat(props:any) {
                         <div className='relative h-[60%] w-[40%] top-[20px]'>
                           <div className='flex flex-row justify-between items-center'>
                           <div className='flex items-center text-[#D7D7D7] text-[20px]'>
-                            <img className='h-[50px] w-[50px] ml-1 rounded-[25px] object-fill' src={"OP.jpeg"} alt="../piblic/OP.jpeg" />
+                            <img className='h-[50px] w-[50px] ml-1 rounded-[25px] object-fill' src={"/OP.jpeg"} alt="/OP.jpeg" />
                             <div className='ml-5'>Name</div>
                           </div>
                           <div className='flex flex-col mt-4 text-[15px]'>

@@ -72,8 +72,8 @@ export default function PersonnelInfo() {
         toast.error("All fields are required");
         return;
       }
-      else if (nickName.length > 7) {
-        toast.info("Username must be at least 6 characters");
+      else if (nickName.length > 8) {
+        toast.info("Username must be at least 8 characters");
         return;
       }
       else if (firstName.length > 10) {

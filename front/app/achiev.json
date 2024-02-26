@@ -27,7 +27,7 @@
     {
       "name": "Stronger",
       "status": "four",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/shanks.jpeg"

@@ -162,7 +162,7 @@ export default function Profile(props: any) {
       ) : (
         <div className="w-full h-[100vh] bg-[#dbe0f6] overflow-y-auto pt-[150px] flex flex-col items-center gap-5">
           <div className="flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5">
-            <div className="bg-white flex flex-col w-full xl:w-[900px] gap-10 rounded-xl">
+            <div className="bg-white flex flex-col w-full xl:w-[900px] h-[750px] gap-10 rounded-xl">
               <div className="relative mt-2 w-full flex gap-3 items-start">
                 <div className="flex flex-row items-center gap-6 ml-2">
                   <div className="">
@@ -189,9 +189,9 @@ export default function Profile(props: any) {
               {userData.blockedByUsers.find(
                 (id: string) => id === myData.id
               ) ? (
-                <div className="flex justify-center items-center xl:w-3/12 h-[45px] w-full">
+                <div className="flex justify-center items-center h-[45px] w-full">
                   <button
-                    className="bg-blue-100 h-full rounded-full text-md 2xl:text-xl px-5 font-medium"
+                    className="bg-blue-100 h-[45px] w-[18%] rounded-full text-md 2xl:text-xl font-medium"
                     onClick={() => setUnblock(true)}
                   >
                     Unblock
@@ -245,7 +245,7 @@ export default function Profile(props: any) {
                   </div>
                 )
               )}
-              <div className="h-full max-h-[554px] px-3 overflow-y-visible overflow-x-hidden no-scrollbar">
+              <div className="h-[70vh] max-h-[580px] mb-8 px-3 overflow-y-visible overflow-x-hidden no-scrollbar">
                 <LastGames />
               </div>  
 

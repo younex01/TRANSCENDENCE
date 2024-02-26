@@ -15,6 +15,9 @@ import { selectFreindInfo } from '../../../../redux/features/freinds/requestSlic
 import axios from 'axios';
 import { Select } from '@nextui-org/react';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import Lottie from 'react-lottie-player';
+import animationData from   "../../../../public/nothing.json"
+// import Lottie from 'react-lottie';
 
 export default function FreindInfo({userId}: {userId: string}) {
   const profileInfo = useSelector(selectProfileInfo);
@@ -26,7 +29,7 @@ export default function FreindInfo({userId}: {userId: string}) {
       try {
         
         console.log("------------------->:(------------------->:userId", userId);
-        const response = await axios.post("http://localhost:4000/user/userFreinds", { userId: userId}, { withCredentials: true });
+        const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${userId}`, { withCredentials: true });
         
         console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
@@ -59,27 +62,24 @@ export default function FreindInfo({userId}: {userId: string}) {
               slidesPerView: 4,
             },
           }}
-          className="w-full cursor-grab !pl-[30px] ">
+          className="w-full cursor-grab !pl-[30px] " >
           {
             myFreinds.map((value: any, index: number) => {
               return (
-                <>
-                  <SwiperSlide >
-                    <TeamCard key={index} userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} />
+                  <SwiperSlide key={index} >
+                    <TeamCard key={index}  userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} />
                   </SwiperSlide>
-                </>
               )
             })
           }
           </Swiper>
           </div>
-          
           ) 
           : 
           (
-      <div className="w-[100%] h-full flex items-center justify-center">
-        <p className='w-full text-center'>No friends available</p>
-      </div>
+            <div className='w-[100%] h-full flex items-center justify-center'>
+              <Lottie animationData={animationData} play style={{ width: 300, height: 300 }} />
+            </div>
 
     )
   }

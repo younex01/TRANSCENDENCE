@@ -240,21 +240,21 @@ export class UserService {
 
   async friendList(myId: any){
     console.log("myId------------------->", myId);
-    let user;
-    try {
-      user = await this.prisma.user.findUnique({
+    if( myId === 'undifined') return;
+    
+      const user = await this.prisma.user.findUnique({
         where: 
         {
-          id: myId.userId
+          id: myId
         },
         include: 
-        {
+        {   
           friends: true
         }
       });
-    } catch (error) {
-      console.log("error------------------->", error);
-    }
+      if(!user) return;
+      console.log("user------------------->", user);
+      
     return user.friends;
   
   }

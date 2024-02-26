@@ -10,7 +10,7 @@ export default function FirstPage() {
 
 
   return (
-    <div className="w-full h-screen bg-black/40 flex flex-col items-center justify-center" style={{backgroundImage: `url(/hh1.jpg)`}}>
+    <div className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundImage: `url(/hh1.jpg)`}}>
       <h1 className="text-5xl pb-3 text-white font-bold text-center"> PingPong </h1>
       <Link href={"http://localhost:4000/auth/redirect"}>
       {/* <Link href="/QRcode"> */}

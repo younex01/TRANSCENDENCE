@@ -14,12 +14,12 @@ import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useSelector } from 'react-redux';
 
 export default function freinds({userId} : {userId: any}) {
-  const [activeTab, setActiveTab] = useState('freinds');
-  const user = useSelector(selectProfileInfo);
+  // const [activeTab, setActiveTab] = useState('freinds');
+  // const user = useSelector(selectProfileInfo);
 
-  const handleTabChange = (tab: any) => {
-    setActiveTab(tab);
-  };
+  // const handleTabChange = (tab: any) => {
+  //   setActiveTab(tab);
+  // };
   // useEffect(() => {
   //   setActiveTab('freinds');
   // }, []);
@@ -27,22 +27,22 @@ export default function freinds({userId} : {userId: any}) {
   return (
     <div className='friends h-[430px]  gap-5 p-[15px] bg-white w-[100%] rounded-xl mb-5 flex flex-col justify-center '>
 
-      <div className="flex justify-start items-start gap-[20px] ">
+      <div className="flex justify-start items-center pt-3 pl-10">
         <div
-          className={`border-b-2 cursor-pointer ${activeTab === 'freinds' ? 'border-[#8292D7]' : null} w-[15%] mb-2 text-xl`}
-          onClick={() => handleTabChange('freinds')}
+          className={`border-b-2 cursor-pointer border-[#8292D7] w-[15%] mb-2 text-xl text-[#1b244a]  font-medium`}
+          // onClick={() => handleTabChange('freinds')}
         >
-          freinds
+          Freinds
         </div>
-        <div
+        {/* <div
           className={`border-b-2 cursor-pointer ${activeTab === 'requests' ? 'border-[#8292D7]' : null} w-[max-content] mb-2 text-xl ml-[12%]`}
           onClick={() => handleTabChange('requests')}
         >
           freinds Requests
-        </div>
+        </div> */}
       </div>
-      {activeTab === 'freinds' && <FreindInfo userId={userId} />}
-      {activeTab === 'requests' && <FreindsRequests />}
+      <FreindInfo userId={userId} />
+      {/* {activeTab === 'requests' && <FreindsRequests />} */}
 
     </div>
   );

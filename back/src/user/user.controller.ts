@@ -161,7 +161,10 @@ export class UserController {
     @Get('checkIfFriend')
     @UseGuards(AuthGuard('jwt'))
     async checkIfFriend(@Query('myId') myId: string, @Query('receiverId') otherUser: string) {
+        console.log("myId", myId);
+        console.log("receiverId", otherUser);
         const checkIfFriend = await this.UserService.checkIfFriend(myId, otherUser);
+        console.log("checkIfFriend", checkIfFriend);
         // this.eventEmitter.emit("refreshfriendShip");
         return (checkIfFriend);
     }
@@ -219,9 +222,9 @@ export class UserController {
 
     }
 
-    @Post('userFreinds')
+    @Get('userFreinds')
     @UseGuards(AuthGuard('jwt'))
-    async displayFriends(@Body() userId: string) {
+    async displayFriends(@Query("userId") userId: string) {
     {
         const friendsList = await this.UserService.friendList(userId);
         return friendsList;
