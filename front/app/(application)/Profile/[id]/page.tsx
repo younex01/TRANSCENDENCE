@@ -3,7 +3,7 @@ import Achievements from "@/app/components/profile/achiemements/Achievements";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import Freinds from './../../../components/profile/friends/Freinds';
+import Freinds from "./../../../components/profile/friends/Freinds";
 import axios from "axios";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import LastGames from "@/app/components/profile/LastGames";
@@ -162,93 +162,102 @@ export default function Profile(props: any) {
       ) : (
         <div className="w-full h-[100vh] bg-[#dbe0f6] overflow-y-auto pt-[150px] flex flex-col items-center gap-5">
           <div className="flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5">
-            <div className="bg-white flex flex-col w-full xl:w-[900px] h-[750px] gap-10 rounded-xl">
-              <div className="relative mt-2 w-full flex gap-3 items-start">
-                <div className="flex flex-row items-center gap-6 ml-2">
-                  <div className="">
-                    <img
-                      className="w-[80px] h-[80px] rounded-full object-cover"
-                      src={userData?.avatar}
-                      alt={userData?.avatar}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-center items-center gap-1 w-max-content">
-                    <div>
-                      {userData.firstName} {userData.lastName}
+            <div className="bg-white flex flex-col w-full xl:w-[900px] h-[750px] gap-3 rounded-xl">
+              <div className="relative flex rounded-[16px] flex-col bg-[#f5f7ff] justify-between pb-2 p-5 mx-5 mt-5">
+                <div className="relative mt-2 w-full flex items-start">
+                  <div className="flex flex-row items-center ml-2">
+                    <div className="w-[135px] h-[135px] rounded-full overflow-hidden pt-3">
+                      <img
+                        className="object-cover w-[100px] h-[100px] rounded-full"
+                        src={userData?.avatar}
+                        alt={userData?.avatar}
+                      />
                     </div>
-                    <div className="font-light"> {userData.username}</div>
-                    {props.params.id !== myData.id && (
-                      <div className="bg-red-500 flex justify-center items-center w-full h-full rounded-full">
-                        <h4 className="text-lg">In a game</h4>
+                    <div className="flex flex-row items-start justify-center w-full">
+                      <div className="flex flex-col justify-center items-center gap-1 w-max-content">
+                        <div className="flex sm:flex-row flex-col gap-[5px]">
+                          <div className="font-semibold text-[16px] text-[#252f5b]">
+                          {userData.firstName}
+                          </div>
+                          <div className="font-semibold text-[16px] text-[#252f5b]">
+                          {userData.lastName}
+                          </div>
+                        </div>
+                        <div className="font-light text-[#7d84a3] text-[15px]"> {userData.username}</div>
                       </div>
-                    )}
+                      {props.params.id !== myData.id && (
+                        <div className="bg-red-500 flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-2">
+                          <h4 className="text-[11px]">In A Game</h4>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {userData.blockedByUsers.find(
-                (id: string) => id === myData.id
-              ) ? (
-                <div className="flex justify-center items-center h-[45px] w-full">
-                  <button
-                    className="bg-blue-100 h-[45px] w-[18%] rounded-full text-md 2xl:text-xl font-medium"
-                    onClick={() => setUnblock(true)}
-                  >
-                    Unblock
-                  </button>
-                </div>
-              ) : userData.blockedUsers.find(
+                {userData.blockedByUsers.find(
                   (id: string) => id === myData.id
                 ) ? (
-                <div className="flex justify-center items-center xl:w-3/12 h-[45px] w-full">
-                  This user blocked you
-                </div>
-              ) : (
-                props.params.id !== myData.id && (
-                  <div className="flex flex-row justify-center items-center gap-3 lg:gap-9">
-                    <div className="flex justify-center items-center w-3/12 xl:w-3/12 h-[45px]">
-                      {requestStatuss === "Pending" ? (
-                        <div className="bg-blue-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium flex items-center justify-center">
-                          Request Pending...{" "}
-                        </div>
-                      ) : requestStatuss === "Accepted" ? (
-                        <div className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium flex items-center justify-center">
-                          Friends
-                        </div>
-                      ) : requestStatuss === "Declined" ||
-                        requestStatuss === "notSentYet" ? (
-                        <button
-                          className="bg-blue-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium"
-                          onClick={() => {
-                            setIsclicked(true);
-                          }}
-                        >
-                          Add Friend
-                        </button>
-                      ) : requestStatuss === "AcceptFR" ? (
-                        <button
-                          className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium"
-                          onClick={acceptFriendRequest}
-                        >
-                          Accept friend request
-                        </button>
-                      ) : null}
-                    </div>
-                    <div className="flex justify-center items-center w-3/12 xl:w-3/12 h-[45px]">
-                      <button
-                        className="bg-blue-100 w-full h-full rounded-full text-md 2xl:text-xl font-medium"
-                        onClick={() => setblock(true)}
-                      >
-                        Block User
-                      </button>
-                    </div>
+                  <div className="flex justify-center items-center h-[45px] w-full">
+                    <button
+                      className="bg-blue-100 h-[45px] w-max-content px-7 rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]"
+                      onClick={() => setUnblock(true)}
+                    >
+                      Unblock
+                    </button>
                   </div>
-                )
-              )}
-              <div className="h-[70vh] max-h-[580px] mb-8 px-3 overflow-y-visible overflow-x-hidden no-scrollbar">
-                <LastGames />
-              </div>  
+                ) : userData.blockedUsers.find(
+                    (id: string) => id === myData.id
+                  ) ? (
+                  <div className="flex justify-center items-center h-[45px] w-full font-light text-[18px] text-[#252f5b]">
+                    This user blocked you
+                  </div>
+                ) : (
+                  props.params.id !== myData.id && (
+                    <div className="flex flex-row justify-center items-center gap-3 lg:gap-9">
+                      <div className="flex justify-center items-center w-3/12 h-[45px]">
+                        {requestStatuss === "Pending" ? (
+                          <div className="bg-[#649eef] w-full h-full rounded-full font-semibold text-[16px] text-[#252f5b] flex items-center justify-center">
+                            Pending...{" "}
+                          </div>
+                        ) : requestStatuss === "Accepted" ? (
+                          <div className="bg-[#9ba8e1] w-full h-full rounded-full text-md 2xl:text-lg font-medium flex items-center justify-center">
+                            Friends
+                          </div>
+                        ) : requestStatuss === "Declined" ||
+                          requestStatuss === "notSentYet" ? (
+                          <button
+                            className="bg-[#3fc592] w-full h-full rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b]"
+                            onClick={() => {
+                              setIsclicked(true);
+                            }}
+                          >
+                            Add Friend
+                          </button>
+                        ) : requestStatuss === "AcceptFR" ? (
+                          <button
+                            className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium"
+                            onClick={acceptFriendRequest}
+                          >
+                            Accept friend request
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="flex justify-center items-center w-3/12 xl:w-3/12 h-[45px]">
+                        <button
+                          className="bg-blue-100 w-full h-full rounded-full text-md 2xl:text-lg font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]"
+                          onClick={() => setblock(true)}
+                        >
+                          Block User
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
 
+              <div className="h-[70vh] max-h-[590px] w-[94%] rounded-[16px] mb-8 px-3 mx-5 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]">
+                <LastGames />
+              </div>
             </div>
             <div className="xl:w-[900px] w-[100%] h-full">
               <Achievements />
@@ -256,8 +265,8 @@ export default function Profile(props: any) {
           </div>
 
           <div className="xl:w-[1000px] h-[440px] flex w-[90%]  justify-center">
-              <Freinds userId={props.params.id}/>
-        </div>
+            <Freinds userId={props.params.id} />
+          </div>
         </div>
       )}
     </>
@@ -273,7 +282,6 @@ export default function Profile(props: any) {
 // import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 // export default function Profile(props: any) {
-
 
 //   // const refreshNotifs = useSelector((state:RootState) => state.refreshNotifs.refreshNoifications);
 //   const [userData, setUserData] = useState<any>();
@@ -300,7 +308,6 @@ export default function Profile(props: any) {
 //     getUserData();
 //   }, [props.params.id, refreshNotifs]);
 
-
 //   useEffect(() => {
 //     const sendFriendRequest = async () => {
 //       if (clicked) {
@@ -314,7 +321,6 @@ export default function Profile(props: any) {
 //     };
 //     sendFriendRequest();
 //   }, [clicked]);
-
 
 //   useEffect(() => {
 //     const requestStatus = async () => {
@@ -336,14 +342,12 @@ export default function Profile(props: any) {
 //         else
 //         setRequestStatuss("notSentYet")
 
-
 //       } catch (error) {
 //         console.error("Error fetching users:", error);
 //       }
 //     };
 //     requestStatus();
 //   }, [refreshNotifs]);
-
 
 //   useEffect(() => {
 //     socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
@@ -353,7 +357,6 @@ export default function Profile(props: any) {
 //       socket?.off("refreshFrontfriendShip");
 //     };
 //   });
-
 
 //   useEffect(() => {
 //     const requestStatus = async () => {
@@ -493,8 +496,6 @@ export default function Profile(props: any) {
 //                       <h4 className="">Victory</h4>
 //                     </div>
 //                   </div>
-
-
 
 //                 </div>
 

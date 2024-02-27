@@ -72,7 +72,7 @@ export class AuthController {
       issuer: "MyCompany",
       encoding: "base32",
     });
-    console.log("ussse ---------- ---------- ---------- ---------- ---------- ---------- r");
+    // console.log("ussse ---------- ---------- ---------- ---------- ---------- ---------- r");
     const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
     return res.json({ qrCodeImageUrl });
   }

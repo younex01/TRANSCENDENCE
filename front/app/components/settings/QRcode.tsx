@@ -41,24 +41,29 @@ export default function QRcode() {
   }, [image]);
 
   const onSubmit = async () => {
+    if(!/^\d+$/.test(qrData) || qrData.length !== 6){
+      console.log("take only numbers hh");
+      return ;
+    }
     await axios
-      .post("http://localhost:4000/auth/enableTwoFactorAuth", {
-        code: qrData,
-      })
-      .then(() => {
-        // console.log('response:', response);
-        // console.log('response:', qrData);
-        dispatch(
-          setProfileData({
-            ...datauser,
-            twoFactorAuthEnabled: true,
-          })
+    .post("http://localhost:4000/auth/enableTwoFactorAuth", {
+      code: qrData,
+    })
+    .then((response) => {
+      dispatch(
+        setProfileData({
+          ...datauser,
+          twoFactorAuthEnabled: true,
+        })
         );
+        console.log("-------------------", response.data);
+        
+        console.log("statur", response.data.status);
         toast.success("enabled succesfully");
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        toast.error("invalid code  ");
+        return toast.error("invalid code  ");
       });
   };
 
