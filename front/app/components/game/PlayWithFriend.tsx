@@ -1,6 +1,9 @@
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 import React, { useEffect, useRef, useState } from 'react'
 import { Winner } from './Winner';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 export const PlayWithFriend = () => {
     
@@ -25,6 +28,12 @@ export const PlayWithFriend = () => {
     const [player, setPlayer] = useState<Player>()
     const [computer, setComputer] = useState<Player>()
     const [winnerName, setWinnerName] = useState<string>("");
+
+    const [firstName,setFirstName] = useState<string>("Player1");
+    const [secondName,setSecondName] = useState<string>("Player2");
+
+    const [ids, setIds] = useState<string[]>([]);
+    const myData = useSelector(selectProfileInfo);
     
     //select canvas
     let canv = canvasRef.current;
@@ -186,52 +195,64 @@ export const PlayWithFriend = () => {
           setWinnerName(name);
     }
 
-
-
-useEffect(() => {
-  socket?.onAny((event, data) => {
-    if (event === "start")
-    {
-      setText("freind has join");
-      if (divv.current)
-      {
-        console.log("remove div");
-        divv.current.style.display = 'none';
+    
+    const fetchData = async () => {
+      try {
+      const response = await axios.get('http://localhost:4000/user/me', {withCredentials: true});
+      const userData = response.data.user;
+      socket?.emit("user_id",userData.id);
+      // socket?.emit("playAgainRequest", myData.id)
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
-      setStart(false);
-      setGame(true);//todo update
-    }
-    else if (event == "update")
-    {
-      canv = canvasRef.current;
-      if(canv)
-      {
-        console.log("start the game");
-        setCanvas(canv)
-        setCtx(canv.getContext('2d'))
-      }
-      render(data);
-    }
-    else if(event == "winner")
-    {
-      console.log("i am in the winner");
-      checkWinner(data);
-    }
-    // else if(event == "give_up")
-    // {
-
-    // }
-  })
-  return () => {socket?.offAny()}
+    };
+    
+    useEffect(() => {
+      socket?.onAny((event, data) => {
+        if (event === "start")
+        {
+          setText("freind has join");
+          if (divv.current)
+          {
+            console.log("remove div");
+            divv.current.style.display = 'none';
+            fetchData();
+          }
+          setStart(false);
+          setGame(true);//todo update
+        }
+        else if (event == "update")
+        {
+          setFirstName(data.players[0].name);
+          setSecondName(data.players[1].name);
+          canv = canvasRef.current;
+          if(canv)
+          {
+            console.log("start the game");
+            setCanvas(canv)
+            setCtx(canv.getContext('2d'))
+          }
+          render(data);
+        }
+        else if(event == "winner")
+        {
+          checkWinner(data);
+        }
       })
+      return () => {socket?.offAny()}
+    })
+    
+    
+    
+    const handleRandom =  () => {
+      console.log("send connection");
+      const newSocket = io("http://localhost:3001");
+      setSocket(newSocket);
+      console.log("newSocket", newSocket);
       
-    const handleRandom = () => {
-    console.log("send connection");
-    const newSocket = io("http://localhost:3001");
-    setSocket(newSocket);
-    setRandom(false);
-    setStart(true);
-    setText("wait for freind to join");
+      setRandom(false);
+      setStart(true);
+      setText("wait for freind to join");
   }
   
   return (
@@ -254,8 +275,8 @@ useEffect(() => {
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">
-                <span className="text-white pr-12">sanji</span>
-                <span className="text-white pl-12">AI</span>
+                <span className="text-white pr-12">{firstName}</span>
+                <span className="text-white pl-12">{secondName}</span>
                 </div>
                 <div className="flex justify-center">
                 {!winning &&
@@ -267,7 +288,7 @@ useEffect(() => {
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}
-                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
+                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} ids={ids} />}
                 </div>
             </div>
             </>
