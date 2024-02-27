@@ -73,15 +73,15 @@ export default function PersonnelInfo() {
         return;
       }
       else if (nickName.length > 8) {
-        toast.info("Username must be at least 8 characters");
+        toast.info("Username must be at most 8 characters");
         return;
       }
-      else if (firstName.length > 10) {
-        toast.info("firstName must be at least 10 characters");
+      else if (firstName.length > 14) {
+        toast.info("firstName must be at most 14 characters");
         return;
       }
       else if (lastName.length > 14) {
-        toast.info("lastName must be at least 14 characters");
+        toast.info("lastName must be at most 14 characters");
         return;
       }
 

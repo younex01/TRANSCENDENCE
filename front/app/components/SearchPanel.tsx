@@ -80,8 +80,8 @@ export default function SearchPanel() {
 
 
   return (
-    <div className='flex flex-row items-center justify-around sm:justify-around mt-14 w-[100%] '>
-      <div className='searchBar w-6/12 lg:w-4/12 max-w-md '>
+    <div className='flex flex-row items-center justify-around sm:justify-around mt-14 w-[100%] relative '>
+      <div className='searchBar w-6/12 md:w-[500px] '>
         <form className="w-full">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -90,21 +90,21 @@ export default function SearchPanel() {
             <input
               type="search"
               id="default-search"
-              className="block w-[100%] p-4 pl-10 text-sm text-gray-900 border  rounded-lg  focus:ring-blue-500 focus:border-gray-500 vbg-[rgba(217, 217, 217, 0.38)] dark:placeholder-gray-400 dark:text-gray dark:focus:ring-black"
+              className="block w-[100%] p-4 pl-10 text-sm text-gray-900 border  rounded-lg   outline-none vbg-[rgba(217, 217, 217, 0.38)] dark:placeholder-gray-400 dark:text-gray dark:focus:ring-black"
               placeholder="Search..."
               onChange={(e) => setSearchForUser(e.target.value)} />
           </div>
         </form>
         {searchForUser.length > 0 && (
 
-          <div className='absolute h-[400px] w-[400px] bg-white z-[1000] p-4'>
+          <div className='absolute h-[400px] w-6/12 md:w-[500px] rounded-lg bg-white z-[1000] p-4 border-[0.5px] border-[#dbe0f6] overflow-y-visible overflow-x-hidden no-scrollbar'>
             <div className='flex flex-col gap-4 w-full'>{allUsers?.map((user: any, index: any) => (
               <Link href={`/Profile/${user.id}`} key={index} >
-                <div className='flex justify-start items-center  border-black border-[1px] bg-[#e9edff] h-[90px] gap-2 p-6 cursor-pointer'>
-                  <div className='h-[70px] w-[70px]'><img className='h-[70px] w-[70px] rounded-[35px]' src={`${user.avatar}`} alt="" /></div>
+                <div className='flex justify-start items-center  rounded-[14px]  bg-[#f3f5ff] hover:bg-[#e9edff] h-[90px] gap-2 p-2 md:p-4 cursor-pointer'>
+                  <div className='h-[70px] w-[70px]'><img className='min-h-[70px] min-w-[70px] rounded-[35px]' src={`${user.avatar}`} alt="" /></div>
                   <div>
-                    <div>{user.firstName} {user.lastName}</div>
-                    <div>{user.username}</div>
+                    <div className='font-semibold  text-[#252f5b] text-[12px] md:text-[16px]'>{user.firstName} {user.lastName}</div>
+                    <div className="text-[10px] md:text-[14px] text-[#7d84a3]">{user.username}</div>
                   </div>
                 </div>
               </Link>
@@ -114,10 +114,10 @@ export default function SearchPanel() {
         )}
       </div>
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
-      <div className='notifications relative '>
+      <div className='notifications relative bg-white p-2 rounded-lg'>
         <img src="../../../images/Bell.svg" alt="../../../images/Bell.svg" className='w-8 h-8' onClick={() => { setIsClicked(!isClicked); setRefreshNoifications(!refreshNotifs) }} />
         {isClicked && (
-          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[2px]'>
+          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[0.5px]'>
             {myNotification && myNotification.reverse().map((notif: any, index: any) =>
               <>
                 {notif.status === "Pending" ? (
@@ -154,8 +154,8 @@ export default function SearchPanel() {
                             <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
                               <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
                             </div>
-                            <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                              <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                            <div className='absolute top-0 -right-2 h-[15px] w-[15px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                              <img className='h-[6px] w-[6px]' src="vector.svg" alt="vector.svg" />
                             </div>
                           </div>
                           <div className='flex flex-col '>
@@ -228,7 +228,7 @@ export default function SearchPanel() {
             )}
           </div>
         )}
-      </div>
+        </div>
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
     </div>
   )

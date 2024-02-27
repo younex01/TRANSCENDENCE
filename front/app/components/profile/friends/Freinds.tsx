@@ -29,9 +29,10 @@ export default function freinds({userId} : {userId: any}) {
 
       <div className="flex justify-start items-center pt-3 pl-10">
         <div
-          className={`border-b-2 cursor-pointer border-[#8292D7] w-[15%] mb-2 text-xl text-[#1b244a]  font-medium`}
+          className={`cursor-pointer border-[#8292D7] w-[15%] mb-2 text-xl text-[#263266]  font-medium flex gap-[6px]`}
           // onClick={() => handleTabChange('freinds')}
         >
+          <img src="../../../creatg.svg" alt="../../../creatg.svg" />
           Freinds
         </div>
         {/* <div

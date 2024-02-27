@@ -35,7 +35,7 @@ export default function LeftBar() {
 
   return (
     <div
-      className={`fixed z-40 h-screen sidebar  flex flex-col justify-between items-center transition-all duration-300 ${
+      className={`fixed z-[1000] h-screen sidebar  flex flex-col justify-between items-center transition-all duration-300 ${
         isSidebarOpen ? "w-full backdrop-blur-[4px]" : "-translate-x-full"
       } md:w-20 md:translate-x-0 md:flex md:relative sm:z-1 sm:h-screen`}
     >
@@ -75,8 +75,8 @@ export default function LeftBar() {
               <Image
                 src="../../../images/Chat.svg"
                 alt="logo"
-                width={42}
-                height={43}
+                width={32}
+                height={32}
                 property="true"
                 className="absolute object-cover"
               />
@@ -87,8 +87,8 @@ export default function LeftBar() {
               <Image
                 src="../../../images/Game.svg"
                 alt="logo"
-                width={38}
-                height={36}
+                width={32}
+                height={32}
                 property="true"
                 className="absolute object-cover"
               />
@@ -113,8 +113,8 @@ export default function LeftBar() {
             <Image
               src="../../../images/Login.svg"
               alt="logo"
-              width={41}
-              height={40}
+              width={35}
+              height={35}
             />
           </button>
         </div>
