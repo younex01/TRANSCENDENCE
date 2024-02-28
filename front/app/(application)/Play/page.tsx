@@ -1,16 +1,17 @@
+"use client";
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 import React, { useEffect, useRef, useState } from 'react'
-import { Winner } from './Winner';
+import { Winner } from '../../components/game/Winner';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
-export const PlayWithFriend = () => {
+export default function page() {
     
     const [socket,setSocket] = useState<Socket>()
     const [text,setText] = useState<string>("")
-    const [random,setRandom] = useState<boolean>(true);
-    const [start, setStart] = useState<boolean>(false);
+
+    const [start, setStart] = useState<boolean>(true);
     const [game, setGame] = useState<boolean>(false);
     const divv = useRef<HTMLCanvasElement>(null);
 
@@ -75,15 +76,19 @@ export const PlayWithFriend = () => {
     }
   
    interface Player {
-      id: string;
-      playerNb: number;
-      x: number;
-      y: number;
-      score: number;
-      width: number;
-      height: number;
-      name: string;
-  }
+    id: string;
+    playerNb: number;
+    x: number;
+    y: number;
+    score: number;
+    width: number;
+    height: number;
+    name: string;
+    giveUp: boolean;
+    db_id: string;
+    pic:string;
+    g_id:string;
+}
   
    interface Game{
       ball: Ball;
@@ -250,23 +255,23 @@ export const PlayWithFriend = () => {
       return () => {socket?.offAny()}
     })
     
+    useEffect(() => {
+        
+        console.log("send connection");
+        const newSocket = io("http://localhost:3002");
+        setSocket(newSocket);
+        console.log("newSocket", newSocket);
+        
+        setStart(true);
+        setText("wait for freind to join");
+
+        newSocket.off();
+    },[])
     
-    
-    const handleRandom =  () => {
-      console.log("send connection");
-      const newSocket = io("http://localhost:3001");
-      setSocket(newSocket);
-      console.log("newSocket", newSocket);
-      
-      setRandom(false);
-      setStart(true);
-      setText("wait for freind to join");
-  }
-  
+
   return (
     <>
     <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
-        {random && <button onClick={handleRandom}>random friend</button>}
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 
@@ -274,12 +279,12 @@ export const PlayWithFriend = () => {
             <div className="flex justify-around  flex-col">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
-                <div className="bg-slate-500 w-20 h-20 rounded-full " src={pic1}></div>
-                    <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`}} ></div>
+                    <div className="text-white text-5xl font-bold pl-4 pt-4">{`${score1}`}</div>
                 </div>
                 <div className="flex flex-raw">
                     <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                    <div className="bg-slate-500 w-20 h-20 rounded-full " src={pic2}></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})`}}></div>
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">

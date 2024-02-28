@@ -1,10 +1,10 @@
 import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket , Server} from 'socket.io';
 import { Ball, Canvas, Game, Player } from './game-data.interface';
-import { GameService } from './random-friend.service';
+import { GameService } from './Play_with_friend.service';
 
-@WebSocketGateway(3001, {cors: '*'})
-export class RandomFriendGateway implements OnGatewayDisconnect {
+@WebSocketGateway(3002, {cors: '*'})
+export class PlayFriendGateway implements OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameService) {};
 

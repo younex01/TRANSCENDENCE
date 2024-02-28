@@ -192,7 +192,9 @@ export default function Page(props: any) {
               <div className='absolute right-8' onClick={() => setDMsSettings(!DMsSettings)}> <img src="/3no9at.svg" alt="/3no9at.svg" /> </div>
               {DMsSettings &&
               <div className='rounded-[20px] w-[200px] h-[140px] top-[80px] right-4 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
+                <Link href="../Play">
                 <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Invite to Play</button>
+                </Link>
                 <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
                 <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Block</button>
               </div>
@@ -459,12 +461,12 @@ export default function Page(props: any) {
                                             )
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="/Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="/Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
@@ -474,7 +476,7 @@ export default function Page(props: any) {
                                       (
                                         <div className='font-semibold absolute right-12 top-4 bg-[#e6ebfe] flex flex-col border-[1px] rounded-[10px] p-1 z-[1000]'>
                                           <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                          <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                          <Link href="/Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                         </div>
                                       )
                                       :
@@ -493,12 +495,12 @@ export default function Page(props: any) {
                                               <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData.members[index], index) }}>make admin</div>
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+  <Link href="/Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+  <Link href="/Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>

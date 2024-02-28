@@ -110,6 +110,26 @@ export class UserController {
         this.eventEmitter.emit("refreshfriendShip");
     }
 
+    @Post('sendPlayAgain')
+    @UseGuards(AuthGuard('jwt'))
+    async sendPlayAgain(@Body() req: any) {
+        const user = await this.UserService.getUser(req.target);
+
+
+        if (!user) return;
+        const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
+        if (isRequestExist && isRequestExist.status === "Declined") {
+
+            await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
+        }
+        else {
+
+            await this.UserService.createFriendRequest(req.target, req.sender);
+        }
+        this.eventEmitter.emit("refreshNotifications");
+        // this.eventEmitter.emit("refreshfriendShip");
+    }
+
     // @Post('PlayAgainRequest')
     // @UseGuards(AuthGuard('jwt'))
     // async sendFriendRequest(@Body() req: any) {

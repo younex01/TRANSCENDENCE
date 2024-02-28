@@ -12,18 +12,38 @@ interface Props {
   ids:string[];
 }
 
+// useEffect(() => {
+//   const sendFriendRequest = async () => {
+//     if (clicked) {
+//       try {
+//         await axios.post(
+//           `http://localhost:4000/user/sendFriendRequest`,
+//           { sender: myData.id, target: props.params.id },
+//           { withCredentials: true }
+//         );
+//         setIsclicked(false);
+//       } catch (error) {
+//         console.error("Error fetching users:", error);
+//       }
+//     }
+//   };
+//   sendFriendRequest();
+// }, [clicked]);
+
 export const Winner = ({ setPlayAgain, setWinning, winnerName, ids}:Props) => {
 
   const myData = useSelector(selectProfileInfo);
   
-  const play = async() => {
+  const play = async ():Promise<void> => {
+    console.log("Play again");
+    console.log(myData.id);
     await axios.post(
-      `http://localhost:4000/user/sendFriendRequest`,
-      { sender: myData.id, target: tar},
+      `http://localhost:4000/user/sendPlayAgain`,
+      { sender: myData.id, target:"98946"},
       { withCredentials: true });
-    console.log(winnerName);
-    setPlayAgain(true);
-    setWinning(false);
+    // console.log(tar);
+    // setPlayAgain(true);
+    // setWinning(false);
     //socket?.emit("play_again");
   }
 
