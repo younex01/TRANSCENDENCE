@@ -29,9 +29,23 @@ model User {
   blockedUsers         String[]
   // notifications        Notification[]
   gameHistory               GameResult[]
+  sentToPlay         inviteToPlay[] @relation("sent")
+  receivedToPlay     inviteToPlay[] @relation("received")
+            
 }
 
 model friendRequest {
+  id         String   @id @default(uuid())
+  sender     User     @relation("sent", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User     @relation("received", fields: [receiverId], references: [id])
+  receiverId String
+  status     String
+  createdAt  DateTime @default(now())
+  // notifications Notification[]
+}
+
+model inviteToPlay {
   id         String   @id @default(uuid())
   sender     User     @relation("sent", fields: [senderId], references: [id])
   senderId   String

@@ -233,6 +233,8 @@ export const PlayWithFriend = () => {
           setSecondName(data.players[1].name);
           setPic1(data.players[0].pic);
           setPic2(data.players[1].pic);
+          const ArrIds = [data.players[0].db_id, data.players[1].db_id]
+          setIds(ArrIds);
           canv = canvasRef.current;
           if(canv)
           {
@@ -274,12 +276,12 @@ export const PlayWithFriend = () => {
             <div className="flex justify-around  flex-col">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
-                <div className="bg-slate-500 w-20 h-20 rounded-full " src={pic1}></div>
+                <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
                     <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
                 </div>
                 <div className="flex flex-raw">
                     <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                    <div className="bg-slate-500 w-20 h-20 rounded-full " src={pic2}></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})`, backgroundSize: 'cover'}}></div>
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">

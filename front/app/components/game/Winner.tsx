@@ -12,23 +12,7 @@ interface Props {
   ids:string[];
 }
 
-// useEffect(() => {
-//   const sendFriendRequest = async () => {
-//     if (clicked) {
-//       try {
-//         await axios.post(
-//           `http://localhost:4000/user/sendFriendRequest`,
-//           { sender: myData.id, target: props.params.id },
-//           { withCredentials: true }
-//         );
-//         setIsclicked(false);
-//       } catch (error) {
-//         console.error("Error fetching users:", error);
-//       }
-//     }
-//   };
-//   sendFriendRequest();
-// }, [clicked]);
+//handle if the player send play again and quite
 
 export const Winner = ({ setPlayAgain, setWinning, winnerName, ids}:Props) => {
 
@@ -36,10 +20,15 @@ export const Winner = ({ setPlayAgain, setWinning, winnerName, ids}:Props) => {
   
   const play = async ():Promise<void> => {
     console.log("Play again");
-    console.log(myData.id);
+    let tar: string = "";
+    if (myData.id === ids[0])
+      tar = ids[1];
+    else
+      tar = ids[0];
+    console.log(tar);
     await axios.post(
       `http://localhost:4000/user/sendPlayAgain`,
-      { sender: myData.id, target:"98946"},
+      { sender: myData.id, target:tar}, // to handel
       { withCredentials: true });
     // console.log(tar);
     // setPlayAgain(true);
@@ -51,7 +40,7 @@ export const Winner = ({ setPlayAgain, setWinning, winnerName, ids}:Props) => {
     <div className="bg-slate-500 h-[450px] w-[900px] rounded-3xl flex justify-around item-center flex-col">
       <div className='text-7xl pt-12 font-bold text-white max-md:max-w-full max-md:text-4xl flex justify-around items-center'>{winnerName} Win's</div>
       <div className='flex justify-around items-center flex-row'>
-        <button className='bg-amber-100 p-2 rounded-3xl text-3xl' onClick={play}>play again</button>
+        <Link href="../Play"><button className='bg-amber-100 p-2 rounded-3xl text-3xl' onClick={play}>play again</button></Link>
         <Link href="/Profile"> <button className='bg-amber-100 p-2 rounded-3xl text-3xl'>leave</button> </Link>
       </div>
     </div>

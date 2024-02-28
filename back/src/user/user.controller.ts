@@ -113,22 +113,29 @@ export class UserController {
     @Post('sendPlayAgain')
     @UseGuards(AuthGuard('jwt'))
     async sendPlayAgain(@Body() req: any) {
+        console.log("i am here");
         const user = await this.UserService.getUser(req.target);
 
-
         if (!user) return;
-        const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
+        const isRequestExist = await this.UserService.isPlayRequest(req.target, req.sender);
         if (isRequestExist && isRequestExist.status === "Declined") {
 
-            await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
+            await this.UserService.pendPlayRequest(isRequestExist.id, req.sender, req.target);
         }
         else {
 
-            await this.UserService.createFriendRequest(req.target, req.sender);
+            await this.UserService.createPlayRequest(req.target, req.sender);
         }
         this.eventEmitter.emit("refreshNotifications");
         // this.eventEmitter.emit("refreshfriendShip");
     }
+
+
+
+
+
+
+
 
     // @Post('PlayAgainRequest')
     // @UseGuards(AuthGuard('jwt'))
@@ -181,10 +188,48 @@ export class UserController {
 
     }
 
+    @Post('acceptInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async acceptInviteToPlay(@Body() req: any) {
+        const isExiste = await this.UserService.isRequestExistAndPendingToPlay(req.notif.id, req.myId);
+        if (isExiste !== 1) return;
+
+        await this.UserService.acceptInviteToPlay(req.notif.id);
+        // await this.UserService.makeFriends1(req.myId, req.notif.senderId);
+        // await this.UserService.makeFriends2(req.myId, req.notif.senderId);
+        // await this.ChatService.createDM(req.myId, req.notif.senderId);
+        // await this.ChatService.createDM(req.notif.senderId);
+        this.eventEmitter.emit("refreshNotifications");
+        this.eventEmitter.emit("refreshfriendShip");
+
+    }
+
+
+    @Post('declineInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async declineInviteToPlay(@Body() req: any) {
+        const isExiste = await this.UserService.isRequestExistAndPendingToPlay(req.notif.id, req.myId);
+
+        if (isExiste !== 1) return;
+        // await this.UserService.a(req.notif.id);
+        await this.UserService.declineInviteToPlay(req.notif.id);
+        this.eventEmitter.emit("refreshNotifications");
+        this.eventEmitter.emit("refreshfriendShip");
+        // return myNotifications;
+
+    }
+
     @Get('getMyNotifications')
     @UseGuards(AuthGuard('jwt'))
     async getMyNotifications(@Query('userId') userId: string) {
         const myNotifications = await this.UserService.getMyNotifications(userId);
+        return myNotifications;
+
+    }
+    @Get('getInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async getInviteToPlay(@Query('userId') userId: string) {
+        const myNotifications = await this.UserService.getInviteToPlay(userId);
         return myNotifications;
 
     }
