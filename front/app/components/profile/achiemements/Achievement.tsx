@@ -23,18 +23,17 @@ export default function Achievement({
 
   return (
     <div
-      className={`bg-[#f4f6ff] flex justify-between h-full mb-[14px] rounded-lg overflow-hidden lg:col-span-2 2xl:col-span-1`}
-    >
+      className={`bg-[#f4f6ff] flex justify-between h-full mb-[14px] rounded-lg overflow-hidden lg:col-span-2 2xl:col-span-1`}>
       <div
         className={
           achieved
             ? `flex flex-col justify-between h-[80%] items-center`
-            : `flex flex-col justify-between h-[80%] items-center blur-[3px]`
+            : `flex flex-col justify-between h-[80%] items-center blur-[2px]`
         }
       >
         <div className="m-2">
-          <h2 className="text-xl font-semibold">{name}</h2>
-          <p className="text-sm">{status}</p>
+          <h2 className="text-lg font-semibold text-[#252f5b]">{name}</h2>
+          <p className="text-sm text-[#252f5b]">{status}</p>
         </div>
         <div className={`flex flex-row justify-center items-center gap-1`}>
           <div>
@@ -42,25 +41,25 @@ export default function Achievement({
               <Image
                 src={achievedpic}
                 alt="mark"
-                width={10}
-                height={10}
-                className="w-6 h-8 ml-2"
+                width={5}
+                height={4}
+                className="w-4 h-4 ml-2"
               />
             ) : (
               <Image
                 src={notAchivedpic}
                 alt="mark"
-                width={10}
-                height={10}
-                className="w-6 h-8 ml-2"
+                width={9}
+                height={9}
+                className="w-5 h-5 ml-2"
               />
             )}
           </div>
           <div>
             {achieved ? (
-              <p className="text-sm font-semibold text-[#7187E2]">Achieved</p>
+              <p className="text-[12px] font-semibold text-[#7187E2]">Achieved</p>
             ) : (
-              <p className="text-sm font-semibold text-[#7187E2]">
+              <p className="text-[12px] font-semibold text-[#7187E2]">
                 Not Achieved
               </p>
             )}

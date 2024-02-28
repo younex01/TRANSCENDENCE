@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store/store";
 
 export default function LeftBar() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const socket = useSelector((state:RootState) => state.socket.socket);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,9 +25,9 @@ export default function LeftBar() {
 
   const logout = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/auth/logout");
-      await profilePersistor.purge();
+      const response = await axios.get("http://localhost:4000/auth/logout", {withCredentials: true});
       router.push("/");
+      await profilePersistor.purge();
     } catch (error) {
       console.error("Logout failed:", error);
     }

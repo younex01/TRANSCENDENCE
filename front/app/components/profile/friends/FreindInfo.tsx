@@ -44,7 +44,7 @@ export default function FreindInfo({userId}: {userId: string}) {
   return (
     <>
     {myFreinds && myFreinds.length > 0 ? (
-      <div className='w-full flex justify-center items-center h-[85%]'>
+      <div className='w-full flex justify-center items-center h-full'>
         <Swiper
           spaceBetween={3}
           slidesPerView={6}

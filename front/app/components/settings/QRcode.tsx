@@ -41,30 +41,26 @@ export default function QRcode() {
   }, [image]);
 
   const onSubmit = async () => {
-    if(!/^\d+$/.test(qrData) || qrData.length !== 6){
-      console.log("take only numbers hh");
-      return ;
+    if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
+      toast.info("Put the six digit code");
+      return;
     }
-    await axios
-    .post("http://localhost:4000/auth/enableTwoFactorAuth", {
-      code: qrData,
-    })
-    .then((response) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/auth/enableTwoFactorAuth",
+        { code: qrData },
+      );
+      console.log("Response:", response.data);
       dispatch(
         setProfileData({
           ...datauser,
           twoFactorAuthEnabled: true,
         })
-        );
-        console.log("-------------------", response.data);
-        
-        console.log("statur", response.data.status);
-        toast.success("enabled succesfully");
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-        return toast.error("invalid code  ");
-      });
+      );
+      toast.success("Enabled successfully");
+    } catch (error) {
+      toast.error("Invalid code");
+    }
   };
 
   const onDisable2fa = async () => {
@@ -89,7 +85,7 @@ export default function QRcode() {
       {image && (
         <>
           <div className="">
-            <h2 className="text-center font-poppins tex t-2xl font-semibold text-gray-500">
+            <h2 className="text-center font-poppins text-2xl font-semibold text-[#252f5b]">
               Authentication QR code
             </h2>
           </div>
@@ -124,14 +120,14 @@ export default function QRcode() {
           <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row  px-[60px] w-full">
             {datauser.twoFactorAuthEnabled ? (
               <button
-                className="w-32 h-10 bg-[#e19b91] text-white rounded-lg"
+                className="w-32 h-10 bg-[#e19b91] text-white rounded-lg hover:bg-[#e49589]"
                 onClick={onDisable2fa}
               >
                 Disable
               </button>
             ) : (
               <button
-                className="w-32 h-10 bg-[#90c8b8] text-white rounded-lg"
+                className="w-32 h-10 bg-[#90c8b8] text-white rounded-lg hover:bg-[#8ccd9f]"
                 onClick={onSubmit}
               >
                 Enable

@@ -45,11 +45,13 @@ export class AuthController {
     return res.redirect("http://localhost:3000/Profile");
   }
 
-  @Post("logout")
+  @Get("logout")
   @UseGuards(AuthGuard("jwt"))
   ft_logout(@Res() res) {
     res.clearCookie("JWT_TOKEN");
-    return res.send({ logout: true, message: "Logged out" });
+    res.status(200).json({ redirect: "http://localhost:3000" });
+    // return res.redirect("http://localhost:3000");
+
   }
 
   @Post("generateTwoFactorAuthCode")
@@ -108,6 +110,23 @@ export class AuthController {
       return res.status(400).json({ message: "Invalid token" });
     }
   }
+
+
+  // if(user.twoFactorAuthEnabled){
+  //     return res.json({status: true, message: 'Two-factor authentication is already enabled' });
+  // }
+  // const isVerified = speakeasy.totp.verify({
+  //     secret: user.twoFactorAuthCode,
+  //     encoding: 'base32',
+  //     token: body.code,
+  // });
+  // if (isVerified) {
+  //     await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: true } });
+  //     return res.json({status: true, message: 'Two-factor authentication is enabled' });
+  // } else {
+  //     return res.json({status: false, message: 'invalide code' });
+  // }
+  
   @Post("enableTwoFactorAuth")
   @UseGuards(AuthGuard("jwt"))
   async enableTwoFactorAuth(
@@ -117,20 +136,6 @@ export class AuthController {
   ) {
     const user = req.user;
 
-    // if(user.twoFactorAuthEnabled){
-    //     return res.json({status: true, message: 'Two-factor authentication is already enabled' });
-    // }
-    // const isVerified = speakeasy.totp.verify({
-    //     secret: user.twoFactorAuthCode,
-    //     encoding: 'base32',
-    //     token: body.code,
-    // });
-    // if (isVerified) {
-    //     await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: true } });
-    //     return res.json({status: true, message: 'Two-factor authentication is enabled' });
-    // } else {
-    //     return res.json({status: false, message: 'invalide code' });
-    // }
 
     if (user.twoFactorAuthEnabled) {
       return res.json({
@@ -154,9 +159,12 @@ export class AuthController {
       });
     } else {
       // return res.json({status: false, message: 'invalide code' });
-      return res.status(400).json({ message: "Bad request" });
+      return res.status(400).json();
     }
   }
+
+
+
 
   @Post("disableTwoFactorAuth")
   @UseGuards(AuthGuard("jwt"))

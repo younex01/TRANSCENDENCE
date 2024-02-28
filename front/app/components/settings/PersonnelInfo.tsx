@@ -112,7 +112,7 @@ export default function PersonnelInfo() {
   ) : (
     <div className="flex flex-col justify-between h-[90%]">
       <div className="">
-        <h2 className="text-[#5F5F5F] font-poppins text-xl font-semibold text-center">
+        <h2 className="text-[#252f5b] font-poppins text-xl font-semibold text-center">
           Personal information
         </h2>
       </div>
@@ -213,7 +213,7 @@ export default function PersonnelInfo() {
       </div>
       <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row sm:justify-end px-[60px] w-full">
         <button
-          className="w-32 h-10 bg-[#909DC8] text-white rounded-lg"
+          className="w-32 h-10 bg-[#909DC8] text-white rounded-lg hover:bg-[#98a9dc]"
           onClick={() => onSubmit()}
         >
           Save Changes

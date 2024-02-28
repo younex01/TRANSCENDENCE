@@ -7,6 +7,7 @@ import Freinds from "./../../../components/profile/friends/Freinds";
 import axios from "axios";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import LastGames from "@/app/components/profile/LastGames";
+import Image from "next/image";
 
 export default function Profile(props: any) {
   // const refreshNotifs = useSelector((state:RootState) => state.refreshNotifs.refreshNoifications);
@@ -163,15 +164,18 @@ export default function Profile(props: any) {
         <div className="w-full h-[100vh] bg-[#dbe0f6] overflow-y-auto pt-[150px] flex flex-col items-center gap-5">
           <div className="flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5">
             <div className="bg-white flex flex-col w-full xl:w-[900px] h-[750px] gap-3 rounded-xl">
-              <div className="relative flex rounded-[16px] flex-col bg-[#f5f7ff] justify-between pb-2 p-5 mx-5 mt-5">
-                <div className="relative mt-2 w-full flex items-start">
-                  <div className="flex flex-row items-center ml-2">
-                    <div className="w-[135px] h-[135px] rounded-full overflow-hidden pt-3">
-                      <img
-                        className="object-cover w-[100px] h-[100px] rounded-full"
+              <div className="relative flex rounded-[16px] flex-col bg-[#f5f7ff] justify-between p-5 mx-5 mt-5">
+                <div className="relative w-full flex items-start">
+                  <div className="flex  flex-row items-center gap-[10px]">
+                    <div className="min-w-[100px] min-h-[100px] relative">
+                      <Image
                         src={userData?.avatar}
                         alt={userData?.avatar}
-                      />
+                        // width={100}
+                        // height={100} 
+                        fill={true}
+                        className="rounded-full object-cover"/>
+
                     </div>
                     <div className="flex flex-row items-start justify-center w-full">
                       <div className="flex flex-col justify-center items-center gap-1 w-max-content">
@@ -186,8 +190,8 @@ export default function Profile(props: any) {
                         <div className="font-light text-[#7d84a3] text-[15px]"> {userData.username}</div>
                       </div>
                       {props.params.id !== myData.id && (
-                        <div className="bg-red-500 flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-2">
-                          <h4 className="text-[11px]">In A Game</h4>
+                        <div className="bg-[#3c4778] flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-1 text-white">
+                          <h4 className="text-[11px] p-[2px]">In A Game</h4>
                         </div>
                       )}
                     </div>
@@ -255,7 +259,7 @@ export default function Profile(props: any) {
                 )}
               </div>
 
-              <div className="h-[70vh] max-h-[590px] w-[94%] rounded-[16px] mb-8 px-3 mx-5 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]">
+              <div className="h-[70vh] max-h-[590px] rounded-[16px] mb-8 px-3 mx-5 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]">
                 <LastGames />
               </div>
             </div>
