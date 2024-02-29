@@ -135,7 +135,7 @@ export class GameService {
       }
     }
 
-    removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
+    removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server,ids:string[]): number {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
@@ -163,6 +163,12 @@ export class GameService {
                 server.to(roomId[0]).emit("winner",game[i].players[0].name);
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);
               }
+              console.log("**********");
+              console.log(ids);
+              ids = ids.filter(id => id !== game[i].players[0].db_id);
+              ids = ids.filter(id => id !== game[i].players[1].db_id);
+              console.log(ids);
+              console.log("**********");
             }
           }
           game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
@@ -177,7 +183,6 @@ export class GameService {
           {
             game.splice(i, 1);
             break;
-            
           }
         }
       }
