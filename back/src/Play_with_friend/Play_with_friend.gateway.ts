@@ -25,26 +25,12 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   // fix play again
 
   @SubscribeMessage('connecte')
-  handleConnection(socket: Socket) {
-    this.connectedUsers[socket.id] = socket;
-
-    // khasss nakhod ri id dya bd yal kola wahded
-  }
-
-  @SubscribeMessage('Play')
-  async handleGame(
-    @MessageBody() id: string,
-    @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
+  async handleConnection(socket: Socket): Promise<void> {
     this.connectedUsers[socket.id] = socket;
     const availibleRoomId = Object.keys(this.rooms).find(roomId => this.rooms[roomId].length == 1);
 
     //check if the user is in the game 
-    //check if db_id is exist or not
-    console.log(this.ids);
-    console.log(id)
-    if (this.ids.includes(id))
-      return;
+
     if (availibleRoomId)
     {
       let newBall:Ball = this.ball;
@@ -61,8 +47,8 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
         players: this.players[this.id],
         rooms: this.rooms
         };
-      // console.log("------------Game-Data-------------");
-      // console.log(newGame)
+      console.log("------------Game-Data-------------");
+      console.log(newGame)
       this.game.push(newGame);
       this.players = {};
       this.rooms = {};
@@ -80,20 +66,8 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
         this.players[this.id] = [];
       }
       this.players[this.id].push({id: newRoomId, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
-      socket.emit("new_game");
     }
   }
-
-  @SubscribeMessage('set_players')
-  handlePlayers(
-    @MessageBody() id: string,
-    @ConnectedSocket() client: Socket,
-  )
-  {
-      if(!this.ids.includes(id))
-        this.ids.push(id);
-  }
-
 
   @SubscribeMessage('canvas_data')
   handleEvent(
@@ -109,7 +83,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
     const id: number = this.gameService.findNbById(this.game, socket.id);
     this.gameService.handleArrowMove(data, socket.id, this.game[id].players);
   }
-  
+
   @SubscribeMessage('mouse_move')
   handleMouseMove(@MessageBody() data: number, @ConnectedSocket() socket: Socket): void {
     const id: number = this.gameService.findNbById(this.game, socket.id);
@@ -138,7 +112,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
     console.log("handle disconnect");
     console.log("------------Game-Data-------------");
     console.log(this.game);
-    this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server,this.ids);
+    this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
     this.players = {};
     this.rooms = {};
     // console.log("------------Game-Data-------------");

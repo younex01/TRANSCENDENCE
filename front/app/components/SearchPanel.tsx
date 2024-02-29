@@ -192,7 +192,6 @@ export default function SearchPanel() {
                 )}
                 </div>
         )}
-      </div>
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
 
             {myNotification && myNotification.reverse().map((notif: any, index: any) =>
@@ -224,7 +223,7 @@ export default function SearchPanel() {
                     )}
 
                     {notif.senderId === myData.id && (
-
+                      
                       <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
                         <div className=' flex  p-3  gap-4' >
                           <div className='relative h-[50px] w-[50px]'>
@@ -247,11 +246,11 @@ export default function SearchPanel() {
                     )}
                   </>
                 )
-                  :
-                  notif.status === "Declined" ? (
-
-                    notif.senderId === myData.id && (
-                      <>
+                :
+                notif.status === "Declined" ? (
+                  
+                  notif.senderId === myData.id && (
+                    <>
                         <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
                           <div className=' flex  p-3  gap-4' >
                             <div className='relative h-[50px] w-[50px]'>
@@ -270,11 +269,11 @@ export default function SearchPanel() {
                         </div>
                       </>
                     )
-
-                  )
+                    
+                    )
                     :
                     notif.status === "Accepted" && (
-
+                      
                       notif.senderId === myData.id && (
                         <>
                           <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff] relative'>
@@ -297,13 +296,14 @@ export default function SearchPanel() {
                           </div>
                         </>
                       )
-
-                    )
-                }
+                      
+                      )
+                    }
 
               </>
             )}
       {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+            </div>
     </div>
   )
 }

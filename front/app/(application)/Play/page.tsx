@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 export default function page() {
-    
+
     const [socket,setSocket] = useState<Socket>()
     const [text,setText] = useState<string>("")
 
@@ -24,7 +24,7 @@ export default function page() {
     const [computerWinnes, setComputerWinnes] = useState<boolean>(false);
     const [winning, setWinning] = useState<boolean>(false);
     const [playAgain, setPlayAgain] = useState<boolean>(false);
-    
+
     const [net, setNet] = useState<Net>()
     const [player, setPlayer] = useState<Player>()
     const [computer, setComputer] = useState<Player>()
@@ -38,11 +38,11 @@ export default function page() {
 
     const [ids, setIds] = useState<string[]>([]);
     const myData = useSelector(selectProfileInfo);
-    
+
     //select canvas
     let canv = canvasRef.current;
     const [ball, setBall] = useState<Ball>();
-    
+
     useEffect(() => {
       if (player && computer && playAgain)
       {
@@ -54,8 +54,8 @@ export default function page() {
         setPlayerWinnes(false);
       }
     },[playAgain])
-  
-  
+
+
     //ball interface
     interface Ball{
       x:number;
@@ -66,7 +66,7 @@ export default function page() {
       velocityY: number;
       color: string;
     }
-  
+
     interface Net{
       x: number;
       y: number;
@@ -74,7 +74,7 @@ export default function page() {
       height: number;
       color: string;
     }
-  
+
    interface Player {
     id: string;
     playerNb: number;
@@ -89,7 +89,7 @@ export default function page() {
     pic:string;
     g_id:string;
 }
-  
+
    interface Game{
       ball: Ball;
       players: Player[];
@@ -109,12 +109,12 @@ export default function page() {
           setBall({x: canvas.width / 2, y: canvas.height / 2, radius: 15,speed: 0.9, velocityX: 5, velocityY: 5, color: "WHITE"});
         }  
     }, [ctx])
-  
+
     useEffect(()=> {
       if (computerWinnes || playerWinnes)
         setWinning((prev) => {return !prev})
     },[computerWinnes, playerWinnes])
-  
+
     const drawFirstPlayer = (player: Player) =>{
       if (ctx && canvas && player)
       {
@@ -131,7 +131,7 @@ export default function page() {
       }
       setScore2(computer.score);
     }
-  
+
     const drawRect = () => {
       if (ctx && canvas)
       {
@@ -139,7 +139,7 @@ export default function page() {
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
     };
-    
+
     const drawCircle = (data:Ball) => {
       if (ctx && canvas && ball)
       {
@@ -150,7 +150,7 @@ export default function page() {
         ctx.fill();
       }
     }
-    
+
     const drawNet = () => {
       if (ctx && canvas && net) {
         for (let i = 0; i <= canvas.height; i += 4) {
@@ -160,7 +160,7 @@ export default function page() {
       }
     };
 
-  
+
     useEffect(() => {
       const keydownHandler = (e:any) => {
         if (e.key === "ArrowUp" ) {
@@ -186,7 +186,7 @@ export default function page() {
         canvas?.removeEventListener("mousemove", mousemoveHandler);
       };
     });
-    
+
     const render = (data:Game) => {
       drawRect();
       drawNet()
@@ -196,14 +196,14 @@ export default function page() {
       drawFirstPlayer(data.players[0]);
       drawSecondPlayer(data.players[1]);
     } 
-    
-    
+
+
     const checkWinner = (name: string) => {
           setComputerWinnes((prev) => {return !prev})
           setWinnerName(name);
     }
 
-    
+
     const fetchData = async () => {
       try {
       const response = await axios.get('http://localhost:4000/user/me', {withCredentials: true});
@@ -217,7 +217,7 @@ export default function page() {
         console.error('Error fetching user data:', error);
       }
     };
-    
+
     useEffect(() => {
       socket?.onAny((event, data) => {
         if (event === "start")
@@ -238,6 +238,8 @@ export default function page() {
           setSecondName(data.players[1].name);
           setPic1(data.players[0].pic);
           setPic2(data.players[1].pic);
+          const ArrIds = [data.players[0].db_id, data.players[1].db_id]
+          setIds(ArrIds);
           canv = canvasRef.current;
           if(canv)
           {
@@ -254,20 +256,20 @@ export default function page() {
       })
       return () => {socket?.offAny()}
     })
-    
+
     useEffect(() => {
-        
+
         console.log("send connection");
         const newSocket = io("http://localhost:3002");
         setSocket(newSocket);
         console.log("newSocket", newSocket);
-        
+
         setStart(true);
         setText("wait for freind to join");
 
         newSocket.off();
     },[])
-    
+
 
   return (
     <>
@@ -279,12 +281,12 @@ export default function page() {
             <div className="flex justify-around  flex-col">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
-                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{ backgroundImage: `url(${pic1})`, backgroundSize: 'cover' }} ></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})` , backgroundSize: 'cover' }} ></div>
                     <div className="text-white text-5xl font-bold pl-4 pt-4">{`${score1}`}</div>
                 </div>
                 <div className="flex flex-raw">
                     <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})`, backgroundSize: 'cover'}}></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})` , backgroundSize: 'cover' }}></div>
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">

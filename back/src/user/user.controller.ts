@@ -127,7 +127,7 @@ export class UserController {
             await this.UserService.createPlayRequest(req.target, req.sender);
         }
         this.eventEmitter.emit("refreshNotifications");
-        // this.eventEmitter.emit("refreshfriendShip");
+        this.eventEmitter.emit("refreshfriendShip");
     }
 
 
