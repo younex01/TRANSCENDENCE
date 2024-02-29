@@ -65,12 +65,12 @@ const Home = () => {
         <div className='w-full h-[6%] flex flex-row justify-around items-center  '>
           <SearchPanel />
         </div>
-      <div className="flex flex-col items-center lg:w-full gap-9 xl:gap-5 pt-10">
+      <div className="flex flex-col items-center lg:w-full gap-5 xl:gap-5 pt-10">
           <div className='flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5 '>
             <div className="xl:w-[900px] w-[100%] h-[750px]">
               <Profile />
             </div>
-            <div className="xl:w-[900px] w-[100%] h-[750px]">
+            <div className="xl:w-[900px] w-[100%] xl:h-[750px]">
               <Achievements />
             </div>
           </div>

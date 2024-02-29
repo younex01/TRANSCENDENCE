@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
+import Image from 'next/image';
 
 export default function SearchPanel() {
 
@@ -101,7 +102,12 @@ export default function SearchPanel() {
             <div className='flex flex-col gap-4 w-full'>{allUsers?.map((user: any, index: any) => (
               <Link href={`/Profile/${user.id}`} key={index} >
                 <div className='flex justify-start items-center  rounded-[14px]  bg-[#f3f5ff] hover:bg-[#e9edff] h-[90px] gap-2 p-2 md:p-4 cursor-pointer'>
-                  <div className='h-[70px] w-[70px]'><img className='min-h-[70px] min-w-[70px] rounded-[35px]' src={`${user.avatar}`} alt="" /></div>
+                  <div className='min-h-[70px] min-w-[70px] relative'>
+                    <Image 
+                          src={`${user.avatar}`}
+                          fill={true}
+                          className='rounded-full object-cover' />
+                    </div>
                   <div>
                     <div className='font-semibold  text-[#252f5b] text-[12px] md:text-[16px]'>{user.firstName} {user.lastName}</div>
                     <div className="text-[10px] md:text-[14px] text-[#7d84a3]">{user.username}</div>

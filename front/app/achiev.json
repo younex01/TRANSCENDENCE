@@ -3,7 +3,7 @@
     {
       "name": "King",
       "status": "one",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/luffy.jpeg"
@@ -11,7 +11,7 @@
     {
       "name": "Cooker",
       "status": "two",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/sangi.jpeg"
@@ -19,7 +19,7 @@
     {
       "name": "Stealer",
       "status": "three",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/nami.jpeg"
@@ -27,7 +27,7 @@
     {
       "name": "Stronger",
       "status": "four",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/shanks.jpeg"
@@ -35,7 +35,7 @@
     {
       "name": "PongLyph",
       "status": "five",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/robiin.jpeg"
@@ -43,7 +43,7 @@
     {
       "name": "sixth",
       "status": "six",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/franky.jpeg"

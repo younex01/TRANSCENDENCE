@@ -121,7 +121,7 @@ export default function Home() {
                         >
                           X
                         </button>
-                      <div className="h-full w-full flex justify-center items-center flex-col">
+                      <div className="h-full w-full flex justify-center items-center flex-col overflow-y-visible overflow-x-hidden no-scrollbar">
 
 
                       {myFreinds.map((value: any, index: number) => (

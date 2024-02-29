@@ -134,6 +134,7 @@ export default function PersonnelInfo() {
             id="upload"
             className="absolute hidden cursor-pointer"
             onChange={handleAvatarChange}
+            accept="image/*"
           />
           {isLoading ? (
             <div>
