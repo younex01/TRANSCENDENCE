@@ -15,6 +15,8 @@ import speakeasy from "speakeasy";
 // import { authenticator } from 'otplib';
 import * as qrcode from "qrcode";
 import { log } from "console";
+import { UserDto } from "src/user/user.dto";
+import { AuthDto, code } from "./dtos/auth.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -84,7 +86,7 @@ export class AuthController {
   async verifyTwoFactorAuthCode(
     @Req() req,
     @Res() res,
-    @Body("code") code: string
+    @Body() code: code
   ) {
     console.log("req.cookies.USER_ID", req.cookies.USER_ID);
     console.log("req.cookies.USER_ID-----------", req.cookies);
@@ -96,8 +98,10 @@ export class AuthController {
     const isVerified = speakeasy.totp.verify({
       secret: user.twoFactorAuthCode,
       encoding: "base32",
-      token: code,
+      token: code.code,
     });
+    console.log("üser", user.twoFactorAuthCode);
+    
 
 
     log("isVerified", isVerified);
@@ -132,11 +136,11 @@ export class AuthController {
   async enableTwoFactorAuth(
     @Req() req,
     @Res() res,
-    @Body() body: { code: string }
+    @Body() body: code
   ) {
     const user = req.user;
 
-
+    log("userMosaaaaaaaaaaapahah", user);
     if (user.twoFactorAuthEnabled) {
       return res.json({
         status: true,

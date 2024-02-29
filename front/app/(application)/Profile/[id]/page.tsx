@@ -8,6 +8,7 @@ import axios from "axios";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import LastGames from "@/app/components/profile/LastGames";
 import Image from "next/image";
+import NotUser from "../NotUser";
 
 export default function Profile(props: any) {
   // const refreshNotifs = useSelector((state:RootState) => state.refreshNotifs.refreshNoifications);
@@ -20,6 +21,7 @@ export default function Profile(props: any) {
   const [clicked, setIsclicked] = useState(false);
   const [block, setblock] = useState(false);
   const [unblock, setUnblock] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -31,7 +33,9 @@ export default function Profile(props: any) {
         );
         setUserData(response.data);
         setIsLoading(false);
-      } catch (error) {
+      } catch (error:any) {
+        if(error.response.status === 404) 
+          setUserNotFound(true);
         console.error("Error fetching user data:", error);
         setIsLoading(false);
       }
@@ -155,7 +159,10 @@ export default function Profile(props: any) {
       console.error("Error fetching users:", error);
     }
   };
-
+  
+  if(userNotFound){
+  return <NotUser />
+}
   return (
     <>
       {isLoading ? (

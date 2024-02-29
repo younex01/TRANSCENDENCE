@@ -3,18 +3,19 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '../../../redux/features/profile/profileSlice';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
 export default function Profile() {
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
-  const re = useSelector(selectProfileInfo);
+  const ProfileInfo = useSelector(selectProfileInfo);
 
   useEffect(() => {
     setLoading(true);
-    setData(re);
+    setData(ProfileInfo);
     setLoading(false);
-  }, [re]);
+  }, [ProfileInfo]);
+
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function Profile() {
             </div>
           </div>
           <div className='h-[70vh] max-h-[580px] w-[94%] rounded-[16px] mt-3 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]'>
-            <LastGames />
+            <LastGames/>
           </div>
         </div>
       )}

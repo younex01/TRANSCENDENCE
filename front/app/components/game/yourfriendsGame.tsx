@@ -230,27 +230,32 @@ export const YourFriendsGame = () => {
     };
   });
 
-  const handleRandom = () => {
+  useEffect(() => {
+
     console.log("send connection");
     const newSocket = io("http://localhost:3001");
     setSocket(newSocket);
     setRandom(false);
     setStart(true);
     setText("wait for freind to join");
-  };
+    newSocket.off();
+},[]);
 
+// ref={divv}
   return (
     <>
       <div
-        ref={divv}
-        className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]"
+        className="bg-slate-500 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)] overflow-hidden"
       >
-        
-        {/* {random && (
-          <button onClick={handleRandom} className="w-[50px] h-[50px] bg-white">
-            random friend
-          </button>
-        )} */}
+        {random && (
+            <div className="w-full h-full flex items-center justify-center bg-center bg-cover " style={{backgroundImage: `url(/giphy.gif)`}}>
+          <div className="fixed flex justify-center items-center h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-50">
+            <div className="fixed  rounded-[20px] max-w-[800px] w-[80%] mx-[50px] h-[60%] bg-[#6e7aaa] flex flex-col items-center overflow-hidden">
+              <div className="w-full h-[10%] text-center">waiting for other player to join</div>
+            </div>
+          </div>
+          </div>
+        )}
         {start && <div className="text-white">{text}</div>}
       </div>
       {game && (
@@ -298,4 +303,3 @@ export const YourFriendsGame = () => {
     </>
   );
 };
-

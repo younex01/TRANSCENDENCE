@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query, NotFoundException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma.service';
 import Fuse from 'fuse.js';
@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserService } from './user.service';
 import { ChatController } from 'src/chat/chat.controller';
 import { ChatService } from 'src/chat/chat.service';
+import { UserDto } from './user.dto';
 
 @Controller('user')
 export class UserController {
@@ -48,13 +49,18 @@ export class UserController {
 
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
-    async changeUsername(@Req() req, @Res() res, @Body() Obj: { username: string, lastName: string, firstName: string, avatar: string }) {
+    async changeUsername(@Req() req, @Res() res, @Body() userDto: UserDto) {
+        console.log("hellooooooooo");
+        
         try {
+            console.log("------------",userDto);
             const user = req.user;
             await this.prisma.user.update({
-                where: { id: user.id },
-                data: { username: Obj.username, firstName: Obj.firstName, lastName: Obj.lastName, avatar: Obj.avatar }
+                where: { id: userDto.id },
+                data: { username: userDto.username, firstName: userDto.firstName, lastName: userDto.lastName, avatar: userDto.avatar }
             });
+            console.log("------------",userDto);
+            
             return await res.send({ info: true, message: "Username updated successfully" });
         }
         catch (e) {
@@ -67,6 +73,8 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async getUserByUserId(@Query('user') user: string, @Req() req) {
         const users = await this.prisma.getUserByUserId(user);
+        if(!users)
+            throw new NotFoundException("User not found");
         return users;
     }
 

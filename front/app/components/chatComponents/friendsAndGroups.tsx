@@ -1,4 +1,4 @@
-import Convos from './Convos';
+import Convos from './convos';
 import CreateGroupChat from './groupChat/createGroupChat';
 import JoinGroupChat from './groupChat/joinGroupChat';
 import { RootState } from '@/redux/store/store';

@@ -7,6 +7,8 @@ import { YourFriendsGame } from "@/app/components/game/yourfriendsGame";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
+import animationData from   "../../../public/nothing.json"
+import Lottie from 'react-lottie-player';
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
@@ -17,7 +19,7 @@ export default function Home() {
   // const [win, setWin] = useState<boolean>(false);
   const buttonAi = useRef<HTMLCanvasElement>(null);
 
-  const [click, setClick] = useState(false);
+  // const [click, setClick] = useState(false);
 
   // const handleClick = () => {
   //   setClick((prev) => {
@@ -78,7 +80,7 @@ export default function Home() {
       {/* <div  className="bg-red-500"> */}
       <div className="flex flex-col justify-around items-center  w-full h-[100vh]">
         <div
-          className={`flex flex-col justify-around items-center h-[20%] ${hide}`}
+          className={`flex flex-col justify-around items-center h-[17%] ${hide}`}
         >
           <div className="flex justify-center items-center h-[50%]">
             <p className="font-bold text-2xl text-[#252f5b]">READY TO PLAY ?</p>
@@ -89,7 +91,7 @@ export default function Home() {
         </div>
         {/* <div ref={buttonAi} className="flex flex-col bg-opacity-90 bg-red-500"> */}
         <div
-          ref={buttonAi}
+          // ref={buttonAi}
           className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10"
         >
           <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[50%] gap-10">
@@ -121,11 +123,10 @@ export default function Home() {
                         >
                           X
                         </button>
+                      {myFreinds.length !== 0 ? (
                       <div className="h-full w-full flex justify-center items-center flex-col overflow-y-visible overflow-x-hidden no-scrollbar">
 
-
                       {myFreinds.map((value: any, index: number) => (
-
                         <div className="flex justify-between  sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ">
                           <div className="flex flex-row justify-between w-full items-center">
                             <div className="flex justify-between items-center gap-[16px]">
@@ -133,7 +134,7 @@ export default function Home() {
                                 className="md:h-[80px] md:w-[80px] sm:w-[50px] w-[40px] ml-1 rounded-[50px] object-fill"
                                 src={value.avatar}
                                 alt="robiin"
-                              />
+                                />
                               <div className="flex flex-col ">
                                 <div className="md:text-[16px] sm:text-[14px] text-[12px] text-[#252f5b font-sans-only test">
                                   {value.firstName + " " + value.lastName}
@@ -145,7 +146,8 @@ export default function Home() {
                             </div>
                             <div className="flex mt-4 md:text-[16px] text-[12px] sm:text-[14px] md:w-[120px] w-max-content">
                               <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
-                                 onClick={handleClickFr}>
+                                 onClick={handleClickYourFriend}>
+
                                 Invite
                               </button>
                             </div>
@@ -153,10 +155,12 @@ export default function Home() {
                         </div>
                       ),)}
 
-
-
-
                       </div>
+                      ) : (
+                      <div className='w-[100%] h-full flex items-center justify-center'>
+                      <Lottie animationData={animationData} play style={{ width: 180, height: 180 }} />
+                    </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -202,6 +206,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+
         {playFreind && <YourFriendsGame />}
         {playRandom && <PlayWithFriend />}
         {playAi && <PongGame />}

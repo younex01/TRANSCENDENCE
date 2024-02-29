@@ -179,7 +179,9 @@ export default function Page(props: any) {
     });
   }
   
-
+function test(id:string){
+  console.log("----------------", id)
+}
   return (
     (groupData.type === "DM" ?
 
@@ -192,7 +194,7 @@ export default function Page(props: any) {
               <div className='absolute right-8' onClick={() => setDMsSettings(!DMsSettings)}> <img src="/3no9at.svg" alt="/3no9at.svg" /> </div>
               {DMsSettings &&
               <div className='rounded-[20px] w-[200px] h-[140px] top-[80px] right-4 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
-                <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Invite to Play</button>
+                <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]' onClick={() => test(groupData.members[0].id)}>Invite to Play</button>
                 <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
                 <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Block</button>
               </div>

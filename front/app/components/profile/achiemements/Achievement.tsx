@@ -49,8 +49,8 @@ export default function Achievement({
               <Image
                 src={notAchivedpic}
                 alt="mark"
-                width={9}
-                height={9}
+                width={5}
+                height={5}
                 className="w-5 h-5 ml-2"
               />
             )}

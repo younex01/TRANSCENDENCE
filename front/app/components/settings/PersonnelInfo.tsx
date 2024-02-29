@@ -76,32 +76,40 @@ export default function PersonnelInfo() {
         toast.info("Username must be at most 8 characters");
         return;
       }
-      else if (firstName.length > 14) {
-        toast.info("firstName must be at most 14 characters");
+      else if (firstName.length > 12) {
+        toast.info("firstName must be at most 12 characters");
         return;
       }
-      else if (lastName.length > 14) {
-        toast.info("lastName must be at most 14 characters");
+      else if (lastName.length > 12) {
+        toast.info("lastName must be at most 12 characters");
         return;
       }
 
       const updatedProfileData = {
-        ...profileSelector,
-        firstName,
-        lastName,
+        id: profileSelector.id,
+        firstName: firstName,
+        lastName: lastName,
         username: nickName,
         avatar: imagePath || profileSelector.avatar,
       };
 
-      dispatch(setProfileData(updatedProfileData));
-
+      console.log("------------",updatedProfileData.firstName);
+      console.log("heeeeere");
+      
       const res = await axios.post(
         `http://localhost:4000/user/changeInfos`,
         updatedProfileData
-      );
+        );
+        dispatch(setProfileData(updatedProfileData));
+      console.log("------------heloo22",res);
       toast.success("Your information has been changed successfully");
-    } catch (error) {
-      console.error(error);
+    } catch (error:any) {
+      if (error.response.status === 400) {
+          console.error("Error: ", error.response.data.message);
+          toast.error(`Error: ${error.response.data.message}`);
+      } else {
+          console.error("Error: ", error.message);
+      }
     }
   };
 

@@ -2,7 +2,7 @@
 import { Inter } from 'next/font/google'
 import Providers from "../../../redux/store/Providers"
 import React from 'react'
-import FriendsAndGroups from '@/app/components/chatComponents/FriendsAndGroups'
+import FriendsAndGroups from '@/app/components/chatComponents/friendsAndGroups'
 const inter = Inter({ subsets: ['latin'] })
 
 function RootLayout({

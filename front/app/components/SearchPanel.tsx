@@ -105,6 +105,7 @@ export default function SearchPanel() {
                   <div className='min-h-[70px] min-w-[70px] relative'>
                     <Image 
                           src={`${user.avatar}`}
+                          alt={`${user.avatar}`}
                           fill={true}
                           className='rounded-full object-cover' />
                     </div>

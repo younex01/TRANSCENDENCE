@@ -41,16 +41,18 @@ export default function QRcode() {
   }, [image]);
 
   const onSubmit = async () => {
-    if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
-      toast.info("Put the six digit code");
-      return;
-    }
+    // if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
+    //   toast.info("Put the six digit code");
+    //   return;
+    // }
     try {
       const response = await axios.post(
         "http://localhost:4000/auth/enableTwoFactorAuth",
         { code: qrData },
       );
-      console.log("Response:", response.data);
+      console.log("helllloooo",qrData);
+      
+      console.log("Response:salaheeee", response.data);
       dispatch(
         setProfileData({
           ...datauser,
@@ -58,7 +60,11 @@ export default function QRcode() {
         })
       );
       toast.success("Enabled successfully");
-    } catch (error) {
+    } catch (error:any) {
+      if(error.response.status === 400){
+
+        console.error("Error fetching user data:", error.message);
+      }
       toast.error("Invalid code");
     }
   };

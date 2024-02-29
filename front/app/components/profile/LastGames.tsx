@@ -15,6 +15,7 @@ export default function LastGames() {
   useEffect(() => {
     setData(profilepic);
   }, [profilepic]);
+  
 
   return (
     <div className="flex flex-col items-center justify-center h-[100%] w-[100%]">
