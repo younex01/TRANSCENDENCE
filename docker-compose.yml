@@ -14,7 +14,7 @@ services:
   back:
     image: node:20
     working_dir: /app
-    command: bash -c "npm install && npm run build && npx prisma migrate dev --name update && npm run start:dev"
+    command: bash -c "npm install && npx prisma migrate dev --name update && npm run start:dev"
     volumes:
       - /goinfre/sharrach/sharrach/back:/app
     ports:

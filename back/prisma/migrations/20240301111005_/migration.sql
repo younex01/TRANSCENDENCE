@@ -35,6 +35,7 @@ CREATE TABLE "ChatGroup" (
     "owner" TEXT,
     "modes" TEXT[],
     "mutedUsers" TEXT[],
+    "bannedUssers" TEXT[],
     "type" TEXT,
 
     CONSTRAINT "ChatGroup_pkey" PRIMARY KEY ("id")
@@ -65,6 +66,9 @@ CREATE TABLE "_UserGroup" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ChatGroup_name_key" ON "ChatGroup"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friend_AB_unique" ON "_friend"("A", "B");

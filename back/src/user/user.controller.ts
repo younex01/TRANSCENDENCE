@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query, NotFoundException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma.service';
 import Fuse from 'fuse.js';
