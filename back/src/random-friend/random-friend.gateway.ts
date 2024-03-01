@@ -13,23 +13,42 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
 
   private game : Game [] = [];
   private id: number = 0;
-  private connectedUsers: {[userId: string]: Socket } = {};
   private rooms: {[roomId:string]: string[]} = {};
   private ball : Ball = {color: "WHITE",radius: 15,speed: 0.9,velocityX: 5,velocityY: 5,x: 450,y: 225}
   private canvas: Canvas = {height: 0,width:0};
   private players: {[id:number]: Player[]} = {};
   private ids:string[] = [];
 
+  private readonly connectedUsers = new Map<string, any>();
+
 
   //to do
   // fix play again
 
   @SubscribeMessage('connecte')
-  async handleConnection(socket: Socket): Promise<void> {
-    this.connectedUsers[socket.id] = socket;
+  async handleConnection(@MessageBody() socket: Socket): Promise<void> {
+    // this.connectedUsers[socket.id] = socket;
     const availibleRoomId = Object.keys(this.rooms).find(roomId => this.rooms[roomId].length == 1);
 
     //check if the user is in the game 
+      // 'token' is sent from the client when it connects
+      const token = socket.handshake.query.token;
+      const existingUser = Array.from(this.connectedUsers.values());
+      if (existingUser.includes(token)) {
+        console.log(`Token ${token} already connected with another client`);
+        socket.emit("already_in_game");
+        socket.disconnect();
+        return;
+      }
+      this.connectedUsers.set(socket.id, token);
+      // console.log('Token received:', token);
+      // console.log('socket',socket.id);
+      // console.log(this.connectedUsers);
+      // console.log(existingUser);
+
+
+      // Your logic here
+    // console.log("----->token:",token);
 
     if (availibleRoomId)
     {
@@ -109,6 +128,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     //send emit message to the winner if the game still work
     // pop the client from the room list
     // leave the client id from the 
+    this.connectedUsers.delete(client.id);
     console.log("handle disconnect");
     console.log("------------Game-Data-------------");
     console.log(this.game);

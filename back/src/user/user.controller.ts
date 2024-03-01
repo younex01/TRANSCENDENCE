@@ -118,14 +118,10 @@ export class UserController {
 
         if (!user) return;
         const isRequestExist = await this.UserService.isPlayRequest(req.target, req.sender);
-        if (isRequestExist && isRequestExist.status === "Declined") {
+        if (isRequestExist )
+            await this.UserService.deletePlayRequest(req.target, req.sender);
 
-            await this.UserService.pendPlayRequest(isRequestExist.id, req.sender, req.target);
-        }
-        else {
-
-            await this.UserService.createPlayRequest(req.target, req.sender);
-        }
+        await this.UserService.createPlayRequest(req.target, req.sender);
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
     }

@@ -98,6 +98,17 @@ export class UserService {
     });
   }
 
+  async deletePlayRequest(myId: string, receiverId: string) {
+    return this.prisma.friendRequest.deleteMany({
+      where: {
+        OR: [
+          { receiverId: receiverId, senderId: myId, },
+          { receiverId: myId, senderId: receiverId, }
+        ]
+      },
+    });
+  }
+
   async isPlayRequest(myId: string, receiverId: string) {
     return this.prisma.inviteToPlay.findFirst({
       where: {
@@ -133,6 +144,9 @@ export class UserService {
     });
   }
 
+
+
+  
   async acceptFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({

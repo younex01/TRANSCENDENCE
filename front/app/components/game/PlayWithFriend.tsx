@@ -4,6 +4,7 @@ import { Winner } from './Winner';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import Cookies from 'js-cookie';
 
 export const PlayWithFriend = () => {
     
@@ -248,6 +249,10 @@ export const PlayWithFriend = () => {
         {
           checkWinner(data);
         }
+        else if(event = "already_in_game")
+        {
+          setText("Sorry !! you already in game.");
+        }
       })
       return () => {socket?.offAny()}
     })
@@ -256,9 +261,16 @@ export const PlayWithFriend = () => {
     
     const handleRandom =  () => {
       console.log("send connection");
-      const newSocket = io("http://localhost:3001");
+
+      const token = Cookies.get('JWT_TOKEN');
+      const newSocket = io("http://localhost:3001",{
+        query: {
+          token: token
+        }
+      });
       setSocket(newSocket);
       console.log("newSocket", newSocket);
+      console.log("JWT_TOKEN",token);
       
       setRandom(false);
       setStart(true);

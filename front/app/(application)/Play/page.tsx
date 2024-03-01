@@ -5,6 +5,7 @@ import { Winner } from '../../components/game/Winner';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import Cookies from 'js-cookie';
 
 export default function page() {
 
@@ -253,6 +254,10 @@ export default function page() {
         {
           checkWinner(data);
         }
+        else if(event = "already_in_game")
+        {
+          setText("Sorry !! you already in game.");
+        }
       })
       return () => {socket?.offAny()}
     })
@@ -260,7 +265,12 @@ export default function page() {
     useEffect(() => {
 
         console.log("send connection");
-        const newSocket = io("http://localhost:3002");
+        const token = Cookies.get('JWT_TOKEN');
+        const newSocket = io("http://localhost:3002",{
+          query: {
+            token: token
+          }
+        });
         setSocket(newSocket);
         console.log("newSocket", newSocket);
 
@@ -300,6 +310,7 @@ export default function page() {
                     id="pong"
                     height="450"
                     width="900"
+                    style={{width: "100vmin", height: "50vmin"}}
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}

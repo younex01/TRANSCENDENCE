@@ -19,12 +19,12 @@ export class GameService {
 
     async addGameResult(players:Player[],userId:string,result:boolean){
 
-      this.prisma.inviteToPlay.deleteMany({
-        where: {
-          senderId: players[0].db_id,
-          receiverId: players[1].db_id,
-        },
-      });
+      // this.prisma.inviteToPlay.deleteMany({
+      //   where: {
+      //     senderId: players[0].db_id,
+      //     receiverId: players[1].db_id,
+      //   },
+      // });
 
   
         // Game result does not exist, create a new one
@@ -249,8 +249,8 @@ export class GameService {
   startTheGame(players: Player[], rooms: {[roomId: string]: string[]}, roomId: string, server: Server, ball: Ball, canvas: Canvas) {
     // ball.x = canvas.width / 2;
     // ball.y = canvas.height / 2;
-    this.removeInviteToPlay1(0,players);
-    this.removeInviteToPlay2(0,players);
+    // this.removeInviteToPlay1(0,players);
+    // this.removeInviteToPlay2(0,players);
     const intervalId = setInterval(async () => {
 
       if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
