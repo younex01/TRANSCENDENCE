@@ -8,13 +8,11 @@ dist
 .pnp.js
 prisma/migrations
 .yarn/install-state.gz
-/backend
 
 # testing
 /coverage
 
 # next.js
-/front/next-app/.next/
 /out/
 
 # production

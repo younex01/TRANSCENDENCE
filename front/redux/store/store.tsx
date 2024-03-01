@@ -11,6 +11,7 @@ import groupReducer from "../features/chatSlices/create_join_GroupSlice";
 import selectConvoReducer from "../features/chatSlices/selecConvoSlice";
 import { lastGameSlice } from '../features/lastGamesSlice/lastGameSlice';
 import notificationsReducer from '../features/notificationsSlice';
+import refreshReducer from '../features/chatSlices/refreshSlice';
 
 const persistProfileConfig = {
     key: "profile",
@@ -26,7 +27,8 @@ const store = configureStore({
         socket: socketReducer,
         group: groupReducer,
         seelctedConversation:  selectConvoReducer,
-        refreshNotifs: notificationsReducer
+        refreshNotifs: notificationsReducer,
+        refresh: refreshReducer
         
     },
     middleware: (getDefaultMiddleware) =>

@@ -259,6 +259,14 @@ export class UserService {
   
   }
   
+  async blocklist(myId: string){
+    return this.prisma.user.findUnique({
+      where: { id: myId },
+      // include:[bl]
+    });
+  }
+  
+  
   
   
   

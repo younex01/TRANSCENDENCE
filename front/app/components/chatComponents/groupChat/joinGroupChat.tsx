@@ -47,11 +47,15 @@ export default function JoinGroupChat(props:any) {
     socket?.on("alreadyJoined", (successMessage:string) =>{
       toast(`${successMessage}`);
     });
+    socket?.on("banned", (errorMessage:string) =>{
+      toast.error(`${errorMessage}`);
+    });
 
     return () => {
       socket?.off("joinFailed");
       socket?.off("joinSuccessfull");
       socket?.off("alreadyJoined");
+      socket?.off("banned");
     };
   }, []); 
 
@@ -87,7 +91,7 @@ export default function JoinGroupChat(props:any) {
           </button>
 
           <div className='mt-[24px] flex flex-col items-center overflow-y-auto overflow-x-hidden no-scrollbar' >
-            {groups.map((groupChats:any) => groupChats.status !== "Private" && (
+            {groups.map((groupChats:any) => groupChats.status !== "Private" && groupChats.type !== "DM" && (
               <div className='flex flex-col justify-between sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ' key={groupChats.id}>
                 <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:4000/${groupChats.avatar}`} alt={groupChats.avatar} />
                   <div className='flex flex-col '>

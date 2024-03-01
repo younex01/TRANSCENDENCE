@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query, NotFoundException } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Req, Res, Post, UnauthorizedException, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma.service';
 import Fuse from 'fuse.js';
@@ -233,10 +233,16 @@ export class UserController {
     @Get('userFreinds')
     @UseGuards(AuthGuard('jwt'))
     async displayFriends(@Query("userId") userId: string) {
-    {
         const friendsList = await this.UserService.friendList(userId);
         return friendsList;
     }
+
+    @Get('myBlockList')
+    @UseGuards(AuthGuard('jwt'))
+    async myBlockList(@Query("myId") myId: string) {
+        const blocklist = await this.UserService.blocklist(myId);
+        const combinedBlockedUsers = [...blocklist.blockedByUsers, ...blocklist.blockedUsers];
+        return combinedBlockedUsers;
     }
 
 

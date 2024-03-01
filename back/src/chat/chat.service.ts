@@ -13,6 +13,12 @@ export class ChatService {
   async createUser(user: any) {
     return this.prisma.user.create({ data: user });
   }
+  
+  async roomNameCheck(roomName:string) {
+    return this.prisma.chatGroup.count({
+      where : {name:roomName}
+    });
+  }
 
   async getChatGroups() {
     return this.prisma.chatGroup.findMany({
@@ -22,9 +28,7 @@ export class ChatService {
 
   async getRoom(groupId: string) {
     return this.prisma.chatGroup.findUnique({
-      where: {
-        id: groupId,
-      }
+      where: { id: groupId }
     });
   }
 
@@ -102,7 +106,7 @@ export class ChatService {
     });
   }
 
-  async removeUserFromRoom(userId: string, roomId: string) {
+  async kickUserFromRoom(userId: string, roomId: string) {
 
     const room = await this.getGroupWithMembers(roomId);
     const user = await this.getUser(userId);
@@ -123,6 +127,29 @@ export class ChatService {
     });
   }
 
+  async banUserFromRoom(userId: string, roomId: string) {
+
+    const room = await this.getGroupWithMembers(roomId);
+    const user = await this.getUser(userId);
+
+    if (!room || !user) return;
+    const userIndex = room.members.findIndex((member) => member.id === user.id);
+
+    if (userIndex === -1) return;
+
+    if (await this.checkIfBanned(userId, roomId) === 1) return
+    return this.prisma.chatGroup.update({
+      where: { id: roomId },
+      data: {
+        members: {
+          disconnect: { id: userId }
+        },
+        bannedUssers: {
+          push: user.id
+        }
+      }
+    });
+  }
 
   async checkIfMuted(userId: string, roomId: string) {
     return this.prisma.chatGroup.count({
@@ -130,6 +157,16 @@ export class ChatService {
     });
   }
 
+  async checkIfBanned(userId: string, roomId: string) {
+    return this.prisma.chatGroup.count({
+      where: {
+        AND: [
+          { id: roomId },
+          { bannedUssers: { has: userId } }
+        ]
+      }
+    });
+  }
 
   async checkIfMember(userId: string, roomId: string) {
     return this.prisma.chatGroup.count({
@@ -170,6 +207,7 @@ export class ChatService {
       });
     }
   }
+
 
 
   async UnmuteUserFromRoom(userId: string, roomId: string) {
@@ -256,14 +294,14 @@ export class ChatService {
     });
   }
 
-  async changePassword(roomId: string, password: string) {
+  async changeRoomPassword(roomId: string, password: string) {
     return this.prisma.chatGroup.update({
       where: { id: roomId },
       data: { password: password }
     });
   }
 
-  
+
   async isDMalreadyexist(userId1: string, userId2: string) {
     return await this.prisma.chatGroup.findFirst({
       where: {
@@ -314,5 +352,28 @@ export class ChatService {
 
     });
   }
+
+  async addUserToPrivateRoom(payload: any) {
+    console.log("payload", payload);
+    return await this.prisma.chatGroup.create({
+      data: {
+        name: payload.name,
+        avatar: payload.avatar,
+        status: payload.status,
+        owner: payload.owner,
+        type: "",
+        members: {
+          connect: payload.addingToPrivateRoomList.map((userId: string) => ({
+            id: userId,
+          })),
+        }
+      },
+    });
+  }
+
+
+
+
+
 
 }

@@ -74,17 +74,11 @@ export default function Profile(props: any) {
           setRequestStatuss("Accepted");
           return;
         }
-        const status = await axios.get(
-          `http://localhost:4000/user/requestStatus?myId=${myData.id}&&receiverId=${props.params.id}`,
-          { withCredentials: true }
-        );
+        const status = await axios.get(`http://localhost:4000/user/requestStatus?myId=${myData.id}&&receiverId=${props.params.id}`, { withCredentials: true });
         if (status.data) {
           console.log("status.data", status.data);
           console.log(`status.data.status  ${status.data.status}.`);
-          if (
-            status.data.senderId === myData.id &&
-            status.data.status === "Pending"
-          )
+          if ( status.data.senderId === myData.id && status.data.status === "Pending" )
             setRequestStatuss("Pending");
           else if (
             status.data.receiverId === myData.id &&
