@@ -1,14 +1,15 @@
 "use client";
-import PongGame from "../../components/game/PongGame";
+import PongGame from "./againstAi/PongGame";
 import { useEffect, useRef, useState } from "react";
-import { PlayWithFriend } from "../../components/game/PlayWithFriend";
+import { PlayWithFriend } from "./againstAi/PlayWithFriend";
 import Image from "next/image";
-import { YourFriendsGame } from "@/app/components/game/yourfriendsGame";
+import { YourFriendsGame } from "@/app/(application)/game/againstOthers/againstFriend";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import animationData from   "../../../public/nothing.json"
 import Lottie from 'react-lottie-player';
+import Link from "next/link";
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
@@ -37,7 +38,6 @@ export default function Home() {
 
     const listFriends = async () => {
       try {
-        
         // console.log("------------------->:(------------------->:userId", userId);
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${profileInfo.id}`, { withCredentials: true });
         
@@ -51,29 +51,14 @@ export default function Home() {
     listFriends();
   }, [profileInfo]);
 
-  const handleClickAi = () => {
-    if (buttonAi.current) buttonAi.current.style.display = "none";
-    setHide("hidden");
-    setPlayAi((prev) => {
-      return !prev;
-    });
-  };
 
-  const handleClickYourFriend = () => {
-    if (buttonAi.current) buttonAi.current.style.display = "none";
+  const PlayWithFriend = () => {
     setHide("hidden");
     setplayFreinds((prev) => {
       return !prev;
     });
   };
 
-  const handleClickFr = () => {
-    if (buttonAi.current) buttonAi.current.style.display = "none";
-    setHide("hidden");
-    setplayRandom((prev) => {
-      return !prev;
-    });
-  };
 
   return (
     <div className="bg-[#dbe0f6] w-full overflow-y-auto overflow-auto">
@@ -145,11 +130,13 @@ export default function Home() {
                               </div>
                             </div>
                             <div className="flex mt-4 md:text-[16px] text-[12px] sm:text-[14px] md:w-[120px] w-max-content">
-                              <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
-                                 onClick={handleClickYourFriend}>
+                              <Link href="">
+                                <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
+                                  onClick={PlayWithFriend}>
 
-                                Invite
-                              </button>
+                                  Invite
+                                </button>
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -172,17 +159,19 @@ export default function Home() {
               style={{ backgroundImage: `url(/hh1.jpg)` }}
             >
               <div className="pb-5">
-                <button
-                  onClick={handleClickAi}
-                  className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
-                >
-                  <img
-                    src="/multiping.png"
-                    alt=""
-                    className="w-[22px] h-[22px]"
-                  />
-                  Against AI
-                </button>
+                <Link href='/game/againstAi'>
+                  <button
+                    onClick= { () => setPlayAi(true)}
+                    className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
+                  >
+                    <img
+                      src="/multiping.png"
+                      alt=""
+                      className="w-[22px] h-[22px]"
+                    />
+                    Against AI
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -193,7 +182,7 @@ export default function Home() {
           >
             <div className="pb-5">
               <button
-                onClick={handleClickFr}
+                // onClick={handleClickFr}
                 className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
               >
                 <img
@@ -206,10 +195,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {playFreind && <YourFriendsGame />}
-        {playRandom && <PlayWithFriend />}
-        {playAi && <PongGame />}
       </div>
     </div>
   );
