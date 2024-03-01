@@ -27,7 +27,6 @@ model User {
   symmenticfriends     User[]          @relation("friend")
   blockedByUsers       String[]
   blockedUsers         String[]
-  // notifications        Notification[]
 }
 
 model friendRequest {
@@ -52,17 +51,18 @@ model friendRequest {
 // }
 
 model ChatGroup {
-  id         String    @id @default(uuid())
-  name       String?
-  members    User[]    @relation("UserGroup")
-  avatar     String?
-  password   String?
-  status     String?
-  messages   Message[]
-  owner      String?
-  modes      String[]
-  mutedUsers String[]
-  type       String?
+  id           String    @id @default(uuid())
+  name         String?   @unique
+  members      User[]    @relation("UserGroup")
+  avatar       String?
+  password     String?
+  status       String?
+  messages     Message[]
+  owner        String?
+  modes        String[]
+  mutedUsers   String[]
+  bannedUssers String[]
+  type         String?
 }
 
 model Message {

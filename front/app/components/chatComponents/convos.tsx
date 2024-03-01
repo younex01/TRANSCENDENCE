@@ -11,14 +11,15 @@ export default function Convos() {
   const socket = useSelector((state: RootState) => state.socket.socket);
   const [myGroups, setMyGroups] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(true);
-  const conversationId = useSelector((state: RootState) => state.seelctedConversation.conversationId);
 
+  const refreshConvos = useSelector((state: RootState) => state.refresh.refresh);
   const userData = useSelector(selectProfileInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchChatGroups = async () => {
       try {
+        console.log("aywaaaaaaaaa2")
         const response = await axios.get(`http://localhost:4000/chat/getGroupsByUserId?userId=${userData.id}`, { withCredentials: true });
         setMyGroups(response.data.data)
       } catch (error: any) {
@@ -28,16 +29,18 @@ export default function Convos() {
 
     fetchChatGroups();
 
+
+  }, [refresh, socket, userData.id, refreshConvos]);
+
+
+  useEffect(() => {
     socket?.on("refresh", () => {
       setRefresh(!refresh);
-      socket?.off("refresh");
     });
-
     return () => {
       socket?.off("refresh");
     };
-  }, [refresh, socket, userData.id]);
-
+  });
 
   return (
     <>

@@ -4,7 +4,6 @@ import { PrismaService } from 'src/prisma.service';
 import Fuse from 'fuse.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserService } from './user.service';
-import { ChatController } from 'src/chat/chat.controller';
 import { ChatService } from 'src/chat/chat.service';
 
 @Controller('user')
@@ -87,7 +86,7 @@ export class UserController {
         return modifiedFiltered;
     }
 
-    
+
 
 
     @Post('sendFriendRequest')
@@ -219,12 +218,19 @@ export class UserController {
 
     }
 
-    @Post('userFreinds')
+    @Get('userFreinds')
     @UseGuards(AuthGuard('jwt'))
-    async displayFriends(@Body() req:any)
-    {
-        const friendsList = await this.UserService.friendList(req.myId);
+    async displayFriends(@Query("userId") userId: string) {
+        const friendsList = await this.UserService.friendList(userId);
         return friendsList;
+    }
+
+    @Get('myBlockList')
+    @UseGuards(AuthGuard('jwt'))
+    async myBlockList(@Query("myId") myId: string) {
+        const blocklist = await this.UserService.blocklist(myId);
+        const combinedBlockedUsers = [...blocklist.blockedByUsers, ...blocklist.blockedUsers];
+        return combinedBlockedUsers;
     }
 
 

@@ -37,7 +37,4 @@ const ChangeInfo = () => {
 
 export default ChangeInfo;
 
-{/* <div className="flex-1 p-4 overflow-y-auto">
-<SearchPanel />
-</div> */}
  

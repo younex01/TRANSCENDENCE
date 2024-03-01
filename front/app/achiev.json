@@ -1,40 +1,52 @@
 {
-    "achievements": [
-      {
-        "name": "King",
-        "achived": "Achived",
-        "imagePath": "/luffy.jpeg",
-        "achivedDate": "20/1/2023"
-      },
-      {
-        "name": "Cooker",
-        "achived": "Achived",
-        "imagePath": "/sangi.jpeg",
-        "achivedDate": "20/1/2023"
-      },
-      {
-        "name": "Stealer",
-        "achived": "Achived",
-        "imagePath": "/nami.jpeg",
-        "achivedDate": "20/1/2023"
-      },
-      {
-        "name": "Stronger",
-        "achived": "Achived",
-        "imagePath": "/shanks.jpeg",
-        "achivedDate": "20/1/2023"
-      },
-      {
-        "name": "PongLyph",
-        "achived": "Achived",
-        "imagePath": "/robiin.jpeg",
-        "achivedDate": "20/1/2023"
-      },
-      {
-        "name": "sixth",
-        "achived": "Achived",
-        "imagePath": "/franky.jpeg",
-        "achivedDate": "20/1/2023"
-      }
-    ]
-  }
+  "achievements": [
+    {
+      "name": "King",
+      "status": "one",
+      "achieved": false,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/luffy.jpeg"
+    },
+    {
+      "name": "Cooker",
+      "status": "two",
+      "achieved": false,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/sangi.jpeg"
+    },
+    {
+      "name": "Stealer",
+      "status": "three",
+      "achieved": false,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/nami.jpeg"
+    },
+    {
+      "name": "Stronger",
+      "status": "four",
+      "achieved": false,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/shanks.jpeg"
+    },
+    {
+      "name": "PongLyph",
+      "status": "five",
+      "achieved": true,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/robiin.jpeg"
+    },
+    {
+      "name": "sixth",
+      "status": "six",
+      "achieved": true,
+      "achievedpic": "/images/achived.svg",
+      "notAchivedpic": "/lock-svg.svg",
+      "imagePath": "/franky.jpeg"
+    }
+  ]
+}

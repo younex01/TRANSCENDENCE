@@ -47,11 +47,15 @@ export default function JoinGroupChat(props:any) {
     socket?.on("alreadyJoined", (successMessage:string) =>{
       toast(`${successMessage}`);
     });
+    socket?.on("banned", (errorMessage:string) =>{
+      toast.error(`${errorMessage}`);
+    });
 
     return () => {
       socket?.off("joinFailed");
       socket?.off("joinSuccessfull");
       socket?.off("alreadyJoined");
+      socket?.off("banned");
     };
   }, []); 
 
@@ -71,8 +75,8 @@ export default function JoinGroupChat(props:any) {
     return (
     <div className='fixed h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-20'>
       <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-[20px] w-[70%] h-[70%] bg-[#6e7aaa]  overflow-hidden'>
-        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"shape1.svg"} alt="../piblic/shape1.svg" /></div>
-        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"shape2.svg"} alt="../piblic/shape2.svg" /></div>
+        <div className='top-0 right-0 rounded-[50px] object-fill absolute'> <img src={"/shape1.svg"} alt="/shape1.svg" /></div>
+        <div className='left-0 bottom-0 rounded-[50px] object-fill absolute'> <img src={"/shape2.svg"} alt="/shape2.svg" /></div>
         <div className='flex flex-col w-[100%] h-[100%] overflow-hidden relative'>
           <div className='p-4 self-center text-[#D7D7D7] text-[38px] myfont'>Join a Channel</div>
           <button className='w-[50px] h-[50px] rounded-[15px] text-[30px] absolute right-[30px] top-[20px] bg-white' onClick={() => {dispatch(setJoinGroup(false))}}> 
@@ -87,7 +91,7 @@ export default function JoinGroupChat(props:any) {
           </button>
 
           <div className='mt-[24px] flex flex-col items-center overflow-y-auto overflow-x-hidden no-scrollbar' >
-            {groups.map((groupChats:any) => groupChats.status !== "Private" && (
+            {groups.map((groupChats:any) => groupChats.status !== "Private" && groupChats.type !== "DM" && (
               <div className='flex flex-col justify-between sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ' key={groupChats.id}>
                 <div className='flex justify-center items-center gap-[16px]'> <img className='h-[100px] w-[100px] ml-1 rounded-[50px] object-fill' src={`http://localhost:4000/${groupChats.avatar}`} alt={groupChats.avatar} />
                   <div className='flex flex-col '>

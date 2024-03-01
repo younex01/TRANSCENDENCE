@@ -56,25 +56,27 @@ export class AuthController {
   @UseGuards(AuthGuard("jwt"))
   async generateTwoFactorAuthCode(@Req() req: any, @Res() res: any) {
     const user = req.user;
-    if (!user.twoFactorAuthCode)
+    if (!user.twoFactorAuthCode){
       user.twoFactorAuthCode = speakeasy.generateSecret();
 
     await this.prisma.user.update({
       where: { id: user.id },
       data: { twoFactorAuthCode: user.twoFactorAuthCode.base32 },
     });
-    
-    if (user.twoFactorAuthCode) {
-      const otpauthUrl = speakeasy.otpauthURL({
-        secret: user.twoFactorAuthCode,
-        label: "MyApp",
-        issuer: "MyCompany",
-        encoding: "base32",
-      });
-      const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
-      return res.json({ qrCodeImageUrl });
-    }
   }
+
+  if (user.twoFactorAuthCode) {
+    const otpauthUrl = speakeasy.otpauthURL({
+      secret: user.twoFactorAuthCode,
+      label: "MyApp",
+      issuer: "MyCompany",
+      encoding: "base32",
+    });
+    console.log("ussse ---------- ---------- ---------- ---------- ---------- ---------- r");
+    const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
+    return res.json({ qrCodeImageUrl });
+  }
+}
 
   @Post("verifyTwoFactorAuthCode")
   async verifyTwoFactorAuthCode(

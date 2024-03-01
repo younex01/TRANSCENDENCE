@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -16,6 +17,7 @@ async function bootstrap() {
   .addTag('cats')
   .build();
   const document = SwaggerModule.createDocument(app, config);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   SwaggerModule.setup('api', app, document);
   app.enableCors({
     origin: 'http://localhost:3000',

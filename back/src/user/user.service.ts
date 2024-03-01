@@ -131,8 +131,6 @@ export class UserService {
     });
   }
 
-
-
   async removeFriendRequest(requestId: string) {
 
     return this.prisma.friendRequest.delete({
@@ -239,19 +237,28 @@ export class UserService {
   }
 
   async friendList(myId: string){
-    const user = await this.prisma.user.findUnique({
-      where: 
-      {
-        id: myId
-      },
-      include: 
-      {
-        friends: true
-      }
-    });
-  
+    let user;
+      user = await this.prisma.user.findUnique({
+        where: 
+        {
+          id: myId
+        },
+        include: 
+        {
+          friends: true
+        }
+      });
     return user.friends;
+  
   }
+  
+  async blocklist(myId: string){
+    return this.prisma.user.findUnique({
+      where: { id: myId },
+      // include:[bl]
+    });
+  }
+  
   
   
   

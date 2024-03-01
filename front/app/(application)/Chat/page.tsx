@@ -11,10 +11,9 @@ import { useEffect } from 'react'
 
 export default function Chat() {
 
-  const conversationId = useSelector((state:RootState) => state.seelctedConversation.conversationId);
   
 
   return (
-    <main className='h-screen w-full rounded-29 flex justify-center items-center object-contain'> </main>
+    <main className='h-screen w-full rounded-29 flex justify-center items-center object-contain'></main>
   )
 }

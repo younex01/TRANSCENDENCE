@@ -17,6 +17,7 @@ import { selectFreindRequestInfo } from '../../../../redux/features/freinds/requ
 export default function FreindsRequests() {
 
     const array = useSelector(selectFreindRequestInfo);
+    console.log("my arrraaaay:", array)
     return (
         <div className='w-full flex justify-center items-center h-[85%]'>
             <Swiper

@@ -28,6 +28,7 @@ import { setLastGameInfo } from '@/redux/features/lastGamesSlice/lastGameSlice';
 //     .then(response => {
 //       // Handle successful response
 //       const data = response.data.token;
+//       console.log(data);
 //       return data;
 //       // Process the data here
 //     })
@@ -40,6 +41,7 @@ import { setLastGameInfo } from '@/redux/features/lastGamesSlice/lastGameSlice';
 
 
 const Home = () => {
+  const userid = useSelector(selectProfileInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -67,16 +69,16 @@ const Home = () => {
 
 
           <div className='flex xl:flex-row flex-col justify-center items-center w-[90%] gap-5 '>
-            <div className="xl:w-[900px] w-[100%] h-full  ">
+            <div className="xl:w-[900px] w-[100%] h-full">
               <Profile />
             </div>
-            <div className=" xl:w-[900px] w-[100%] h-full ">
+            <div className="xl:w-[900px] w-[100%] h-full">
               <Achievements />
             </div>
           </div>
 
           <div className="xl:w-[1000px] h-[440px] flex w-[90%]  justify-center">
-              <Freinds />
+              <Freinds userId={userid.id}/>
         </div>
       </div>
     </div>

@@ -66,7 +66,7 @@ export default function LeftBar() {
                 />
             </div>
           </Link>
-          <Link href="./../../Game">
+          <Link href="./../../game">
              <div className='w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center '>
               <Image 
                 src="../../../images/Game.svg" 

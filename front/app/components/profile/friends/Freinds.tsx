@@ -10,9 +10,12 @@ import 'swiper/css/scrollbar';
 import { useState } from 'react';
 import FreindsRequests from './FreindsRequests';
 import FreindInfo from './FreindInfo';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import { useSelector } from 'react-redux';
 
-export default function freinds() {
+export default function freinds({userId} : {userId: any}) {
   const [activeTab, setActiveTab] = useState('freinds');
+  const user = useSelector(selectProfileInfo);
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
@@ -22,7 +25,7 @@ export default function freinds() {
   // }, []);
 
   return (
-    <div className='friends h-full  gap-5 p-[15px] bg-white w-[100%] rounded-xl mb-5 flex flex-col justify-center '>
+    <div className='friends h-[430px]  gap-5 p-[15px] bg-white w-[100%] rounded-xl mb-5 flex flex-col justify-center '>
 
       <div className="flex justify-start items-start gap-[20px] ">
         <div
@@ -38,7 +41,7 @@ export default function freinds() {
           freinds Requests
         </div>
       </div>
-      {activeTab === 'freinds' && <FreindInfo />}
+      {activeTab === 'freinds' && <FreindInfo userId={userId} />}
       {activeTab === 'requests' && <FreindsRequests />}
 
     </div>

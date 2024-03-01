@@ -20,15 +20,12 @@ function RootLayout({
   children: React.ReactNode
 }) {
   return (
-
-      <html lang="en">
-        <body className='flex'>
+        <div className="flex">
             <Providers>
                 <LeftBar />
                 {children}
             </Providers>
-        </body>
-      </html>
+        </div>
 
   )
 }
