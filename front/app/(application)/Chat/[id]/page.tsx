@@ -224,6 +224,8 @@ export default function Page(props: any) {
       userId: userData.id,
     });
     router.push('/Chat');
+    console.log("teeeest");
+    
     toast.success(`You left ${groupData.name}`)
     dispatch(setRefreshConvos(!refreshConvos))
   }
