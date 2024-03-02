@@ -36,7 +36,6 @@ export const PlayWithFriend = () => {
     const [pic1,setPic1] = useState<string>("");
     const [pic2,setPic2] = useState<string>("");
 
-    const [ids, setIds] = useState<string[]>([]);
     const myData = useSelector(selectProfileInfo);
     
     //select canvas
@@ -234,8 +233,6 @@ export const PlayWithFriend = () => {
           setSecondName(data.players[1].name);
           setPic1(data.players[0].pic);
           setPic2(data.players[1].pic);
-          const ArrIds = [data.players[0].db_id, data.players[1].db_id]
-          setIds(ArrIds);
           canv = canvasRef.current;
           if(canv)
           {
@@ -259,9 +256,10 @@ export const PlayWithFriend = () => {
     
     
     
-    const handleRandom =  () => {
-      console.log("send connection");
 
+    useEffect(() => {
+
+      console.log("send connection");
       const token = Cookies.get('JWT_TOKEN');
       const newSocket = io("http://localhost:3001",{
         query: {
@@ -270,17 +268,20 @@ export const PlayWithFriend = () => {
       });
       setSocket(newSocket);
       console.log("newSocket", newSocket);
-      console.log("JWT_TOKEN",token);
-      
-      setRandom(false);
+
       setStart(true);
       setText("wait for freind to join");
-  }
+
+      newSocket.off();
+
+      return () => {
+        newSocket.close();
+      };
+  },[])
   
   return (
     <>
     <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
-        {random && <button onClick={handleRandom}>random friend</button>}
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 
@@ -310,7 +311,7 @@ export const PlayWithFriend = () => {
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}
-                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} ids={ids} />}
+                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
                 </div>
             </div>
             </>

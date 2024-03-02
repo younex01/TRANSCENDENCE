@@ -42,7 +42,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
     if (availibleRoomId)
     {
       
-      let newBall:Ball = this.ball;
+      let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
       console.log(`join this room ${availibleRoomId}`);

@@ -55,7 +55,8 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: any) {
-    console.log("user disconnected")
+    console.log("user disconnected**")
+
   }
 
 }

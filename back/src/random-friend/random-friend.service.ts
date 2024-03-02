@@ -139,13 +139,17 @@ export class GameService {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
+      console.log(game);
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
+        console.log(game[i].players[0].id, id , game[i].players[1].id);
         if (game[i].players.length === 2)
         {
-          if (game[i].players[0].id === id || game[i].players[1].id === id)
+          console.log("i am if:");
+          if (game[i].players[0].id == id || game[i].players[1].id == id)
           {
+            console.log("i am if:if");
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
               console.log("this player is give up the game");
@@ -164,14 +168,15 @@ export class GameService {
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);
               }
             }
+            game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
+            gameId--;
+            game.splice(i, 1);
+            break;
           }
-          game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
-          gameId--;
-          game.splice(i, 1);
-          break;
         }
         else
         {
+          console.log("i am else");
           //check if the room of the game has the id and the lenght is 1 if that is true remove the game
           if (game[i].players[0].id === id && game[i].players.length == 1)
           {
@@ -198,8 +203,10 @@ export class GameService {
   
       if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
         clearInterval(intervalId);
+        //close socket
       }
       
+
       // Emit game update to clients
       const gameData = {
         ball,

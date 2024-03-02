@@ -28,6 +28,8 @@ export class GameService {
 
   
         // Game result does not exist, create a new one
+        if (!players[1].pic || !players[0].pic)
+          return;
         return this.prisma.gameResult.create({
           data: {
             opponent_pic: players[1].pic,
@@ -216,13 +218,13 @@ export class GameService {
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);
               }
             }
+            game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
+            gameId--;
+            game.splice(i, 1);
+            break;
           }
           // this.removeInviteToPlay1(i,game);
           // this.removeInviteToPlay2(i,game);
-          game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
-          gameId--;
-          game.splice(i, 1);
-          break;
         }
         else
         {

@@ -37,7 +37,6 @@ export default function page() {
     const [pic1,setPic1] = useState<string>("");
     const [pic2,setPic2] = useState<string>("");
 
-    const [ids, setIds] = useState<string[]>([]);
     const myData = useSelector(selectProfileInfo);
 
     //select canvas
@@ -239,8 +238,6 @@ export default function page() {
           setSecondName(data.players[1].name);
           setPic1(data.players[0].pic);
           setPic2(data.players[1].pic);
-          const ArrIds = [data.players[0].db_id, data.players[1].db_id]
-          setIds(ArrIds);
           canv = canvasRef.current;
           if(canv)
           {
@@ -257,9 +254,12 @@ export default function page() {
         else if(event = "already_in_game")
         {
           setText("Sorry !! you already in game.");
+          socket.close();
         }
       })
-      return () => {socket?.offAny()}
+      return () => {
+        socket?.offAny();
+      }
     })
 
     useEffect(() => {
@@ -278,6 +278,10 @@ export default function page() {
         setText("wait for freind to join");
 
         newSocket.off();
+
+        return () => {
+          newSocket.close();
+        };
     },[])
 
 
@@ -310,11 +314,11 @@ export default function page() {
                     id="pong"
                     height="450"
                     width="900"
-                    style={{width: "100vmin", height: "50vmin"}}
+                    // style={{width: "100vmin", height: "50vmin"}}
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}
-                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} ids={ids} />}
+                {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
                 </div>
             </div>
             </>

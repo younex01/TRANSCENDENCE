@@ -52,11 +52,13 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
 
     if (availibleRoomId)
     {
-      let newBall:Ball = this.ball;
+      let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
       console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
+      if(socket.id === this.players[this.id][0].id)
+        return;
       this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
       // console.log("------------players-Data-------------");
       // console.log(this.players);
@@ -84,7 +86,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       if (!this.players[this.id]) {
         this.players[this.id] = [];
       }
-      this.players[this.id].push({id: newRoomId, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
+      this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
     }
   }
 
@@ -129,7 +131,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     // pop the client from the room list
     // leave the client id from the 
     this.connectedUsers.delete(client.id);
-    console.log("handle disconnect");
+    console.log("handle disconnect",client.id);
     console.log("------------Game-Data-------------");
     console.log(this.game);
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
