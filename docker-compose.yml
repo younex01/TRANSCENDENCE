@@ -11,29 +11,29 @@ services:
       POSTGRES_PASSWORD: mazino
       POSTGRES_USER: mazino
       POSTGRES_DB: PGdb
-  back:
-    image: node:20
-    working_dir: /app
-    command: bash -c "npm install && npx prisma migrate dev --name update && npm run start:dev"
-    volumes:
-      - /goinfre/sharrach/sharrach/back:/app
-    ports:
-      - 4000:4000
-    env_file:
-      - back/.env
-    depends_on:
-      - db
-  front:
-    image: node:20
-    working_dir: /app
-    command: bash -c "npm install && npm run dev -- -p 3000"
-    volumes:
-      - /goinfre/sharrach/sharrach/front:/app
-    ports:
-      - 3000:3000
-    environment:
-      - BACK_IP=back
-    env_file:
-      - front/.env
-    depends_on:
-      - back
+  # back:
+  #   image: node:20
+  #   working_dir: /app
+  #   command: bash -c "npm install && npx prisma migrate dev --name update && npm run start:dev"
+  #   volumes:
+  #     - /goinfre/sharrach/Ft_Transcendence/back:/app
+  #   ports:
+  #     - 4000:4000
+  #   env_file:
+  #     - back/.env
+  #   depends_on:
+  #     - db
+  # front:
+  #   image: node:20
+  #   working_dir: /app
+  #   command: bash -c "npm install && npm run dev -- -p 3000"
+  #   volumes:
+  #     - /goinfre/sharrach/Ft_Transcendence/front:/app
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - BACK_IP=back
+  #   env_file:
+  #     - front/.env
+  #   depends_on:
+  #     - back

@@ -95,10 +95,10 @@ export default function LeftBar() {
             </div>
           </Link>
 
-          <Link href="./../../settings">
+          <Link href="./../../Settings">
             <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center ">
               <Image
-                src="/../../../setting.svg"
+                src="/../../../Setting.svg"
                 alt="logo"
                 width={35}
                 height={35}
