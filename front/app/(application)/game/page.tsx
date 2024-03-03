@@ -244,29 +244,36 @@ export default function Home() {
                     </div>
                   </div>
                     {activeButton === 'random' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center">
-                          <ul>
-                            <li>keys: up and down</li>
-                            <li></li>
+                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                          <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
+                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
+                            <li className="">You win when you reach 5 point</li>
+                            <li>If you left the game You loose automatictly</li>
+                            <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
+                            {/* <li></li> */}
                           </ul>
-                        </div>
+                          </div>
                     )
                     }
                     {activeButton === 'ai' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center">
-                          <ul className="text-[17px] list-disc">
-                            <h3>Rules</h3>
-                            <li>You win when you reach 5 point</li>
+                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                          <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
+                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
+                            <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
-                            <li>You can use arrow (up and down) or mouse for movements</li>
+                            <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
+                            {/* <li></li> */}
                           </ul>
                         </div>
                     )}
                     {activeButton === 'friends' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center">
-                          <ul>
-                            <li>After send the invite</li>
-                            <li></li>
+                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                          <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
+                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
+                            <li className="">You win when you reach 5 point</li>
+                            <li>If you left the game You loose automatictly</li>
+                            <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
+                            {/* <li></li> */}
                           </ul>
                         </div>
                     )}

@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '../../../redux/features/profile/profileSlice';
 import axios from 'axios';
-import { use, useEffect, useState } from 'react';
+import { Suspense, use, useEffect, useState } from 'react';
+import { Skeleton } from '@nextui-org/react';
+import CustomLoading from '../loading';
 
 export default function Profile() {
   const [data, setData] = useState<any>();
@@ -20,7 +22,7 @@ export default function Profile() {
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <CustomLoading  />
       ) : (
         <div className='bg-white flex flex-col rounded-[20px] overflow-hidden w-full h-full items-center justify-center'>
           <div className='relative  w-[94%] rounded-[16px] h-[16%] flex gap-3 justify-between items-center px-3 border-black pb-2 bg-[#f5f7ff]'>
