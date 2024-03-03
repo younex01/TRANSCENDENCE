@@ -99,7 +99,7 @@ export class UserService {
   }
 
   async deletePlayRequest(myId: string, receiverId: string) {
-    return this.prisma.friendRequest.deleteMany({
+    return this.prisma.inviteToPlay.deleteMany({
       where: {
         OR: [
           { receiverId: receiverId, senderId: myId, },
@@ -332,7 +332,7 @@ export class UserService {
   }
 
   async friendList(myId: any){
-    console.log("myId------------------->", myId);
+    // console.log("myId------------------->", myId);
     let user;
     try {
       user = await this.prisma.user.findUnique({

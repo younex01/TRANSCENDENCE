@@ -263,12 +263,12 @@ export default function page() {
     })
 
     useEffect(() => {
-
         console.log("send connection");
         const token = Cookies.get('JWT_TOKEN');
         const newSocket = io("http://localhost:3002",{
           query: {
-            token: token
+            token: token,
+            id: myData.id
           }
         });
         setSocket(newSocket);

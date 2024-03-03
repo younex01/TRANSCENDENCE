@@ -42,6 +42,74 @@ export class GameService {
 
     }
 
+    async test2(games :Game[] ,id:string):Promise<number>{
+
+      for (let i =0; i< games.length; i++)
+      {
+        const friendRequest = await this.prisma.friendRequest.findFirst({
+          where: {
+            senderId: id,
+            receiverId: games[i].players[0].db_id
+          }
+        });
+        if(friendRequest && friendRequest.status === "Accepted")
+          return (i);
+      }
+        return -1;
+    }
+    async test(games :Game ,id:string):Promise<boolean>{
+      const friendRequest = await this.prisma.friendRequest.findFirst({
+        where: {
+          senderId: id,
+          receiverId: games.players[0].db_id
+        }
+      });
+      if(friendRequest)
+        return (friendRequest.status === "Accepted");
+      else
+        return false;
+    }
+
+    findIndexBySenderId(games :Game[],id:string, map:Map<string,string>):number
+    {
+      let result : number = -1;
+      for(let i = 0; i < games.length;i++)
+      {
+        console.log(games[i].players[0],id,map);
+        if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
+        {
+          map.delete(id);
+          console.log("i",i);
+          result = i;
+          break;
+        }
+      }
+      return result;
+    }
+
+    async getReceiverIdBySenderId(senderId: string,player:Player[],opponents:string[]):Promise<void> {
+      console.log(senderId);
+      try {
+        const invite = await this.prisma.inviteToPlay.findFirst({
+          where: {
+            senderId: senderId
+          }
+        });
+    
+        if (invite) {
+          console.log(invite.receiverId)
+          player[0].opponent_id = invite.receiverId;
+          opponents.push(invite.receiverId);
+        } else {
+          console.log('No invite found for senderId:', senderId);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error retrieving receiverId:', error);
+        return null;
+      }
+    }
+
     //fix the movement in the the player if we replay the game
     checkWinner(players: Player[],rooms:{[roomId: string]: string[];}, roomId: string, server: Server): boolean{
       if (!players[0] || !players[1])
@@ -133,6 +201,25 @@ export class GameService {
           players.length = players.length;
           return;
         }
+      }
+    }
+
+    async removeInviteToPlay(players: Player[]){
+      try {
+        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
+          where: {
+            senderId: players[0].db_id,
+            receiverId: players[0].opponent_id,
+          },
+        });
+
+        if (deletedInvite) {
+          console.log("Invite removed successfully");
+        }
+        
+      } catch (error) {
+        console.error("Error removing invite:", error);
+        // Handle error appropriately
       }
     }
 

@@ -57,8 +57,6 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       socket.join(availibleRoomId);
       console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
-      if(socket.id === this.players[this.id][0].id)
-        return;
       this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
       // console.log("------------players-Data-------------");
       // console.log(this.players);
@@ -67,12 +65,19 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         ball: newBall,
         players: this.players[this.id],
         rooms: this.rooms
-        };
-      // console.log("------------Game-Data-------------");
-      // console.log(newGame)
+      };
       this.game.push(newGame);
+      console.log("------------Game-Data-------------");
+      console.log(this.game)
+      console.log("------------rooms-Data-------------");
+      console.log(this.rooms)
       this.players = {};
-      this.rooms = {};
+      // this.rooms = {};
+      const roomId = Object.keys(this.rooms);
+      const index = Object.keys(this.rooms).findIndex(roomId => roomId === roomId[0]);
+      if (index !== -1) {
+        delete this.rooms[roomId[index]];
+      }
       this.gameService.startTheGame(this.game[this.id].players, this.game[this.id].rooms, availibleRoomId, this.server, this.game[this.id].ball, this.canvas);
       this.id++;
     }
@@ -132,11 +137,11 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     // leave the client id from the 
     this.connectedUsers.delete(client.id);
     console.log("handle disconnect",client.id);
-    console.log("------------Game-Data-------------");
-    console.log(this.game);
+    console.log("------------Rooms-Data-------------");
+    console.log(this.rooms);
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
     this.players = {};
-    this.rooms = {};
+    // this.rooms = {};
     // console.log("------------Game-Data-------------");
     // console.log(this.game);
     // console.log("------------rooms-Data-------------");

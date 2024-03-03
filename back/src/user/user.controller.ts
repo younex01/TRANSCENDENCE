@@ -113,11 +113,11 @@ export class UserController {
     @Post('sendPlayAgain')
     @UseGuards(AuthGuard('jwt'))
     async sendPlayAgain(@Body() req: any) {
-        console.log("i am here");
         const user = await this.UserService.getUser(req.target);
-
         if (!user) return;
+
         const isRequestExist = await this.UserService.isPlayRequest(req.target, req.sender);
+        
         if (isRequestExist )
             await this.UserService.deletePlayRequest(req.target, req.sender);
 
@@ -191,7 +191,7 @@ export class UserController {
         if (isExiste !== 1) return;
 
         await this.UserService.acceptInviteToPlay(req.notif.id);
-        // await this.UserService.makeFriends1(req.myId, req.notif.senderId);
+        // await this.UserService.makeFriends1(req.myId, req.notif.senderId) ;
         // await this.UserService.makeFriends2(req.myId, req.notif.senderId);
         // await this.ChatService.createDM(req.myId, req.notif.senderId);
         // await this.ChatService.createDM(req.notif.senderId);

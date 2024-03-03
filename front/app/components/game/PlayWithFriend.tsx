@@ -244,7 +244,10 @@ export const PlayWithFriend = () => {
         }
         else if(event == "winner")
         {
-          checkWinner(data);
+          console.log("Player give up");
+          // checkWinner(data);
+          setComputerWinnes((prev) => {return !prev})
+          setWinnerName(data);
         }
         else if(event = "already_in_game")
         {
@@ -267,7 +270,7 @@ export const PlayWithFriend = () => {
         }
       });
       setSocket(newSocket);
-      console.log("newSocket", newSocket);
+      console.log("newSocket", newSocket.id);
 
       setStart(true);
       setText("wait for freind to join");

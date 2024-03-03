@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
+import { io } from 'socket.io-client';
 
 export default function SearchPanel() {
 
@@ -99,6 +100,19 @@ export default function SearchPanel() {
     try {
       axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
+      console.log("Notif",notif.senderId,"Myid",myData.id);
+
+      const socket = io('http://localhost:3002',{
+        query: {
+          token: "token",
+          id: myData.id
+        }
+      });
+      // Emit an event with data to the backend gateway
+      socket.emit('accepted_request', { key: myData.id , value: notif.senderId });
+      console.log("accepted request");
+      //socket.close();
+
     } catch (error) {
       console.error("Error fetching users:", error);
     }
