@@ -1,7 +1,8 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, WsException} from '@nestjs/websockets';
 import { Socket, Server} from 'socket.io';
 import { UserService } from './user.service';
 import { OnEvent } from '@nestjs/event-emitter';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway(
   {
@@ -13,16 +14,30 @@ import { OnEvent } from '@nestjs/event-emitter';
 )
 
 export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private UserService: UserService) {}
+  constructor(private UserService: UserService, private jwt: JwtService) {}
   @WebSocketServer()
   server: Server;
-  
+
+  // async afterInit(client: Socket) {
+  //   client.use(async (request: any, next) => {
+  //     const token = request.handshake.auth.jwt_token ?? request.handshake.headers.jwt_token;
+  //     try {
+  //       const payload = await this.jwt.verify(token, {
+  //         secret: 'dontTellAnyone'
+  //       })
+  //     }
+  //     catch (error) {
+  //       // throw new WsException('Invalid Token');
+  //     }
+  //     next()
+  //   })
+  // }
 
   @OnEvent('refreshNotifications')
   async refreshNotifications(client: Socket, payload:any) {
     this.server.emit("refreshFrontNotifications");
-
   } 
+
   @OnEvent('refreshfriendShip')
   async refreshfriendShip(client: Socket, payload:any) {
     this.server.emit("refreshFrontfriendShip");
@@ -33,10 +48,12 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @OnEvent('refreshChat')
   async refreshChat(client: Socket, payload:any) {
     this.server.emit("refreshChatFront");
-
   }
 
-
+  @OnEvent('refreshStatus')
+  async refreshStatus(client: Socket) {
+    this.server.emit("refreshStatus");
+  }
 
   @SubscribeMessage('acceptRequest')
   async acceptRequest(client: Socket, payload:any) {
@@ -51,12 +68,23 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   handleConnection(client: any) {
-    console.log("user connected")
-  }
+    try {
+        const token = client.handshake.auth.jwt_token ?? client.handshake.headers.jwt_token;
+        const payload = this.jwt.verify(token, {
+            secret: 'dontTellAnyone'
+        });
+        const userId = payload.sub;
+        client.userId = userId;
+        this.UserService.addUserSocket(userId, client);
+    } catch (error) {
+        console.log('Error handling connection:', error.message);
+        client.disconnect(true);
+    }
+}
 
   handleDisconnect(client: any) {
     console.log("user disconnected")
+    this.UserService.removeUserSocket(client.userId, client);
   }
-
 }
 

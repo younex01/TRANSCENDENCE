@@ -71,7 +71,6 @@ export class ChatController {
 
   @Get('/getGroupByGroupId')
   async getGroupByGroupId(@Query('groupId') groupId: string, @Query('myId') myId: string) {
-    console.log("wach hna?")
     try {
       const group = await this.chatService.getGroupWithMembers(groupId);
       if (group.type === 'DM') {
@@ -115,10 +114,8 @@ export class ChatController {
 
   @Get('/getDm')
   async getDm(@Query('myId') myId: string, @Query('othersId') othersId: string) {
-    console.log("hnaaaaaaaaaa", myId, othersId);
     const groupId = await this.chatService.isDMalreadyexist(myId, othersId);
     if(!groupId) return;
-    console.log("groupId --------", groupId)
     return groupId.id;
   }
 

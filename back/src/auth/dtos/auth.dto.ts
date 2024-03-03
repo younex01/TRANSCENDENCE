@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsNumberString, IsString, MaxLength, MinLength, min } from "class-validator";
 
 export class AuthDto{
     @IsString()
@@ -21,4 +21,12 @@ export class AuthDto{
 
     //@IsString()
     //twoFactorAuthCode: string;
+}
+
+export class code{
+    @IsNumberString()
+    @IsNotEmpty()
+    @MaxLength(6)
+    @MinLength(6)
+    code: string;
 }

@@ -15,6 +15,8 @@ import speakeasy from "speakeasy";
 // import { authenticator } from 'otplib';
 import * as qrcode from "qrcode";
 import { log } from "console";
+import { UserDto } from "src/user/user.dto";
+import { AuthDto, code } from "./dtos/auth.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -22,6 +24,11 @@ export class AuthController {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService
   ) {}
+
+  @Get("42")
+  @UseGuards(AuthGuard("42"))
+  login() {}
+
   @Get("redirect")
   @UseGuards(AuthGuard("42"))
   async ft_redirect(@Req() req, @Res() res) {
@@ -45,11 +52,13 @@ export class AuthController {
     return res.redirect("http://localhost:3000/Profile");
   }
 
-  @Post("logout")
+  @Get("logout")
   @UseGuards(AuthGuard("jwt"))
   ft_logout(@Res() res) {
     res.clearCookie("JWT_TOKEN");
-    return res.send({ logout: true, message: "Logged out" });
+    res.status(200).json({ redirect: "http://localhost:3000" });
+    // return res.redirect("http://localhost:3000");
+
   }
 
   @Post("generateTwoFactorAuthCode")
@@ -72,7 +81,6 @@ export class AuthController {
       issuer: "MyCompany",
       encoding: "base32",
     });
-    console.log("ussse ---------- ---------- ---------- ---------- ---------- ---------- r");
     const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
     return res.json({ qrCodeImageUrl });
   }
@@ -82,7 +90,7 @@ export class AuthController {
   async verifyTwoFactorAuthCode(
     @Req() req,
     @Res() res,
-    @Body("code") code: string
+    @Body() code: code
   ) {
     //const user = req.user;
     const user = await this.prisma.user.findFirst({
@@ -91,8 +99,9 @@ export class AuthController {
     const isVerified = speakeasy.totp.verify({
       secret: user.twoFactorAuthCode,
       encoding: "base32",
-      token: code,
+      token: code.code,
     });
+    
 
 
     log("isVerified", isVerified);
@@ -105,30 +114,33 @@ export class AuthController {
       return res.status(400).json({ message: "Invalid token" });
     }
   }
+
+
+  // if(user.twoFactorAuthEnabled){
+  //     return res.json({status: true, message: 'Two-factor authentication is already enabled' });
+  // }
+  // const isVerified = speakeasy.totp.verify({
+  //     secret: user.twoFactorAuthCode,
+  //     encoding: 'base32',
+  //     token: body.code,
+  // });
+  // if (isVerified) {
+  //     await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: true } });
+  //     return res.json({status: true, message: 'Two-factor authentication is enabled' });
+  // } else {
+  //     return res.json({status: false, message: 'invalide code' });
+  // }
+  
   @Post("enableTwoFactorAuth")
   @UseGuards(AuthGuard("jwt"))
   async enableTwoFactorAuth(
     @Req() req,
     @Res() res,
-    @Body() body: { code: string }
+    @Body() body: code
   ) {
     const user = req.user;
 
-    // if(user.twoFactorAuthEnabled){
-    //     return res.json({status: true, message: 'Two-factor authentication is already enabled' });
-    // }
-    // const isVerified = speakeasy.totp.verify({
-    //     secret: user.twoFactorAuthCode,
-    //     encoding: 'base32',
-    //     token: body.code,
-    // });
-    // if (isVerified) {
-    //     await this.prisma.user.update({ where: { id: user.id }, data: { twoFactorAuthEnabled: true } });
-    //     return res.json({status: true, message: 'Two-factor authentication is enabled' });
-    // } else {
-    //     return res.json({status: false, message: 'invalide code' });
-    // }
-
+    log("userMosaaaaaaaaaaapahah", user);
     if (user.twoFactorAuthEnabled) {
       return res.json({
         status: true,
@@ -151,9 +163,12 @@ export class AuthController {
       });
     } else {
       // return res.json({status: false, message: 'invalide code' });
-      return res.status(400).json({ message: "Bad request" });
+      return res.status(400).json();
     }
   }
+
+
+
 
   @Post("disableTwoFactorAuth")
   @UseGuards(AuthGuard("jwt"))

@@ -7,27 +7,43 @@
 //     return super.canActivate(context);
 //   }
 // }
-import { Injectable, ExecutionContext } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ExtractJwt } from 'passport-jwt';
+// import { Injectable, ExecutionContext, BadRequestException } from '@nestjs/common';
+// import { AuthGuard } from '@nestjs/passport';
+// import { ExtractJwt } from 'passport-jwt';
+// import { JwtService } from '@nestjs/jwt';
 
-@Injectable()
-export class FortyTwoAuthGuard extends AuthGuard('jwt') {
-  canActivate(context: ExecutionContext) {
-    const request = context.switchToHttp().getRequest();
-    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+// @Injectable()
+// export class FortyTwoAuthGuard extends AuthGuard('jwt') {
+//   // constructor(private jwt: JwtService) {}
+//   canActivate(context: ExecutionContext) {
+//     const request = context.switchToHttp().getRequest();
+//     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
     
-    // Assuming you have a JWT validation service or function
-    const isValid = this.validateToken(token);
+//     if (!this.validateToken(token)) {
+//       throw new BadRequestException('Invalid Token');
+//     }
+//     // Assuming you have a JWT validation service or function
+//     // const isValid = this.validateToken(token, );
 
-    return isValid;
-  }
+//     return true;
+//   }
 
-  private validateToken(token: string): boolean {
-    // Implement your JWT validation logic here
-    // For example, verify the token's signature, expiration, etc.
-    // Return true if the token is valid, false otherwise
-    // You can use libraries like jsonwebtoken for token validation
-    return true; // Replace this with your actual validation logic
-  }
-}
+//   private async validateToken(token: string): Promise<boolean> {
+//     let jwt = new JwtService;
+
+//     try {
+//       const payload = await jwt.verifyAsync(token, {
+//         secret: 'dontTellAnyone'
+//       })
+//       console.log(`>>>>> ${JSON.stringify(payload)}`)
+//       if(payload) {
+//         return true
+//       }
+//       return false; 
+//     }
+//     catch (error) {
+//       console.log(error.message)
+//       return false
+//     }
+//   }
+// }

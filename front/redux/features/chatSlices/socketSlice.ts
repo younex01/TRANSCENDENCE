@@ -4,6 +4,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { io } from 'socket.io-client';
+import Cookies from "js-cookie";
 
 const initialState: any = {
   socket: null,
@@ -15,8 +16,12 @@ const socketSlice = createSlice({
   reducers: {
     initializeSocket: (state, action) => {
       const { userId } = action.payload;
-      state.socket = io("http://localhost:4000/");
-      console.log("state.socket", state.socket)
+      const token = Cookies.get("JWT_TOKEN");
+      state.socket = io("http://localhost:4000/", {
+        auth: {
+          jwt_token: token
+        }
+      });
       if (state.socket) {
         state.socket.emit('addSocketToThisUserRoom', userId);
       }

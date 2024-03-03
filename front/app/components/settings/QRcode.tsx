@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   selectProfileInfo,
   setProfileData,
@@ -41,25 +41,32 @@ export default function QRcode() {
   }, [image]);
 
   const onSubmit = async () => {
-    await axios
-      .post("http://localhost:4000/auth/enableTwoFactorAuth", {
-        code: qrData,
-      })
-      .then((response) => {
-        // console.log('response:', response);
-        // console.log('response:', qrData);
-        dispatch(
-          setProfileData({
-            ...datauser,
-            twoFactorAuthEnabled: true,
-          })
-        );
-        toast.success("enabled succesfully");
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-        toast.error("invalid code  ");
-      });
+    // if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
+    //   toast.info("Put the six digit code");
+    //   return;
+    // }
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/auth/enableTwoFactorAuth",
+        { code: qrData },
+      );
+      console.log("helllloooo",qrData);
+      
+      console.log("Response:salaheeee", response.data);
+      dispatch(
+        setProfileData({
+          ...datauser,
+          twoFactorAuthEnabled: true,
+        })
+      );
+      toast.success("Enabled successfully");
+    } catch (error:any) {
+      if(error.response.status === 400){
+
+        console.error("Error fetching user data:", error.message);
+      }
+      toast.error("Invalid code");
+    }
   };
 
   const onDisable2fa = async () => {
@@ -84,7 +91,7 @@ export default function QRcode() {
       {image && (
         <>
           <div className="">
-            <h2 className="text-center font-poppins tex t-2xl font-semibold text-gray-500">
+            <h2 className="text-center font-poppins text-2xl font-semibold text-[#252f5b]">
               Authentication QR code
             </h2>
           </div>
@@ -94,34 +101,39 @@ export default function QRcode() {
               <img
                 src={image}
                 alt="Your Image Alt Text"
-                className={!datauser.twoFactorAuthEnabled ? `object-cover w-[250px] h-[250px]` : `object-cover w-[250px] h-[250px] blur-sm`}
+                className={
+                  !datauser.twoFactorAuthEnabled
+                    ? `object-cover w-[250px] h-[250px]`
+                    : `object-cover w-[250px] h-[250px] blur-sm`
+                }
               />
             </div>
           </div>
-
-          <div className="w-full flex items-center justify-center">
-            <input
-              type=""
-              value={qrData}
-              onChange={(e) => setQrData(e.target.value)}
-              className={datauser.twoFactorAuthEnabled  ? `w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center cursor-not-allowed pointer-events-none` : `w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center`}
-              placeholder="Enter your code"
-              pattern="\d{6}"
-              maxLength={6}
-            />
-          </div>
+          {!datauser.twoFactorAuthEnabled ? (
+            <div className="w-full flex items-center justify-center">
+              <input
+                type=""
+                value={qrData}
+                onChange={(e) => setQrData(e.target.value)}
+                className="w-7/12 px-4 py-2 border border-gray-300 rounded-[10px] focus:outline-none focus:border-blue-400 text-center"
+                placeholder="Enter your code"
+                pattern="\d{6}"
+                maxLength={6}
+              />
+            </div>
+          ) : null}
 
           <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row  px-[60px] w-full">
             {datauser.twoFactorAuthEnabled ? (
               <button
-                className="w-32 h-10 bg-[#e19b91] text-white rounded-lg"
+                className="w-32 h-10 bg-[#e19b91] text-white rounded-lg hover:bg-[#e49589]"
                 onClick={onDisable2fa}
               >
                 Disable
               </button>
             ) : (
               <button
-                className="w-32 h-10 bg-[#90c8b8] text-white rounded-lg"
+                className="w-32 h-10 bg-[#90c8b8] text-white rounded-lg hover:bg-[#8ccd9f]"
                 onClick={onSubmit}
               >
                 Enable

@@ -1,14 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
+import { Socket } from 'socket.io';
+import { UserGateway } from './user.gateway';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private eventEmitter: EventEmitter2) { }
+  private userSocketMap: { [userId: string]: any } = {};
+
+  async addUserSocket(userId: string, socket: Socket) {
+    if (this.userSocketMap[userId])
+      this.userSocketMap[userId].push(socket);
+    else
+      this.userSocketMap[userId] = [socket];
+    this.updateProfile("Online", userId);
+    this.eventEmitter.emit("refreshStatus")
+  }
+
+
+
+  async removeUserSocket(userId: string, socket: Socket) {
+    if (this.userSocketMap[userId]) {
+      this.userSocketMap[userId] = this.userSocketMap[userId].filter((s: any) => s !== socket);
+      if (this.userSocketMap[userId].length === 0) {
+        this.updateProfile("Offline", userId);
+        this.eventEmitter.emit("refreshStatus")
+      }
+    }
+  }
 
   async getUser(target: string) {
     return this.prisma.user.findUnique({
       where: { id: target }
     });
+  }
+
+  async updateProfile(status: string, userId) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { status: status }
+    })
   }
 
   async createFriendRequest(target: string, sender: string) {
@@ -62,7 +94,8 @@ export class UserService {
       },
     });
   }
-  async pendFriendRequest(notifId: string, sender:string, target:string) {
+
+  async pendFriendRequest(notifId: string, sender: string, target: string) {
 
     return this.prisma.friendRequest.update({
       where: { id: notifId },
@@ -73,6 +106,7 @@ export class UserService {
       }
     });
   }
+
   async acceptFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({
@@ -82,6 +116,7 @@ export class UserService {
       }
     });
   }
+
   async declineFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({
@@ -130,6 +165,8 @@ export class UserService {
       }
     });
   }
+
+
 
   async removeFriendRequest(requestId: string) {
 
@@ -207,8 +244,8 @@ export class UserService {
 
     const userIndex = myData.blockedUsers.findIndex((blockedUser) => blockedUser == targetId);
     if (userIndex === -1) return;
-    
-    const newBlockedList = myData.blockedUsers.filter((user:string) => user != targetId);
+
+    const newBlockedList = myData.blockedUsers.filter((user: string) => user != targetId);
 
     return this.prisma.user.update({
       where: { id: myId },
@@ -224,50 +261,53 @@ export class UserService {
 
     const userIndex = myData.blockedByUsers.findIndex((blockedBy) => blockedBy == myId);
     if (userIndex === -1) return;
-    
-    const newBlockedByList = myData.blockedByUsers.filter((user:string) => user != myId);
+
+    const newBlockedByList = myData.blockedByUsers.filter((user: string) => user != myId);
 
 
     return this.prisma.user.update({
       where: { id: targetId },
       data: {
-        blockedByUsers: newBlockedByList 
+        blockedByUsers: newBlockedByList
       }
     });
   }
 
-  async friendList(myId: string){
-    let user;
-      user = await this.prisma.user.findUnique({
-        where: 
-        {
-          id: myId
-        },
-        include: 
-        {
-          friends: true
-        }
-      });
+  async friendList(myId: any) {
+    if (myId === 'undifined') return;
+
+    const user = await this.prisma.user.findUnique({
+      where:
+      {
+        id: myId
+      },
+      include:
+      {
+        friends: true
+      }
+    });
+    if (!user) return;
+
     return user.friends;
-  
+
   }
-  
-  async blocklist(myId: string){
+
+  async blocklist(myId: string) {
     return this.prisma.user.findUnique({
       where: { id: myId },
       // include:[bl]
     });
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
 
 
 

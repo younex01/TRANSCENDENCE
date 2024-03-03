@@ -233,11 +233,12 @@ useEffect(() => {
     setStart(true);
     setText("wait for freind to join");
   }
+  // ref={divv}
   
   return (
     <>
-    <div className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
-        {random && <button onClick={handleRandom}>random friend</button>}
+    <div  className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
+        {random && <button onClick={handleRandom} className='w-[50px] h-[50px] bg-white'>random friend</button>}
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 

@@ -13,14 +13,13 @@ async function bootstrap() {
   const config = new DocumentBuilder()
   .setTitle('Cats example')
   .setDescription('The cats API description')
-  .setVersion('1.0')
-  .addTag('cats')
   .build();
   const document = SwaggerModule.createDocument(app, config);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   SwaggerModule.setup('api', app, document);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost:3000/'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
     app.use(cookieParser());

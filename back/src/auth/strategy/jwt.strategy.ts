@@ -8,8 +8,6 @@ const extractCookie = (req: Request): string | null => {
   if (req.cookies && req.cookies.JWT_TOKEN ) {
     return req.cookies.JWT_TOKEN;
   }
-  else if (req.headers.authorization) {
-    return req.headers.authorization.replace('Bearer ', '');}
   return null;
 };
 
@@ -17,7 +15,8 @@ const extractCookie = (req: Request): string | null => {
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly prisma: PrismaService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
+      jwtFromRequest: ExtractJwt.fromExtractors([extractCookie,
+        ExtractJwt.fromAuthHeaderAsBearerToken() ]),
         secretOrKey: 'dontTellAnyone',
     });
   }

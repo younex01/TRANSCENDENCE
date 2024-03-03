@@ -72,36 +72,44 @@ export default function PersonnelInfo() {
         toast.error("All fields are required");
         return;
       }
-      else if (nickName.length > 7) {
-        toast.info("Username must be at least 6 characters");
+      else if (nickName.length > 8) {
+        toast.info("Username must be at most 8 characters");
         return;
       }
-      else if (firstName.length > 10) {
-        toast.info("firstName must be at least 10 characters");
+      else if (firstName.length > 12) {
+        toast.info("firstName must be at most 12 characters");
         return;
       }
-      else if (lastName.length > 14) {
-        toast.info("lastName must be at least 14 characters");
+      else if (lastName.length > 12) {
+        toast.info("lastName must be at most 12 characters");
         return;
       }
 
       const updatedProfileData = {
-        ...profileSelector,
-        firstName,
-        lastName,
+        id: profileSelector.id,
+        firstName: firstName,
+        lastName: lastName,
         username: nickName,
         avatar: imagePath || profileSelector.avatar,
       };
 
-      dispatch(setProfileData(updatedProfileData));
-
+      console.log("------------",updatedProfileData.firstName);
+      console.log("heeeeere");
+      
       const res = await axios.post(
         `http://localhost:4000/user/changeInfos`,
         updatedProfileData
-      );
+        );
+        dispatch(setProfileData(updatedProfileData));
+      console.log("------------heloo22",res);
       toast.success("Your information has been changed successfully");
-    } catch (error) {
-      console.error(error);
+    } catch (error:any) {
+      if (error.response.status === 400) {
+          console.error("Error: ", error.response.data.message);
+          toast.error(`Error: ${error.response.data.message}`);
+      } else {
+          console.error("Error: ", error.message);
+      }
     }
   };
 
@@ -112,7 +120,7 @@ export default function PersonnelInfo() {
   ) : (
     <div className="flex flex-col justify-between h-[90%]">
       <div className="">
-        <h2 className="text-[#5F5F5F] font-poppins text-xl font-semibold text-center">
+        <h2 className="text-[#252f5b] font-poppins text-xl font-semibold text-center">
           Personal information
         </h2>
       </div>
@@ -134,6 +142,7 @@ export default function PersonnelInfo() {
             id="upload"
             className="absolute hidden cursor-pointer"
             onChange={handleAvatarChange}
+            accept="image/*"
           />
           {isLoading ? (
             <div>
@@ -213,7 +222,7 @@ export default function PersonnelInfo() {
       </div>
       <div className="flex gap-4 flex-col justify-center items-center  sm:flex-row sm:justify-end px-[60px] w-full">
         <button
-          className="w-32 h-10 bg-[#909DC8] text-white rounded-lg"
+          className="w-32 h-10 bg-[#909DC8] text-white rounded-lg hover:bg-[#98a9dc]"
           onClick={() => onSubmit()}
         >
           Save Changes
