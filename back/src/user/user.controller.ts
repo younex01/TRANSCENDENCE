@@ -103,14 +103,10 @@ export class UserController {
 
         if (!user) return;
         const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
-        if (isRequestExist && isRequestExist.status === "Declined") {
-
+        if (isRequestExist && isRequestExist.status === "Declined")
             await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
-        }
-        else {
-
+        else
             await this.UserService.createFriendRequest(req.target, req.sender);
-        }
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
     }
