@@ -88,7 +88,7 @@ class padData{
     );
   }
 }
-const dBall = new ballData(500, 300, 1, 1, 0, 0);
+const dBall = new ballData(500, 300, 1, 1, 20, 20); //ball here
 const dpad1 = new padData(35, 0, 1);
 // let dataPad1: cor = {y: 35, x: 0};
 let dataPad2: cor = {y: 35, x: 98};

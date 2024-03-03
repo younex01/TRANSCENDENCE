@@ -198,7 +198,7 @@ export default function Home() {
           <div>
             <button
             onClick={() => setHowToPlay(!hToPlay)}
-            className=" bg-[#cfd5ef] shadow-md w-14 h-14 md:h-20 md:w-20 rounded-full flex justify-center items-center mb-5 hover:bg-[#c9d0f0] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-300">
+            className=" bg-[#cfd5ef] shadow-md w-14 h-14 md:h-20 md:w-20 rounded-full flex justify-center items-center mb-5 hover:bg-[#c9d0f0] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-150">
               <p className="font-bold text-[39px]">
                 ?
               </p>

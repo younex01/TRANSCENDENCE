@@ -54,11 +54,14 @@ export class AuthController {
 
   @Get("logout")
   @UseGuards(AuthGuard("jwt"))
-  ft_logout(@Res() res) {
+  async ft_logout(@Res() res) {
+    // console.log("ress print", res);
+    
+    console.log("logout", res.req.user);
+    
     res.clearCookie("JWT_TOKEN");
     res.status(200).json({ redirect: "http://localhost:3000" });
     // return res.redirect("http://localhost:3000");
-
   }
 
   @Post("generateTwoFactorAuthCode")
@@ -171,8 +174,6 @@ export class AuthController {
   }
 
 
-
-
   @Post("disableTwoFactorAuth")
   @UseGuards(AuthGuard("jwt"))
   async disableTwoFactorAuth(@Req() req, @Res() res) {
@@ -190,14 +191,17 @@ export class AuthController {
   }
 }
 
-@Controller("users")
-export class userController {
-  constructor(private readonly prismaService: PrismaService) {}
+// @Controller("users")
+// export class userController {
+//   constructor(private readonly prismaService: PrismaService) {}
 
-  @Get(":username")
-  @UseGuards(AuthGuard("jwt"))
-  async getUser(@Param("username") username: string) {
-    const user = await this.prismaService.userExists(username);
-    return user;
-  }
-}
+//   @Get(":username")
+//   @UseGuards(AuthGuard("jwt"))
+//   async getUser(@Param("username") username: string) {
+//     const user = await this.prismaService.userExists(username);
+//     return user;
+//   }
+// }
+
+
+

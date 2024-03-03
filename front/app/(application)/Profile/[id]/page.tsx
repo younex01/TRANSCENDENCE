@@ -198,9 +198,9 @@ export default function Profile(props: any) {
                         fill={true}
                         className="rounded-full object-cover" />
                     </div>
-                    <div className="flex flex-row items-start justify-center w-full">
+                    <div className="flex flex-row items-start gap-1 justify-center w-full">
                       <div className="flex flex-col justify-center items-center gap-1 w-max-content">
-                        <div className="flex sm:flex-row flex-col gap-[5px]">
+                        <div className="flex sm:flex-row flex-col gap-[4px]">
                           <div className="font-semibold text-[16px] text-[#252f5b]">
                             {userData.firstName}
                           </div>
@@ -233,7 +233,7 @@ export default function Profile(props: any) {
                 ) : (
                   props.params.id !== myData.id && (
                     <div className="flex flex-row justify-center items-center gap-3 lg:gap-9">
-                      <div className="flex justify-center items-center w-3/12 h-[45px]">
+                      <div className="flex justify-center items-center sm:w-3/12 w-4/12 h-[45px]">
                         {requestStatuss === "Pending" ? (
                           <div className="bg-[#649eef] w-full h-full rounded-full font-semibold text-[16px] text-[#252f5b] flex items-center justify-center">Pending...{" "}</div>
                         ) : requestStatuss === "Accepted" ? (
@@ -242,7 +242,7 @@ export default function Profile(props: any) {
                           requestStatuss === "notSentYet" ? (
                           <button className="bg-[#3fc592] w-full h-full rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b]" onClick={() => { setIsclicked(true); }}>Add Friend</button>
                         ) : requestStatuss === "AcceptFR" ? (
-                          <button className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium" onClick={acceptFriendRequest}>Accept friend request</button>
+                          <button className="bg-green-500 w-full h-full rounded-full text-[14px] 2xl:text-[16px] text-[#252f5b] font-medium" onClick={acceptFriendRequest}>Accept friend request</button>
                         ) : null}
                       </div>
                       <div className="flex justify-center items-center w-3/12 xl:w-3/12 h-[45px]">
