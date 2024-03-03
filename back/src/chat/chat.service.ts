@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Prisma } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class ChatService {
@@ -57,6 +57,9 @@ export class ChatService {
       },
     });
   }
+
+
+
 
   async getGroupsByUserId(userId: string) {
     return this.prisma.chatGroup.findMany({
@@ -334,9 +337,11 @@ export class ChatService {
     const isDMalreadyexist = await this.isDMalreadyexist(userId1, userId2);
     if (isDMalreadyexist) return;
 
+      const uuid = uuidv4();
+    console.log("waaaaaaaaaa l9alwai", uuid)
     return this.prisma.chatGroup.create({
       data: {
-        name: "",
+        name: uuidv4(),
         avatar: null,
         status: null,
         password: null,
@@ -354,7 +359,6 @@ export class ChatService {
   }
 
   async addUserToPrivateRoom(payload: any) {
-    console.log("payload", payload);
     return await this.prisma.chatGroup.create({
       data: {
         name: payload.name,

@@ -40,6 +40,7 @@ export default function SearchPanel() {
     const getMyNotifications = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
+        // const notifications = await axios.get(`http://localhost:4000/game/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
         setMyNotifications(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);

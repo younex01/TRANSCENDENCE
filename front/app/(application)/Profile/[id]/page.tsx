@@ -16,6 +16,7 @@ export default function Profile(props: any) {
   const [isLoading, setIsLoading] = useState(true);
   const socket = useSelector((state: RootState) => state.socket.socket);
   const myData = useSelector(selectProfileInfo);
+  const [refreshStatus, setRefreshStatus] = useState(true);
   const [requestStatuss, setRequestStatuss] = useState<string>("notSentYet");
   const [refreshNotifs, setRefreshNoifications] = useState(false);
   const [clicked, setIsclicked] = useState(false);
@@ -25,7 +26,7 @@ export default function Profile(props: any) {
 
   useEffect(() => {
     const getUserData = async () => {
-      console.log("waaaaaach doooooookhlaaaaaaaaat11111");
+      console.log("useeffect ldakhl dyalha");
       try {
         const response = await axios.get(
           `http://localhost:4000/user/getUserByUserId?user=${props.params.id}`,
@@ -33,25 +34,21 @@ export default function Profile(props: any) {
         );
         setUserData(response.data);
         setIsLoading(false);
-      } catch (error:any) {
-        if(error.response.status === 404) 
+      } catch (error: any) {
+        if (error.response.status === 404)
           setUserNotFound(true);
         console.error("Error fetching user data:", error);
         setIsLoading(false);
       }
     };
     getUserData();
-  }, [props.params.id, refreshNotifs]);
+  }, [props.params.id, refreshNotifs, refreshStatus]);
 
   useEffect(() => {
     const sendFriendRequest = async () => {
       if (clicked) {
         try {
-          await axios.post(
-            `http://localhost:4000/user/sendFriendRequest`,
-            { sender: myData.id, target: props.params.id },
-            { withCredentials: true }
-          );
+          await axios.post(`http://localhost:4000/user/sendFriendRequest`, { sender: myData.id, target: props.params.id }, { withCredentials: true });
           setIsclicked(false);
         } catch (error) {
           console.error("Error fetching users:", error);
@@ -62,23 +59,19 @@ export default function Profile(props: any) {
   }, [clicked]);
 
   useEffect(() => {
-    console.log("waaaaaach doooooookhlaaaaaaaaat2222");
     const requestStatus = async () => {
       try {
         const areFriends = await axios.get(
           `http://localhost:4000/user/checkIfFriend?myId=${myData.id}&&receiverId=${props.params.id}`,
           { withCredentials: true }
         );
-        console.log("areFriends", areFriends);
         if (areFriends.data === 1) {
           setRequestStatuss("Accepted");
           return;
         }
-        const status = await axios.get(`http://localhost:4000/user/requestStatus?myId=${myData.id}&&receiverId=${props.params.id}`, { withCredentials: true });
+        const status = await axios.get(`http://localhost:4000/user/requestStatus?myId=${myData.id}&&receiverId=${props.params.id}`, { withCredentials: true });
         if (status.data) {
-          console.log("status.data", status.data);
-          console.log(`status.data.status  ${status.data.status}.`);
-          if ( status.data.senderId === myData.id && status.data.status === "Pending" )
+          if (status.data.senderId === myData.id && status.data.status === "Pending")
             setRequestStatuss("Pending");
           else if (
             status.data.receiverId === myData.id &&
@@ -94,12 +87,42 @@ export default function Profile(props: any) {
     requestStatus();
   }, [refreshNotifs]);
 
+  // useEffect(() => {
+  //   socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
+  //     setRefreshNoifications(!refreshNotifs);
+  //   });
+
+  //   socket?.on("refreshStatus", () => {
+  //     console.log("socket ldakhl dyalha");
+  //     setRefreshStatus(!refreshStatus);
+  //   });
+
+  //   return () => {
+  //     socket?.off("refreshFrontfriendShip");
+  //     socket?.off("refreshStatus");
+  //   };
+  // });
+
+
+
+
   useEffect(() => {
-    socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
-      console.log("waaaaaach doooooookhlaaaaaaaaat");
-      setRefreshNoifications(!refreshNotifs);
-    });
+    socket?.onAny((event:any) => {
+      if (event == "refreshStatus")
+      {
+        console.log("wach fkholds adhads asd");
+        setRefreshStatus(!refreshStatus);
+      }
+      else if(event == "refreshFrontfriendShip")
+      {
+        console.log("++++wach fkholds adhads asd");
+        setRefreshNoifications(!refreshNotifs);
+      }
+    }
+);
+    
     return () => {
+      socket?.off("refreshStatus");
       socket?.off("refreshFrontfriendShip");
     };
   });
@@ -172,27 +195,25 @@ export default function Profile(props: any) {
                       <Image
                         src={userData?.avatar}
                         alt={userData?.avatar}
-                        // width={100}
-                        // height={100} 
                         fill={true}
-                        className="rounded-full object-cover"/>
-
+                        className="rounded-full object-cover" />
                     </div>
                     <div className="flex flex-row items-start justify-center w-full">
                       <div className="flex flex-col justify-center items-center gap-1 w-max-content">
                         <div className="flex sm:flex-row flex-col gap-[5px]">
                           <div className="font-semibold text-[16px] text-[#252f5b]">
-                          {userData.firstName}
+                            {userData.firstName}
                           </div>
                           <div className="font-semibold text-[16px] text-[#252f5b]">
-                          {userData.lastName}
+                            {userData.lastName}
                           </div>
                         </div>
                         <div className="font-light text-[#7d84a3] text-[15px]"> {userData.username}</div>
                       </div>
                       {props.params.id !== myData.id && (
-                        <div className="bg-[#3c4778] flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-1 text-white">
-                          <h4 className="text-[11px] p-[2px]">In A Game</h4>
+                        <div className={`${userData.status === "Online" ? "bg-green-700" : userData.status === "InGame" ? "bg-red-600" : "bg-gray-600"} bg-[#3c4778] flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-1 text-white `}>
+                          <h4 className="text-[11px] p-[2px]">{userData.status === "Online" ? "Online" : userData.status === "InGame" ? "In A Game" : "Offline"}</h4>
+
                         </div>
                       )}
                     </div>
@@ -203,57 +224,29 @@ export default function Profile(props: any) {
                   (id: string) => id === myData.id
                 ) ? (
                   <div className="flex justify-center items-center h-[45px] w-full">
-                    <button
-                      className="bg-blue-100 h-[45px] w-max-content px-7 rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]"
-                      onClick={() => setUnblock(true)}
-                    >
-                      Unblock
-                    </button>
+                    <button className="bg-blue-100 h-[45px] w-max-content px-7 rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]" onClick={() => setUnblock(true)} > Unblock </button>
                   </div>
                 ) : userData.blockedUsers.find(
-                    (id: string) => id === myData.id
-                  ) ? (
-                  <div className="flex justify-center items-center h-[45px] w-full font-light text-[18px] text-[#252f5b]">
-                    This user blocked you
-                  </div>
+                  (id: string) => id === myData.id
+                ) ? (
+                  <div className="flex justify-center items-center h-[45px] w-full font-light text-[18px] text-[#252f5b]"> This user blocked you </div>
                 ) : (
                   props.params.id !== myData.id && (
                     <div className="flex flex-row justify-center items-center gap-3 lg:gap-9">
                       <div className="flex justify-center items-center w-3/12 h-[45px]">
                         {requestStatuss === "Pending" ? (
-                          <div className="bg-[#649eef] w-full h-full rounded-full font-semibold text-[16px] text-[#252f5b] flex items-center justify-center">
-                            Pending...{" "}
-                          </div>
+                          <div className="bg-[#649eef] w-full h-full rounded-full font-semibold text-[16px] text-[#252f5b] flex items-center justify-center">Pending...{" "}</div>
                         ) : requestStatuss === "Accepted" ? (
-                          <div className="bg-[#9ba8e1] w-full h-full rounded-full text-md 2xl:text-lg font-medium flex items-center justify-center">
-                            Friends
-                          </div>
+                          <div className="bg-[#9ba8e1] w-full h-full rounded-full text-md 2xl:text-lg font-medium flex items-center justify-center">Friends</div>
                         ) : requestStatuss === "Declined" ||
                           requestStatuss === "notSentYet" ? (
-                          <button
-                            className="bg-[#3fc592] w-full h-full rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b]"
-                            onClick={() => {
-                              setIsclicked(true);
-                            }}
-                          >
-                            Add Friend
-                          </button>
+                          <button className="bg-[#3fc592] w-full h-full rounded-full text-md 2xl:text-xl font-semibold text-[16px] text-[#252f5b]" onClick={() => { setIsclicked(true); }}>Add Friend</button>
                         ) : requestStatuss === "AcceptFR" ? (
-                          <button
-                            className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium"
-                            onClick={acceptFriendRequest}
-                          >
-                            Accept friend request
-                          </button>
+                          <button className="bg-green-500 w-full h-full rounded-full text-md 2xl:text-xl font-medium" onClick={acceptFriendRequest}>Accept friend request</button>
                         ) : null}
                       </div>
                       <div className="flex justify-center items-center w-3/12 xl:w-3/12 h-[45px]">
-                        <button
-                          className="bg-blue-100 w-full h-full rounded-full text-md 2xl:text-lg font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]"
-                          onClick={() => setblock(true)}
-                        >
-                          Block User
-                        </button>
+                        <button className="bg-blue-100 w-full h-full rounded-full text-md 2xl:text-lg font-semibold text-[16px] text-[#252f5b] hover:bg-[#d9e4f6]" onClick={() => setblock(true)}>Block User</button>
                       </div>
                     </div>
                   )

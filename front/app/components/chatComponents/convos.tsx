@@ -11,6 +11,7 @@ export default function Convos() {
   const socket = useSelector((state: RootState) => state.socket.socket);
   const [myGroups, setMyGroups] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(true);
+  const [refreshStatus, setRefreshStatus] = useState(true);
 
   const refreshConvos = useSelector((state: RootState) => state.refresh.refresh);
   const userData = useSelector(selectProfileInfo);
@@ -30,14 +31,18 @@ export default function Convos() {
     fetchChatGroups();
 
 
-  }, [refresh, socket, userData.id, refreshConvos]);
+  }, [refresh, socket, userData.id, refreshConvos, refreshStatus]);
 
 
   useEffect(() => {
     socket?.on("refresh", () => {
       setRefresh(!refresh);
     });
+    socket?.on("refreshStatus", () => {
+      setRefreshStatus(!refreshStatus);
+    });
     return () => {
+      socket?.off("refreshStatus");
       socket?.off("refresh");
     };
   });
@@ -50,7 +55,9 @@ export default function Convos() {
             <button className='mr-[10px] mb-[10px] ml-[15px] rounded-[11px] w-[90%] border-[1px] p-2' key={myGroupChats.id} onClick={() => { dispatch(selctedConversation(myGroupChats.id)) }}>
               <Link href={`/Chat/${myGroupChats.id}`}>
                 <div className='flex '>
-                  <div> <img className='h-[50px] w-[50px] ml-1 rounded-[25px] object-fill' src={`${myGroupChats.avatar}`} alt={myGroupChats.avatar} /></div>
+                <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${myGroupChats.avatar}`} alt={`${myGroupChats.avatar}`} />
+                  <div className={`absolute w-[10px] h-[10px] ${myGroupChats.members[0].status === "Online" ? "bg-green-700" : myGroupChats.members[0].status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                </div>
                   <div className='pl-2 flex flex-col items-start'>
                     <div className='text-[20px] font-normal text-[#2e2e2e] font-sans-only test'> {myGroupChats.name}</div>
                     <div className='text-[11px] font-normal sans-serif text-[#2e2e2e]'>MESSAGEs</div>

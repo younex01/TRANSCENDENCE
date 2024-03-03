@@ -7,7 +7,7 @@ import { AuthService } from "../auth.service";
 
 
 @Injectable()
-export class FortyTwoStrategy extends PassportStrategy(Strategy) {
+export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     constructor(private readonly prisma: PrismaService,
         private readonly service: AuthService) {
         super({
@@ -18,18 +18,26 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any) {
-        const dto : AuthDto = {
-            id: profile._json.id,
-            username: profile._json.login,
-            avatar: profile._json.image.link,
-            firstName: profile._json.first_name,
-            lastName: profile._json.last_name,
-            twoFactorAuthEnabled: profile._json.twoFactorAuthEnabled,
+        try {
+            
+            const dto: AuthDto = {
+                id: profile._json.id,
+                username: profile._json.login,
+                avatar: profile._json.image.link,
+                firstName: profile._json.first_name,
+                lastName: profile._json.last_name,
+                twoFactorAuthEnabled: profile._json.twoFactorAuthEnabled,
+            };
+            const user = await this.service.findOrCreate(dto);
+            if (!user) {
+                throw new UnauthorizedException('User not found');
+            }
+            return user;
+        } catch (error) {
+            // Handle the error gracefully
+            console.error('Error in FortyTwo authentication:', error);
+            throw new UnauthorizedException('Failed to authenticate with FortyTwo');
         }
-        const user = await this.service.findOrCreate(dto);
-        if (!user)
-            throw new UnauthorizedException("User not found");
-        return user;
     }
 }
 // _json: {

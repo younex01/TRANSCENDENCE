@@ -50,7 +50,6 @@ export class UserController {
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
     async changeUsername(@Req() req, @Res() res, @Body() userDto: UserDto) {
-        console.log("hellooooooooo");
         
         try {
             console.log("------------",userDto);
@@ -59,7 +58,6 @@ export class UserController {
                 where: { id: userDto.id },
                 data: { username: userDto.username, firstName: userDto.firstName, lastName: userDto.lastName, avatar: userDto.avatar }
             });
-            console.log("------------",userDto);
             
             return await res.send({ info: true, message: "Username updated successfully" });
         }

@@ -24,6 +24,11 @@ export class AuthController {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService
   ) {}
+
+  @Get("42")
+  @UseGuards(AuthGuard("42"))
+  login() {}
+
   @Get("redirect")
   @UseGuards(AuthGuard("42"))
   async ft_redirect(@Req() req, @Res() res) {
@@ -76,7 +81,6 @@ export class AuthController {
       issuer: "MyCompany",
       encoding: "base32",
     });
-    // console.log("ussse ---------- ---------- ---------- ---------- ---------- ---------- r");
     const qrCodeImageUrl = await qrcode.toDataURL(otpauthUrl);
     return res.json({ qrCodeImageUrl });
   }
@@ -100,7 +104,6 @@ export class AuthController {
       encoding: "base32",
       token: code.code,
     });
-    console.log("üser", user.twoFactorAuthCode);
     
 
 

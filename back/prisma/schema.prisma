@@ -23,14 +23,28 @@ model User {
   groups               ChatGroup[]     @relation("UserGroup")
   sentRequests         friendRequest[] @relation("sent")
   receivedRequests     friendRequest[] @relation("received")
+  sentPlayRequests     gameInvite[]    @relation("sent")
+  receivedPlayRequests gameInvite[]    @relation("received")
   friends              User[]          @relation("friend")
   symmenticfriends     User[]          @relation("friend")
   blockedByUsers       String[]
   blockedUsers         String[]
+  status               String?
   // notifications        Notification[]
 }
 
 model friendRequest {
+  id         String   @id @default(uuid())
+  sender     User     @relation("sent", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User     @relation("received", fields: [receiverId], references: [id])
+  receiverId String
+  status     String
+  createdAt  DateTime @default(now())
+  // notifications Notification[]
+}
+
+model gameInvite {
   id         String   @id @default(uuid())
   sender     User     @relation("sent", fields: [senderId], references: [id])
   senderId   String

@@ -17,7 +17,6 @@ import { selectFreindRequestInfo } from '../../../../redux/features/freinds/requ
 export default function FreindsRequests() {
 
     const array = useSelector(selectFreindRequestInfo);
-    console.log("my arrraaaay:", array)
     return (
         <div className='w-full flex justify-center items-center h-[85%]'>
             <Swiper
@@ -43,7 +42,7 @@ export default function FreindsRequests() {
                         return (
                             <>
                                 <SwiperSlide >
-                                    <TeamCard key={index} userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} />
+                                    <TeamCard key={index} userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} status={value.status}/>
                                 </SwiperSlide>
                             </>
                         )

@@ -17,21 +17,22 @@ import { Select } from '@nextui-org/react';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Lottie from 'react-lottie-player';
 import animationData from   "../../../../public/nothing.json"
+import { RootState } from "@/redux/store/store";
 // import Lottie from 'react-lottie';
 
 export default function FreindInfo({userId}: {userId: string}) {
   const profileInfo = useSelector(selectProfileInfo);
   const [myFreinds, setMyFreinds] = useState([]);
+  const [refreshStatus, setRefreshStatus] = useState(true);
+  const socket = useSelector((state: RootState) => state.socket.socket);
 
   useEffect(() => {
 
     const listFriends = async () => {
       try {
         
-        console.log("------------------->:(------------------->:userId", userId);
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${userId}`, { withCredentials: true });
         
-        console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -39,7 +40,21 @@ export default function FreindInfo({userId}: {userId: string}) {
 
     };
     listFriends();
-  }, [profileInfo]);
+  }, [profileInfo, refreshStatus]);
+
+
+
+  useEffect(() => {
+
+    socket?.on("refreshStatus", () => {
+      setRefreshStatus(!refreshStatus);
+    });
+
+    return () => {
+      socket?.off("refreshStatus");
+    };
+  });
+
 
   return (
     <>
@@ -67,7 +82,7 @@ export default function FreindInfo({userId}: {userId: string}) {
             myFreinds.map((value: any, index: number) => {
               return (
                   <SwiperSlide key={index} >
-                    <TeamCard key={index}  userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} />
+                    <TeamCard key={index}  userId={value.id} fname={value.firstName + " " + value.lastName} name={value.username} image={value.avatar} status={value.status} />
                   </SwiperSlide>
               )
             })

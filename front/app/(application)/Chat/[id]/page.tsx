@@ -19,12 +19,14 @@ export default function Page(props: any) {
   const [messages, setMessages] = useState<any[]>([]);
   const [groupData, setGroupData] = useState<any>([]);
   const [refresh, setRefresh] = useState(true);
+  const [refreshStatus, setRefreshStatus] = useState(true);
   const [isMuted, setIsMuted] = useState<any>(false);
   const [blockType, setBlockType] = useState<string>();
   const [memberSettings, setMemberSettings] = useState(Array(groupData?.members?.length || 0).fill(false));
   const [refreshNotifs, setRefreshNoifications] = useState(false)
   const [myBlockList, setMyBlockList] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [clicked, setIsclicked] = useState(false);
 
   const refreshConvos = useSelector((state: RootState) => state.refresh.refresh);
   const dispatch = useDispatch();
@@ -35,7 +37,9 @@ export default function Page(props: any) {
 
   useEffect(() => {
     const fetchChatGroups = async () => {
+      
       try {
+        console.log("tist wahc dkhol wla la hh");
         const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${props.params.id}`, { withCredentials: true });
         const blockListResponse = await axios.get(`http://localhost:4000/user/myBlockList?myId=${userData.id}`, { withCredentials: true });
         setMyBlockList(blockListResponse.data);
@@ -44,6 +48,8 @@ export default function Page(props: any) {
         if (response.status === 200) {
           const data = response.data;
           setGroupData(data.data);
+          console.log("data.data", data.data);
+          
           if (data.data.type !== "DM") {
             setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${props.params.id}`, { withCredentials: true })).data);
           }
@@ -69,7 +75,7 @@ export default function Page(props: any) {
     };
 
     fetchChatGroups();
-  }, [props.params.id, refresh, refreshNotifs]);
+  }, [props.params.id, refresh, refreshNotifs, refreshStatus]);
 
   const handleToggleSettings = (index: any) => {
     const newMemberSettings = [...memberSettings];
@@ -94,8 +100,13 @@ export default function Page(props: any) {
   }
 
   useEffect(() => {
+    socket?.on("refreshStatus", () => {
+      console.log("wach fkholds adhads asd");
+      
+      dispatch(setRefreshConvos(!refreshConvos))
+      setRefreshStatus(!refreshStatus);
+    });
     socket?.on("refresh", (channelStatus: any) => {
-      console.log("wtffffffffffff")
       setRefresh(!refresh);
       if (channelStatus) toast.success(`This channel has been set to ${channelStatus}`)
     });
@@ -119,17 +130,16 @@ export default function Page(props: any) {
     });
 
     socket?.on("redirectToChatPage", (userId:string, roomName:string, roomId:string, type:string) =>{
-      console.log("teeeest")
       if (userId === userData.id) {
         if (roomId === props.params.id)
           router.push('/Chat');
         toast.error(`You have been ${type} from ${roomName}`);
-        console.log()
       }
     })
 
     return () => {
       socket?.off("refresh");
+      socket?.off("refreshStatus");
       socket?.off("getAllMessages");
       socket?.off("refreshFrontfriendShip");
       socket?.off("redirectToChatPage");
@@ -224,16 +234,37 @@ export default function Page(props: any) {
       userId: userData.id,
     });
     router.push('/Chat');
-    console.log("teeeest");
     
     toast.success(`You left ${groupData.name}`)
     dispatch(setRefreshConvos(!refreshConvos))
   }
   
-  function test(hh:any){
-    console.log("----------------------------:", hh);
-  }
+  useEffect(() => {
+    const sendPlayRequest = async () => {
+      if (clicked) {
+        try {
+          console.log("wach DKHOL hh")
+          await axios.post(`http://localhost:4000/game/sendPlayRequest`, { sender: userData.id, target: groupData.members[0].id}, { withCredentials: true } );
+          setIsclicked(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }
+    };
+    sendPlayRequest();
+  }, [clicked]);
 
+
+  const inviteToPlay = async (target:string) => {
+    try {
+      axios.post(
+        `http://localhost:4000/game/accept`, { myId: userData.id, target }, { withCredentials: true } );
+      setRefreshNoifications(!refreshNotifs);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  
 
   return (
     (groupData === 404) ?
@@ -256,15 +287,26 @@ export default function Page(props: any) {
         <div className='h-screen w-full flex flex-1 relative z-10'>
           <div className='w-full h-full relative'>
             <div className='header flex items-center h-[130px] border-b-[2px] bg-opacity-[50%] relative pl-14 md:pl-2'>
-              <div> <img className='h-[90px] w-[90px] ml-1 mr-3 rounded-[50px] object-fill' src={`${groupData?.avatar}`} alt={`${groupData?.avatar}`} /></div>
-              <div className='text-[40px] font-sans-only text-[#2E2E2E] opacity-[76%]'>{groupData.name}</div>
-              <div className='absolute right-8' onClick={() => setDMsSettings(!DMsSettings)}> <img src="/3no9at.svg" alt="/3no9at.svg" /> </div>
-              {DMsSettings &&
-              <div className='rounded-[20px] w-[200px] h-[140px] top-[80px] right-4 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
-                <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]' onClick={() => test(groupData.members[0].id)}>Invite to Play</button>
-                <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
-                <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Block</button>
+              <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${groupData.avatar}`} alt={`${groupData.avatar}`} />
+                <div className={`absolute w-[10px] h-[10px] ${groupData.members[0].status === "Online" ? "bg-green-700" : groupData.members[0].status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
               </div>
+              <div className='text-[40px] font-sans-only text-[#2E2E2E] opacity-[76%]'>{groupData.name}</div>
+              <button className='flex items-center justify-center absolute rounded-[20px] active:bg-[#c2c2c2] right-8 p-4 h-[50px] w-[50px]' onClick={() => setDMsSettings(!DMsSettings)}> <img className='w-[33px] h-[33px] ' src="/3no9at.svg" alt="/3no9at.svg" /> </button>
+              {DMsSettings &&
+              <>
+                {(blockType !== "friends") ?
+                    <div className='rounded-[20px] w-[200px] h-[70px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
+                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
+                    </div>
+                    :
+                    ( 
+                      <div className='rounded-[20px] w-[200px] h-[140px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
+                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px] '  onClick={() => setIsclicked(true)}>Invite to Play</button>
+                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
+                      </div>
+                    )
+              }
+              </>
               }
             </div>
             
@@ -279,7 +321,7 @@ export default function Page(props: any) {
                         <div className='w-full mt-[30px]'>
                         {message.content.startsWith('announcement') ?
                           <div className='flex items-center justify-center w-full'>
-                            <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                            <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                               {message.content.slice('announcement'.length + 1)}
                             </div>
                           </div>
@@ -295,7 +337,7 @@ export default function Page(props: any) {
                         <div className='w-full'>
                         {message.content.startsWith('announcement') ?
                           <div className='flex items-center justify-center w-full'>
-                            <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                            <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                               {message.content.slice('announcement'.length + 1)}
                             </div>
                           </div>
@@ -313,7 +355,7 @@ export default function Page(props: any) {
                     {(message.userId !== userData.id) &&
                       (message.content.startsWith('announcement') ?
                         <div className='flex items-center justify-center w-full '>
-                          <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                          <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                             {message.content.slice('announcement'.length + 1)}
                           </div>
                         </div>
@@ -393,7 +435,7 @@ export default function Page(props: any) {
                             <div className='w-full mt-[30px]'>
                               {message.content.startsWith('announcement') ?
                                 <div className='flex items-center justify-center w-full'>
-                                  <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                                  <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                                     {message.content.slice('announcement'.length + 1)}
                                   </div>
                                 </div>
@@ -409,7 +451,7 @@ export default function Page(props: any) {
                             <div className='w-full'>
                               {message.content.startsWith('announcement') ?
                                 <div className='flex items-center justify-center w-full'>
-                                  <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                                  <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                                     {message.content.slice('announcement'.length + 1)}
                                   </div>
                                 </div>
@@ -427,7 +469,7 @@ export default function Page(props: any) {
                         {(message.userId !== userData.id) &&
                           (message.content.startsWith('announcement') ?
                             <div className='flex items-center justify-center w-full'>
-                              <div key={message.id} className='bg-red-400  mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
+                              <div key={message.id} className='bg-[#495791] text-white mb-4 mt-4 rounded-b-[24px] rounded-t-[24px] w-fit font-normal text-[14px] font-sans-only break-all p-[6px] px-4'>
                                 {message.content.slice('announcement'.length + 1)}
                               </div>
                             </div>
@@ -502,12 +544,14 @@ export default function Page(props: any) {
                         {/* <div className='flex items-center gap-3 ml-6 pt-2'>
                     <img className='h-[40px] w-[40px] rounded-[25px] object-fill' src="addf.svg" alt="addf.svg" />
                     <div className='font-bold'> Add Members</div>
-
                   </div> */}
+                  {/* ${members.status === "Online" ? "border-[3px] border-green-500" : "border-[3px] border-gray-500" */}
                         {(groupData?.members) && groupData?.members.map((members: any, index: any) => (
                           <div key={index} className='w-[100%] py-4 mb-1 mt-1 flex items-center justify-between bg-white max-w-[350px] px-4 rounded-[10px] relative '>
                             <div className='flex overflow-visible'>
-                              <div className='z-10'><img className='min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3' src={`${members.avatar}`} alt={`${members.avatar}`} /></div>
+                              <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${members.avatar}`} alt={`${members.avatar}`} />
+                                <div className={`absolute w-[10px] h-[10px] ${members.status === "Online" ? "bg-green-700" : members.status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                              </div>
                               <div className='z-20'>
                                 <div className='font-bold'>{members.username}</div>
                                 {

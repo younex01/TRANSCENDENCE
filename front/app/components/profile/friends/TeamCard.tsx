@@ -16,15 +16,18 @@ const TeamCard = ({
   image,
   userId,
   fname,
+  status,
 }: {
   name: string;
   image: string;
   userId: string;
   fname: string;
+  status: string;
 }) => {
+  
   const myData = useSelector(selectProfileInfo);
 
-  const [groupId, setGroupId] = useState();
+  const [groupId, setGroupId] = useState<any>();
   const [isMyId, setIsMYId] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
 
@@ -32,25 +35,16 @@ const TeamCard = ({
     const fetchData = async () => {
       try {
         setIsMYId(myData.id === userId);
-        const response = await axios.get(
-          `http://localhost:4000/Chat/getDm?myId=${myData.id}&othersId=${userId}`,
-          { withCredentials: true }
-          );
-        console.log("toher iddddddthis id ", userId);
-        console.log("this id ", myData.id);
-        
+        const response = await axios.get(`http://localhost:4000/Chat/getDm?myId=${myData.id}&othersId=${userId}`, { withCredentials: true });
+
         setGroupId(response.data);
 
-        if(myData.id !== userId){
+        if (myData.id !== userId) {
 
-          const areFriends = await axios.get(
-            `http://localhost:4000/user/checkIfFriend?myId=${myData.id}&&receiverId=${userId}`,
-            { withCredentials: true }
-            );
-            setIsFriend(areFriends.data);
-          }
-          
-        console.log("***//*=/*=/*=/*=/*=/*=/*=/*=/*=/*=/*=/*=/*", response);
+          const areFriends = await axios.get(`http://localhost:4000/user/checkIfFriend?myId=${myData.id}&&receiverId=${userId}`, { withCredentials: true });
+          setIsFriend(areFriends.data);
+        }
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -64,15 +58,8 @@ const TeamCard = ({
         <div className=" w-[90px] h-[90px]">
           <Link href={`./../../Profile/${userId}`}>
             <div>
-              <div className="relative bg-white">
-                <label htmlFor="status" className="z-50 absolute px-3">
-                  <img
-                    id="userStatus"
-                    src="/green.png"
-                    alt="status"
-                    className="w-[5px] h-[5px] object-cover rounded-[50%]"
-                  />
-                </label>
+              <div className='relative'>
+                <div className={`absolute w-[10px] h-[10px] ${status === "Online" ? "bg-green-700" : status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
               </div>
               <div className="w-[80px] h-[80px] overflow-hidden">
                 <Image

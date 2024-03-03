@@ -35,7 +35,7 @@
     {
       "name": "PirateKing’s Undefeated Reign",
       "status": "five",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/PirateKing’sUndefeatedReign.jpeg"
@@ -43,7 +43,7 @@
     {
       "name": "Sunny-Go Smash Champion",
       "status": "six",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/Sunny-GoSmashChampion.jpeg"
