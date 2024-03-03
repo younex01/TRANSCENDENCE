@@ -15,13 +15,14 @@ export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
   const [playRandom, setplayRandom] = useState<boolean>(false);
   const [hide, setHide] = useState<string>("");
-  const [playFreind, setplayFreinds] = useState<boolean>(false);
+  const [playFreind, setplayFriends] = useState<boolean>(false);
   const [addMembers, setAddMembers] = useState<boolean>(false);
+  const [hToPlay, setHowToPlay] = useState<boolean>(false);
+  const [activeButton, setActiveButton] = useState("ai");
   // const [win, setWin] = useState<boolean>(false);
   const buttonAi = useRef<HTMLCanvasElement>(null);
 
-  // const [click, setClick] = useState(false);
-
+  // const [click, setClick] = useState(false)
   // const handleClick = () => {
   //   setClick((prev) => {
   //     return !prev;
@@ -54,7 +55,7 @@ export default function Home() {
 
   const PlayWithFriend = () => {
     setHide("hidden");
-    setplayFreinds((prev) => {
+    setplayFriends((prev) => {
       return !prev;
     });
   };
@@ -165,9 +166,9 @@ export default function Home() {
                     className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
                   >
                     <img
-                      src="/multiping.png"
+                      src="/robot.svg"
                       alt=""
-                      className="w-[22px] h-[22px]"
+                      className="w-[22px] h-[22px] bg-cover"
                     />
                     Against AI
                   </button>
@@ -195,6 +196,84 @@ export default function Home() {
             </div>
           </div>
         </div>
+          <div>
+            <button
+            onClick={() => setHowToPlay(!hToPlay)}
+            className=" bg-[#cfd5ef] shadow-md w-14 h-14 md:h-20 md:w-20 rounded-full flex justify-center items-center mb-5 hover:bg-[#c9d0f0] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-300">
+              <p className="font-bold text-[39px]">
+                ?
+              </p>
+            </button>
+            {hToPlay && (
+              <div className="fixed flex justify-center items-center h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-50">
+                <div className="fixed  rounded-[20px] max-w-[550px] w-[60%] mx-[50px] h-[40%] bg-[#6e7aaa] flex flex-col items-center">
+                  <div className="flex flex-col items-center justify-evenly h-[35%] w-full">
+                    <button
+                      className="absolute top-4 right-4 text-[#D7D7D7] cursor-pointer"
+                      onClick={() => setHowToPlay(false)}>X</button>
+                    <div className="rounded-lg w-[50%] h-[13%] flex justify-center items-center font-normal text-[16px] sm:font-semibold sm:text-[23px]"><p className="text-[#252f5b]">How To Play ?</p></div>
+                    <div className="flex items-center justify-center w-full h-[110px] gap-3">
+                      <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
+
+                      onClick={() => {setActiveButton('ai')}}>
+                      <img
+                        src="/robot.svg"
+                        alt=""
+                        className="w-[22px] h-[22px] bg-cover"
+                      />
+                      <div > Against Ai</div>
+                        </button>
+                      <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
+                      onClick={() => {setActiveButton('friends')}}>
+                      <img
+                        src="/multiping.png"
+                        alt=""
+                        className="w-[22px] h-[22px] bg-cover"
+                      />
+                      <div > Against Friends</div>
+                        </button>
+
+                      <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
+                      onClick={() => {setActiveButton('random')}}>
+                      <img
+                        src="/singleping.png"
+                        alt=""
+                        className="w-[22px] h-[22px] bg-cover"
+                      />
+                      <div > Against Random</div>
+                        </button>
+                    </div>
+                  </div>
+                    {activeButton === 'random' && (
+                        <div className="w-[60%] h-[30%] flex flex-col items-center">
+                          <ul>
+                            <li>keys: up and down</li>
+                            <li></li>
+                          </ul>
+                        </div>
+                    )
+                    }
+                    {activeButton === 'ai' && (
+                        <div className="w-[60%] h-[30%] flex flex-col items-center">
+                          <ul>
+                            <li>In Ai mode</li>
+                            <li></li>
+                          </ul>
+                        </div>
+                    )}
+                    {activeButton === 'friends' && (
+                        <div className="w-[60%] h-[30%] flex flex-col items-center">
+                          <ul>
+                            <li>After send the invite</li>
+                            <li></li>
+                          </ul>
+                        </div>
+                    )}
+                </div>
+
+              </div>
+            )}
+          </div>
       </div>
     </div>
   );

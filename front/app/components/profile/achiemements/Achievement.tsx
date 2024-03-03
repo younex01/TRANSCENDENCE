@@ -27,15 +27,15 @@ export default function Achievement({
       <div
         className={
           achieved
-            ? `flex flex-col justify-between h-[80%] items-center`
-            : `flex flex-col justify-between h-[80%] items-center blur-[2px]`
+            ? `flex flex-col justify-between h-[80%] w-[58%]  items-start`
+            : `flex flex-col justify-between h-[80%] w-[58%] items-start blur-[2px]`
         }
       >
         <div className="m-2">
-          <h2 className="text-lg font-semibold text-[#252f5b]">{name}</h2>
+          <h2 className="text-[13px] sm:text-[16px] xl:text-[16px] font-semibold text-[#252f5b]">{name}</h2>
           <p className="text-sm text-[#252f5b]">{status}</p>
         </div>
-        <div className={`flex flex-row justify-center items-center gap-1`}>
+        <div className={`flex flex-row justify-start items-start gap-1 ml-2 `}>
           <div>
             {achieved ? (
               <Image
@@ -43,7 +43,7 @@ export default function Achievement({
                 alt="mark"
                 width={5}
                 height={4}
-                className="w-4 h-4 ml-2"
+                className="w-4 h-4"
               />
             ) : (
               <Image
@@ -51,7 +51,7 @@ export default function Achievement({
                 alt="mark"
                 width={5}
                 height={5}
-                className="w-5 h-5 ml-2"
+                className="w-5 h-5"
               />
             )}
           </div>
@@ -69,8 +69,8 @@ export default function Achievement({
       <div
         className={
           achieved
-            ? `bg-[#D4CACA] flex justify-center items-center w-[35%] relative overflow-hidden`
-            : `bg-[#D4CACA] flex justify-center items-center w-[35%] relative overflow-hidden blur-md`
+            ? `bg-[#D4CACA] flex justify-center items-center w-[40%] relative overflow-hidden`
+            : `bg-[#D4CACA] flex justify-center items-center w-[40%] relative overflow-hidden blur-md`
         }
       >
         <Image

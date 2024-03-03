@@ -1,52 +1,52 @@
 {
   "achievements": [
     {
-      "name": "King",
+      "name": "Strawhat Rookie",
       "status": "one",
-      "achieved": true,
+      "achieved": false,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/luffy.jpeg"
+      "imagePath": "/Strawhatrookie.jpeg"
     },
     {
-      "name": "Cooker",
+      "name": "Chopper’s Backspin Defense",
       "status": "two",
       "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/sangi.jpeg"
+      "imagePath": "/Chopper’sBackspinDefense.jpeg"
     },
     {
-      "name": "Stealer",
+      "name": "grandline dualist",
       "status": "three",
       "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/nami.jpeg"
+      "imagePath": "/grandlinedualist.jpeg"
     },
     {
-      "name": "Stronger",
+      "name": "Navigator’s Spin Master",
       "status": "four",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/shanks.jpeg"
+      "imagePath": "/Navigator’sSpinMaster.jpeg"
     },
     {
-      "name": "PongLyph",
+      "name": "PirateKing’s Undefeated Reign",
       "status": "five",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/robiin.jpeg"
+      "imagePath": "/PirateKing’sUndefeatedReign.jpeg"
     },
     {
-      "name": "sixth",
+      "name": "Sunny-Go Smash Champion",
       "status": "six",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
-      "imagePath": "/franky.jpeg"
+      "imagePath": "/Sunny-GoSmashChampion.jpeg"
     }
   ]
 }
