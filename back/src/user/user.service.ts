@@ -18,8 +18,6 @@ export class UserService {
     this.eventEmitter.emit("refreshStatus")
   }
 
-
-
   async removeUserSocket(userId: string, socket: Socket) {
     if (this.userSocketMap[userId]) {
       this.userSocketMap[userId] = this.userSocketMap[userId].filter((s: any) => s !== socket);
@@ -36,7 +34,8 @@ export class UserService {
     });
   }
 
-  async updateProfile(status: string, userId) {
+  async updateProfile(status: string, userId:string) {
+    if (!await this.getUser(userId)) return;
     return this.prisma.user.update({
       where: { id: userId },
       data: { status: status }
