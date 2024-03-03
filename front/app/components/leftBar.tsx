@@ -16,6 +16,7 @@ export default function LeftBar() {
   // const dispatch = useDispatch();
   // const socket = useSelector((state:RootState) => state.socket.socket);
 
+  const socket = useSelector((state: RootState) => state.socket.socket);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -26,6 +27,7 @@ export default function LeftBar() {
   const logout = async () => {
     try {
       const response = await axios.get("http://localhost:4000/auth/logout", {withCredentials: true});
+      socket.emit("customDisco")
       router.push("/");
       await profilePersistor.purge();
     } catch (error) {
