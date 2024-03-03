@@ -3,7 +3,7 @@
     {
       "name": "Strawhat Rookie",
       "status": "one",
-      "achieved": false,
+      "achieved": true,
       "achievedpic": "/images/achived.svg",
       "notAchivedpic": "/lock-svg.svg",
       "imagePath": "/Strawhatrookie.jpeg"

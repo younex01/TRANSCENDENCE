@@ -78,8 +78,7 @@ export default function Home() {
         {/* <div ref={buttonAi} className="flex flex-col bg-opacity-90 bg-red-500"> */}
         <div
           // ref={buttonAi}
-          className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10"
-        >
+          className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10">
           <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[50%] gap-10">
             <div
               className="rounded-lg w-full h-full flex justify-center items-end gap-4"
@@ -88,7 +87,7 @@ export default function Home() {
               <div className="pb-5">
                 <button
                   onClick={() => setAddMembers(!addMembers)}
-                  className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
+                  className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
                 >
                   <img
                     src="/multiping.png"
@@ -163,7 +162,7 @@ export default function Home() {
                 <Link href='/game/againstAi'>
                   <button
                     onClick= { () => setPlayAi(true)}
-                    className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
+                    className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
                   >
                     <img
                       src="/robot.svg"
@@ -184,7 +183,7 @@ export default function Home() {
             <div className="pb-5">
               <button
                 // onClick={handleClickFr}
-                className="border-1 rounded-lg w-[250px] h-[4vh] bg-blue-300 flex justify-center items-center gap-2 text-[#252f5b]"
+                className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
               >
                 <img
                   src="/singleping.png"
@@ -255,9 +254,11 @@ export default function Home() {
                     }
                     {activeButton === 'ai' && (
                         <div className="w-[60%] h-[30%] flex flex-col items-center">
-                          <ul>
-                            <li>In Ai mode</li>
-                            <li></li>
+                          <ul className="text-[17px] list-disc">
+                            <h3>Rules</h3>
+                            <li>You win when you reach 5 point</li>
+                            <li>If you left the game You loose automatictly</li>
+                            <li>You can use arrow (up and down) or mouse for movements</li>
                           </ul>
                         </div>
                     )}

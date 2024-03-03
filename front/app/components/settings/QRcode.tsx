@@ -41,10 +41,10 @@ export default function QRcode() {
   }, [image]);
 
   const onSubmit = async () => {
-    // if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
-    //   toast.info("Put the six digit code");
-    //   return;
-    // }
+    if (!/^\d+$/.test(qrData) || qrData.length !== 6) {
+      toast.info("Put the six digit code");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:4000/auth/enableTwoFactorAuth",

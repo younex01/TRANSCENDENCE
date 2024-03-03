@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly prisma: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
-        secretOrKey: 'dontTellAnyone',
+        secretOrKey: process.env.SECRET_KEY,
     });
   }
 
