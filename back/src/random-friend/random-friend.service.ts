@@ -228,48 +228,52 @@ export class GameService {
     // ball.y = canvas.height / 2;
     
     const intervalId = setInterval(async () => {
-  
-      if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
-        clearInterval(intervalId);
-        //close socket
-      }
       
 
-      // Emit game update to clients
-      const gameData = {
-        ball,
-        players,
-      };
-      server.to(roomId).emit('update', gameData);
+      if (canvas)
+      {
+        if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
+          clearInterval(intervalId);
+          //close socket
+        }
+        
 
-      // Update ball position
-      ball.x += ball.velocityX * ball.speed;
-      ball.y += ball.velocityY * ball.speed;
+        // Emit game update to clients
+        const gameData = {
+          ball,
+          players,
+        };
+        server.to(roomId).emit('update', gameData);
 
-      // Handle ball collisions with canvas boundaries
-      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-        ball.velocityY = -ball.velocityY;
+        // Update ball position
+        ball.x += ball.velocityX * ball.speed;
+        ball.y += ball.velocityY * ball.speed;
+
+        // Handle ball collisions with canvas boundaries
+        if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+          ball.velocityY = -ball.velocityY;
+        }
+        
+        // Handle ball collisions with players
+        let collisionResult = this.collision(ball, canvas, players);
+        if (collisionResult) {
+          if (ball.x < canvas.width / 2)
+            ball.velocityX = Math.abs(ball.velocityX);
+          else
+            ball.velocityX = -1 * Math.abs(ball.velocityX);
+        }
+        if (players[0] && players[1])
+        {
+          // Handle scoring
+          if (ball.x - ball.radius < 0) {
+            players[1].score++;
+            this.resetBall(ball, canvas);
+          } else if (ball.x + ball.radius > 900) {
+            players[0].score++;
+            this.resetBall(ball, canvas);
+          }
+        }
       }
-      
-      // Handle ball collisions with players
-      let collisionResult = this.collision(ball, canvas, players);
-      if (collisionResult) {
-        if (ball.x < canvas.width / 2)
-          ball.velocityX = Math.abs(ball.velocityX);
-        else
-          ball.velocityX = -1 * Math.abs(ball.velocityX);
-      }
-       if (players[0] && players[1])
-       {
-         // Handle scoring
-         if (ball.x - ball.radius < 0) {
-           players[1].score++;
-           this.resetBall(ball, canvas);
-         } else if (ball.x + ball.radius > canvas.width) {
-           players[0].score++;
-           this.resetBall(ball, canvas);
-         }
-       }
 
     }, 1000 / 60);
   }

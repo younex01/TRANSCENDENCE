@@ -137,16 +137,18 @@ export const PlayWithFriend = () => {
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(player.x,player.y,player.width,player.height);
+        if(player.score != 0)
+          setScore1(player.score);
       }
-      setScore1(player.score);
     }
     const drawSecondPlayer = (computer: Player) =>{
       if (ctx && canvas && computer)
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(computer.x,computer.y,computer.width,computer.height);
+        if (computer.score != 0)
+          setScore2(computer.score);
       }
-      setScore2(computer.score);
     }
   
     const drawRect = () => {
@@ -261,8 +263,8 @@ export const PlayWithFriend = () => {
             console.log("start the game");
             setCanvas(canv)
             setCtx(canv.getContext('2d'))
+            render(data);
           }
-          render(data);
         }
         else if(event == "winner")
         {
