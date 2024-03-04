@@ -14,8 +14,8 @@ export default function NotUser() {
                 </div>
             </div>
                 <div className='flex flex-col items-center justify-center gap-[26px]'>
-                    <Link href='/Profile' className='text-[#FFF] text-[14px] max-w-[481px] font-sans  font-[600] text-center bg-[#252f5b] py-[19px] px-[35px] rounded-[18px] hover:bg-[#3a467a]' >
-                        Go back To profile
+                    <Link href='/Chat' className='text-[#FFF] text-[14px] max-w-[481px] font-sans  font-[600] text-center bg-[#252f5b] py-[19px] px-[35px] rounded-[18px] hover:bg-[#3a467a]' >
+                        Go back To Chat
                     </Link>
                 </div>
         </div>

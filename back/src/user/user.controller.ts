@@ -30,26 +30,34 @@ export class UserController {
         return await this.prisma.userExists(userId);
     }
 
-    @Post('changeAvatar')
-    @UseGuards(AuthGuard('jwt'))
-    async changeAvatar(@Req() req, @Res() res, @Body() avatar: { avararUrl: string }) {
-        try {
-            const user = req.user;
-            const avatarUrl = avatar.avararUrl;
-            await this.prisma.user.update({
-                where: { id: user.id },
-                data: { avatar: avatar.avararUrl }
-            });
-            return await res.send({ info: true, message: "Avatar updated successfully" });
-        }
-        catch (e) {
-            return await res.send({ info: false, message: "Error while updating avatar" });
-        }
-    }
+    // @Post('changeAvatar')
+    // @UseGuards(AuthGuard('jwt'))
+    // async changeAvatar(@Req() req, @Res() res, @Body() avatar: { avararUrl: string }) {
+    //     try {
+    //         const user = req.user;
+    //         const avatarUrl = avatar.avararUrl;
+    //         await this.prisma.user.update({
+    //             where: { id: user.id },
+    //             data: { avatar: avatar.avararUrl }
+    //         });
+    //         return await res.send({ info: true, message: "Avatar updated successfully" });
+    //     }
+    //     catch (e) {
+    //         return await res.send({ info: false, message: "Error while updating avatar" });
+    //     }
+    // }
 
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
     async changeUsername(@Req() req, @Res() res, @Body() userDto: UserDto) {
+
+    const isNameAlreadyExistes = await this.UserService.userNameCheck(userDto.username);
+    const user = await this.UserService.getUser(userDto.id);
+    console.log("-------username here hello-----",isNameAlreadyExistes);
+    console.log("-------username here hello-----",user);
+    
+    if (user.username !== userDto.username && isNameAlreadyExistes)
+        throw new UnauthorizedException('Name already taken')
         
         try {
             console.log("------------",userDto);
@@ -58,6 +66,8 @@ export class UserController {
                 where: { id: userDto.id },
                 data: { username: userDto.username, firstName: userDto.firstName, lastName: userDto.lastName, avatar: userDto.avatar }
             });
+            console.log("------------",userDto.username);
+            
             
             return await res.send({ info: true, message: "Username updated successfully" });
         }
