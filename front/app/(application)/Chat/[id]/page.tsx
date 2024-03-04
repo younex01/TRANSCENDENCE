@@ -91,11 +91,15 @@ export default function Page(props: any) {
   };
 
   function handleChannelCommands(arg: string, data: any, index: any) {
+    console.log("wach hadi hya li kadkhol liha ???");
+    
     socket?.emit(arg, {
+      username: userData.username,
       message: "",
       userId: userData.id,
+      target_username: data.username,
       target: data.id,
-      roomId: groupData?.id
+      roomId: groupData?.id,
     })
     handleToggleSettings(index);
   }
@@ -109,6 +113,7 @@ export default function Page(props: any) {
     });
     socket?.on("refresh", (channelStatus: any) => {
       setRefresh(!refresh);
+      dispatch(setRefreshConvos(!refreshConvos))
       if (channelStatus) toast.success(`This channel has been set to ${channelStatus}`)
     });
 
@@ -174,7 +179,7 @@ export default function Page(props: any) {
 
   function setToPublic() {
     socket?.emit("setRoomToPublic", {
-      message: `announcement ${userData.id.split('-')[0]} has set this room to Public`,
+      message: `announcement ${userData.username} has set this room to Public`,
       roomId: groupData?.id,
       userId: userData.id,
     });
@@ -188,7 +193,7 @@ export default function Page(props: any) {
         return;
       }
         const data = {
-          message: `announcement ${userData.id.split('-')[0]} has set this room to Protected`,
+          message: `announcement ${userData.username} has set this room to Protected`,
           roomId: groupData?.id,
           userId: userData.id,
           password: Password
@@ -851,7 +856,7 @@ export default function Page(props: any) {
 
 //   function setToPublic() {
 //     socket?.emit("setRoomToPublic", {
-//       message: `announcement ${userData.id.split('-')[0]} has set this room to Public`,
+//       message: `announcement ${userData.username} has set this room to Public`,
 //       roomId: groupData?.id,
 //       userId: userData.id,
 //     });
@@ -863,7 +868,7 @@ export default function Page(props: any) {
 //       return;
 //     }
 //     socket?.emit("setRoomToProtected", {
-//       message: `announcement ${userData.id.split('-')[0]} has set this room to Protected`,
+//       message: `announcement ${userData.username} has set this room to Protected`,
 //       roomId: groupData?.id,
 //       userId: userData.id,
 //       password: Password

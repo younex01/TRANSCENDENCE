@@ -60,6 +60,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload: any) {
+    console.log("payload.username", payload.username);
+    console.log("payload.username", payload);
+    
     payload.message = `announcement ${payload.username} has muted ${payload.target_username}`
     await this.chatService.MuteUserFromRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
@@ -141,30 +144,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       })
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
