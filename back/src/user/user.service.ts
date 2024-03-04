@@ -93,7 +93,12 @@ export class UserService {
       },
     });
   }
-
+  async roomNameCheck(username: string) {
+    return this.prisma.user.findFirst({
+      where: { username},
+    });
+  }
+  
   async pendFriendRequest(notifId: string, sender: string, target: string) {
 
     return this.prisma.friendRequest.update({
