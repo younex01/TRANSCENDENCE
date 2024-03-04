@@ -60,7 +60,6 @@ export const PlayWithFriend = () => {
       console.log(e);
       var mouseX = e * canvas.width / canvas.clientWidth | 0;
       var mouseY = e * canvas.height / canvas.clientHeight | 0;
-      console.log("[",mouseX,mouseY,"]");
       return {x: mouseX, y: mouseY};
   }
     
@@ -182,12 +181,22 @@ export const PlayWithFriend = () => {
   
     useEffect(() => {
       const keydownHandler = (e:any) => {
-        if (e.key === "ArrowUp" ) {
-          socket?.emit("arrow_move","down");
+        if(player && canvas && computer)
+        {
+          if (e.key === "ArrowUp" ) {
+            if(player.y <= 0 || computer?.y <= 0)
+              return;
+            socket?.emit("arrow_move","down");
+          }
         }
-        if (e.key === "ArrowDown") {
+        if(player && canvas && computer)
+        {
+          if (e.key === "ArrowDown") {
+          if(player.y >= 490 || computer?.y >= 490)
+            return;
           socket?.emit("arrow_move","up");
         }
+      }
       };
       const mousemoveHandler = (e:any) => {
           if (canvas)
@@ -214,6 +223,8 @@ export const PlayWithFriend = () => {
       //draw the player
       drawFirstPlayer(data.players[0]);
       drawSecondPlayer(data.players[1]);
+      setPlayer(data.players[0]);
+      setComputer(data.players[1]);
     } 
     
     

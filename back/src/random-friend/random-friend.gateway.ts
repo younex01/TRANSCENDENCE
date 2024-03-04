@@ -61,7 +61,9 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       // console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
       //
-      this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
+      this.id = this.game.length;
+      if (this.players[this.id] && this.players[this.id].length == 1)
+        this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
       // console.log("------------players-Data-------------",this.id);
       // console.log(this.players);
       const newGame: Game = {
@@ -100,7 +102,8 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       if (!this.players[this.id]) {
         this.players[this.id] = [];
       }
-      this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
+      if (this.players[this.id].length == 0)
+        this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
     }
   }
 
@@ -147,15 +150,21 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     // console.log("before---game");
     // console.log(this.game);
     this.connectedUsers.delete(client.id);
-    // this.rooms = Object.fromEntries(
-    //   Object.entries(this.rooms)
-    //     .filter(([roomId, players]) => !players.includes(client.id))
-    // );
-    // console.log("----------");
+    // console.log("----------Player");
     // console.log(this.players);
     this.players = this.gameService.deletePlayerFromPlayers(this.players, client.id);
     // console.log("------------Rooms-Data-------------");
     // console.log(this.rooms);
+    // if(this.rooms && this.game.length == 0 && this.id == 0)
+    // {
+    //   const index = Object.keys(this.rooms);
+    //   if(this.rooms[index[0]][0] == client.id)
+    //     this.id -= 1;
+    // }
+    this.rooms = Object.fromEntries(
+      Object.entries(this.rooms)
+        .filter(([roomId, players]) => !players.includes(client.id))
+    );
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
     // console.log("handle disconnect",this.id);
     // console.log(this.players);

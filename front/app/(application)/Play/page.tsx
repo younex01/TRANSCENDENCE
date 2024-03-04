@@ -184,6 +184,11 @@ export default function page() {
 
     useEffect(() => {
       const keydownHandler = (e:any) => {
+        if(player && canvas && computer)
+        {
+          if(player.y >= canvas?.height || player.y <= 0 || computer?.y >= canvas?.height || computer?.y <= 0)
+            return;
+        }
         if (e.key === "ArrowUp" ) {
           socket?.emit("arrow_move","down");
         }

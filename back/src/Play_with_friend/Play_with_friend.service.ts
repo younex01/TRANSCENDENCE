@@ -165,15 +165,15 @@ export class GameService {
     handleArrowMove(data: string, socketId: string, players: Player[]): void {
       if (data === "up") {
         if (socketId === players[0].id) {
-          players[0].y += 8;
+          players[0].y += 20;
         } else {
-          players[1].y += 8;
+          players[1].y += 20;
         }
       } else if (data === "down") {
         if (socketId === players[0].id) {
-          players[0].y -= 8;
+          players[0].y -= 20;
         } else {
-          players[1].y -= 8;
+          players[1].y -= 20;
         }
       }
     }
@@ -376,7 +376,7 @@ export class GameService {
          if (ball.x - ball.radius < 0) {
            players[1].score++;
            this.resetBall(ball, canvas);
-         } else if (ball.x + ball.radius > canvas.width) {
+         } else if (ball.x + ball.radius > 900) {
            players[0].score++;
            this.resetBall(ball, canvas);
          }

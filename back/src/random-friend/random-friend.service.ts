@@ -97,15 +97,18 @@ export class GameService {
     handleArrowMove(data: string, socketId: string, players: Player[]): void {
       if (data === "up") {
         if (socketId === players[0].id) {
-          players[0].y += 8;
+          players[0].y += 20;
         } else {
-          players[1].y += 8;
+          players[1].y += 20;
         }
       } else if (data === "down") {
+        console.log(players[0].y);
+        if(players[0].y >= 450 || players[1].y >= 450)
+          return;
         if (socketId === players[0].id) {
-          players[0].y -= 8;
+          players[0].y -= 20;
         } else {
-          players[1].y -= 8;
+          players[1].y -= 20;
         }
       }
     }
@@ -169,6 +172,8 @@ export class GameService {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
+      let check:number = 0;
+      console.log("here");
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
@@ -194,8 +199,10 @@ export class GameService {
               }
             }
             game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
-            gameId--;
+            // if(gameId > -1)
+            //   gameId--;
             game.splice(i, 1);
+            // check++;
             break;
           }
         }
@@ -205,7 +212,9 @@ export class GameService {
           if (game[i].players[0].id === id && game[i].players.length == 1)
           {
             game.splice(i, 1);
-            gameId--;
+            // if(gameId > -1)
+            //   gameId--;
+            // check++;
             break;
           }
         } 
@@ -214,6 +223,7 @@ export class GameService {
       {
         game[i].nb = i;
       }
+      gameId = game.length - 1;
       return gameId;
   }
 
@@ -300,6 +310,8 @@ export class GameService {
   {
     for(let game of games)
     {
+      if (!game.players)
+        return;
       if (game.players.length == 2)
       {
         if(game.players[0].id == socket_id)
