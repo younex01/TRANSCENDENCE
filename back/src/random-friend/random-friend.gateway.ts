@@ -58,12 +58,12 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
-      console.log(`join this room ${availibleRoomId}`);
+      // console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
       //
       this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
-      console.log("------------players-Data-------------",this.id);
-      console.log(this.players);
+      // console.log("------------players-Data-------------",this.id);
+      // console.log(this.players);
       const newGame: Game = {
         nb: this.id,
         ball: newBall,
@@ -95,8 +95,8 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       const newRoomId = socket.id;
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
-      console.log("new room created!!");
-      console.log(this.rooms);
+      // console.log("new room created!!");
+      // console.log(this.rooms);
       if (!this.players[this.id]) {
         this.players[this.id] = [];
       }
@@ -144,23 +144,23 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     //send emit message to the winner if the game still work
     // pop the client from the room list
     // leave the client id from the 
-    console.log("before---game");
-    console.log(this.game);
+    // console.log("before---game");
+    // console.log(this.game);
     this.connectedUsers.delete(client.id);
     // this.rooms = Object.fromEntries(
     //   Object.entries(this.rooms)
     //     .filter(([roomId, players]) => !players.includes(client.id))
     // );
-    console.log("----------");
-    console.log(this.players);
+    // console.log("----------");
+    // console.log(this.players);
     this.players = this.gameService.deletePlayerFromPlayers(this.players, client.id);
     // console.log("------------Rooms-Data-------------");
     // console.log(this.rooms);
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
-    console.log("handle disconnect",this.id);
-    console.log(this.players);
-    console.log("after---game");
-    console.log(this.game);
+    // console.log("handle disconnect",this.id);
+    // console.log(this.players);
+    // console.log("after---game");
+    // console.log(this.game);
     // this.players = {};
     // this.rooms = {};
     // console.log("------------Game-Data-------------");

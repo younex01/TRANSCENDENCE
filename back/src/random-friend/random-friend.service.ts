@@ -138,7 +138,6 @@ export class GameService {
 
     deletePlayerFromPlayers(players: {[id:number]: Player[]},id:string):{[id:number]: Player[]}
     {
-      console.log("delete Player from Players");
       const indexs = Object.keys(players);
 
       for(let i = 0; i < indexs.length;i++)
@@ -154,14 +153,11 @@ export class GameService {
           }
       }
       const index = Object.keys(players);
-      console.log("index",index);
       if(index[0] !== '0')
       {
-          console.log("a",index[0]);
           let new_players : { [id: string]: Player[] } = {};
           for (let i =0; i < index.length; i++)
           {
-            console.log("b",i);
                 new_players[i.toString()] = players[index[i]];
           }
           return (new_players);
@@ -176,14 +172,12 @@ export class GameService {
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
-        console.log(game[i].players[0].id, id , game[i].players[1].id);
         if (game[i].players.length === 2)
         {
           if (game[i].players[0].id == id || game[i].players[1].id == id)
           {
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
-              console.log("this player is give up the game");
               //this player is give up the game
               const roomId = Object.keys(game[i].rooms);
               if (game[i].players[0].id === id)

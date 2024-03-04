@@ -39,6 +39,20 @@ export default function page() {
 
     const myData = useSelector(selectProfileInfo);
 
+
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsSmallScreen(window.innerWidth < 910 || window.innerHeight < 450);
+      };
+  
+      handleResize(); // Check initially
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    
+
     //select canvas
     let canv = canvasRef.current;
     const [ball, setBall] = useState<Ball>();
@@ -55,6 +69,13 @@ export default function page() {
       }
     },[playAgain])
 
+    function getMouesPosition(e:any, canvas: HTMLCanvasElement):any {
+      console.log(e);
+      var mouseX = e * canvas.width / canvas.clientWidth | 0;
+      var mouseY = e * canvas.height / canvas.clientHeight | 0;
+      console.log("[",mouseX,mouseY,"]");
+      return {x: mouseX, y: mouseY};
+    }
 
     //ball interface
     interface Ball{
@@ -174,7 +195,7 @@ export default function page() {
           if (canvas)
           {
             let rect = canvas.getBoundingClientRect();
-            let newPosition = e.clientY - rect.top;
+            let newPosition = getMouesPosition(e.clientY - rect.top, canvas).y;
             //send to the server positon of the player
             socket?.emit("mouse_move",newPosition);
           }
@@ -314,7 +335,11 @@ export default function page() {
                     id="pong"
                     height="450"
                     width="900"
-                    // style={{width: "100vmin", height: "50vmin"}}
+                    style={{
+                      width: isSmallScreen ? '100vmin' : '900px',
+                      height: isSmallScreen ? '50vmin' : '450px',
+                      objectFit: 'contain'
+                    }}
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}
