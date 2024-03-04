@@ -42,6 +42,13 @@ export class UserService {
     })
   }
 
+  async userNameCheck(name:string) {
+    return this.prisma.user.count({
+      where : {username:name}
+    });
+  }
+
+
   async createFriendRequest(target: string, sender: string) {
     return this.prisma.friendRequest.create({
       data: {

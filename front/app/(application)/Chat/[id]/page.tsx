@@ -9,6 +9,7 @@ import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { setRefreshConvos } from '@/redux/features/chatSlices/refreshSlice';
+import NotUser from '../NotUser';
 
 export default function Page(props: any) {
 
@@ -266,22 +267,26 @@ export default function Page(props: any) {
   };
   
 
+  if(groupData === 404){
+    return <NotUser />
+  }
+
   return (
-    (groupData === 404) ?
+    // (groupData === 404) ?
     
-      <div className='absolute w-screen h-screen bg-black z-[2000] flex justify-center items-center'>
-        <div className='flex flex-col gap-4'>
-          <div className='flex justify-center items-center gap-4'>
-            <div className='text-white border-r-[0.5px] border-white px-4  py-2 text-[25px]'>404 </div>
-            <div className='text-white'>This page could not be found.</div>
-          </div>
-          <div className='flex justify-center items-center gap-4'>
-              <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Profile'}>Home page</Link>
-              <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white  hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Chat'}>Chat</Link>
-          </div>
-        </div>
-      </div>
-    :((groupData.type === "DM" && isLoading) ?
+    //   <div className='absolute w-screen h-screen bg-black z-[2000] flex justify-center items-center'>
+    //     <div className='flex flex-col gap-4'>
+    //       <div className='flex justify-center items-center gap-4'>
+    //         <div className='text-white border-r-[0.5px] border-white px-4  py-2 text-[25px]'>404 </div>
+    //         <div className='text-white'>This page could not be found.</div>
+    //       </div>
+    //       <div className='flex justify-center items-center gap-4'>
+    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Profile'}>Home page</Link>
+    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white  hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Chat'}>Chat</Link>
+    //       </div>
+    //     </div>
+    //   </div>
+    ((groupData.type === "DM" && isLoading) ?
 
       (
         <div className='h-screen w-full flex flex-1 relative z-10'>
