@@ -12,7 +12,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
   server: Server;
 
   private game : Game [] = [];
-  private id: number = 0;
+  private id: number = -1;
   private rooms: {[roomId:string]: string[]} = {};
   private ball : Ball = {color: "WHITE",radius: 15,speed: 0.9,velocityX: 5,velocityY: 5,x: 450,y: 225}
   private canvas: Canvas = {height: 0,width:0};
@@ -30,9 +30,11 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     // this.connectedUsers[socket.id] = socket;
     const availibleRoomId = Object.keys(this.rooms).find(roomId => this.rooms[roomId].length == 1);
 
+
     //check if the user is in the game 
       // 'token' is sent from the client when it connects
-      const token = socket.handshake.query.token;
+      const token:any = socket.handshake.query.token;
+      // const user = this.gameService.getUserInfosFromToken(token);
       const existingUser = Array.from(this.connectedUsers.values());
       if (existingUser.includes(token)) {
         console.log(`Token ${token} already connected with another client`);
@@ -40,6 +42,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         socket.disconnect();
         return;
       }
+
       this.connectedUsers.set(socket.id, token);
       // console.log('Token received:', token);
       // console.log('socket',socket.id);
@@ -57,9 +60,10 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       socket.join(availibleRoomId);
       console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
+      //
       this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
-      // console.log("------------players-Data-------------");
-      // console.log(this.players);
+      console.log("------------players-Data-------------",this.id);
+      console.log(this.players);
       const newGame: Game = {
         nb: this.id,
         ball: newBall,
@@ -67,27 +71,32 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         rooms: this.rooms
       };
       this.game.push(newGame);
-      console.log("------------Game-Data-------------");
-      console.log(this.game)
-      console.log("------------rooms-Data-------------");
-      console.log(this.rooms)
-      this.players = {};
+
+      this.rooms = Object.fromEntries(
+        Object.entries(this.rooms)
+          .filter(([roomId, players]) => !players.includes(socket.id))
+      );
+      // console.log("------------Game-Data-------------");
+      // console.log(this.game)
+      // console.log("------------rooms-Data-------------");
+      // console.log(this.rooms)
+      // this.players = {};
       // this.rooms = {};
-      const roomId = Object.keys(this.rooms);
-      const index = Object.keys(this.rooms).findIndex(roomId => roomId === roomId[0]);
-      if (index !== -1) {
-        delete this.rooms[roomId[index]];
-      }
+      // const roomId = Object.keys(this.rooms);
+      // const index = Object.keys(this.rooms).findIndex(roomId => roomId === roomId[0]);
+      // if (index !== -1) {
+      //   delete this.rooms[roomId[index]];
+      // }
       this.gameService.startTheGame(this.game[this.id].players, this.game[this.id].rooms, availibleRoomId, this.server, this.game[this.id].ball, this.canvas);
-      this.id++;
     }
     else
     {
+      this.id++;
       const newRoomId = socket.id;
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
       console.log("new room created!!");
-      console.log(newRoomId);
+      console.log(this.rooms);
       if (!this.players[this.id]) {
         this.players[this.id] = [];
       }
@@ -135,12 +144,24 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     //send emit message to the winner if the game still work
     // pop the client from the room list
     // leave the client id from the 
+    console.log("before---game");
+    console.log(this.game);
     this.connectedUsers.delete(client.id);
-    console.log("handle disconnect",client.id);
-    console.log("------------Rooms-Data-------------");
-    console.log(this.rooms);
+    // this.rooms = Object.fromEntries(
+    //   Object.entries(this.rooms)
+    //     .filter(([roomId, players]) => !players.includes(client.id))
+    // );
+    console.log("----------");
+    console.log(this.players);
+    this.players = this.gameService.deletePlayerFromPlayers(this.players, client.id);
+    // console.log("------------Rooms-Data-------------");
+    // console.log(this.rooms);
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
-    this.players = {};
+    console.log("handle disconnect",this.id);
+    console.log(this.players);
+    console.log("after---game");
+    console.log(this.game);
+    // this.players = {};
     // this.rooms = {};
     // console.log("------------Game-Data-------------");
     // console.log(this.game);

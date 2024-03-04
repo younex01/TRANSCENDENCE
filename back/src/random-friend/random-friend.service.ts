@@ -11,6 +11,7 @@ export class GameService {
     private bSide: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
     private pSide: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
     eventService: any;
+  jwtService: any;
 
     constructor(
       private readonly userService: UserService,
@@ -135,21 +136,51 @@ export class GameService {
       }
     }
 
+    deletePlayerFromPlayers(players: {[id:number]: Player[]},id:string):{[id:number]: Player[]}
+    {
+      console.log("delete Player from Players");
+      const indexs = Object.keys(players);
+
+      for(let i = 0; i < indexs.length;i++)
+      {
+          if(players[indexs[i]].length == 1 && players[indexs[i]][0].id == id)
+              delete players[indexs[i]];    
+          else if(players[indexs[i]].length == 2)
+          {
+            if(players[indexs[i]][0].id == id)
+              delete players[indexs[i]];
+            else if(players[indexs[i]][1].id == id)
+              delete players[indexs[i]];
+          }
+      }
+      const index = Object.keys(players);
+      console.log("index",index);
+      if(index[0] !== '0')
+      {
+          console.log("a",index[0]);
+          let new_players : { [id: string]: Player[] } = {};
+          for (let i =0; i < index.length; i++)
+          {
+            console.log("b",i);
+                new_players[i.toString()] = players[index[i]];
+          }
+          return (new_players);
+      }
+      return players;
+    }
+
     removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
-      console.log(game);
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
         console.log(game[i].players[0].id, id , game[i].players[1].id);
         if (game[i].players.length === 2)
         {
-          console.log("i am if:");
           if (game[i].players[0].id == id || game[i].players[1].id == id)
           {
-            console.log("i am if:if");
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
               console.log("this player is give up the game");
@@ -176,15 +207,18 @@ export class GameService {
         }
         else
         {
-          console.log("i am else");
           //check if the room of the game has the id and the lenght is 1 if that is true remove the game
           if (game[i].players[0].id === id && game[i].players.length == 1)
           {
             game.splice(i, 1);
+            gameId--;
             break;
-            
           }
-        }
+        } 
+      }
+      for(let i =0;i< game.length;i++)
+      {
+        game[i].nb = i;
       }
       return gameId;
   }
@@ -297,4 +331,19 @@ export class GameService {
       }
     }
   }
+
+
+
+  // public getUserInfosFromToken(token: string): any {
+  //   try {
+  //     const decoded = this.jwtService.decoded(token, {
+  //     secret: process.env.JWT_KEY,
+  //     });
+  //     return decoded;
+  //   } catch (error) {
+  //     console.error('JWT verification failed:', error.message);
+  //     return null;
+  //   }
+  // }
+
 }
