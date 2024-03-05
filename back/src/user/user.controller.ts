@@ -23,52 +23,30 @@ export class UserController {
         }
     }
 
-
     @Get('dyali')
     @UseGuards(AuthGuard('jwt'))
     async Getdyali(userId: any) {
         return await this.prisma.userExists(userId);
     }
 
-    // @Post('changeAvatar')
-    // @UseGuards(AuthGuard('jwt'))
-    // async changeAvatar(@Req() req, @Res() res, @Body() avatar: { avararUrl: string }) {
-    //     try {
-    //         const user = req.user;
-    //         const avatarUrl = avatar.avararUrl;
-    //         await this.prisma.user.update({
-    //             where: { id: user.id },
-    //             data: { avatar: avatar.avararUrl }
-    //         });
-    //         return await res.send({ info: true, message: "Avatar updated successfully" });
-    //     }
-    //     catch (e) {
-    //         return await res.send({ info: false, message: "Error while updating avatar" });
-    //     }
-    // }
-
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
     async changeUsername(@Req() req, @Res() res, @Body() userDto: UserDto) {
 
-    const isNameAlreadyExistes = await this.UserService.userNameCheck(userDto.username);
-    const user = await this.UserService.getUser(userDto.id);
-    console.log("-------username here hello-----",isNameAlreadyExistes);
-    console.log("-------username here hello-----",user);
-    
-    if (user.username !== userDto.username && isNameAlreadyExistes)
-        throw new UnauthorizedException('Name already taken')
-        
+        const isNameAlreadyExistes = await this.UserService.userNameCheck(userDto.username);
+        const user = await this.UserService.getUser(userDto.id);
+
+        if (user.username !== userDto.username && isNameAlreadyExistes)
+            throw new UnauthorizedException('Name already taken')
+
         try {
-            console.log("------------",userDto);
             const user = req.user;
             await this.prisma.user.update({
                 where: { id: userDto.id },
                 data: { username: userDto.username, firstName: userDto.firstName, lastName: userDto.lastName, avatar: userDto.avatar }
             });
-            console.log("------------",userDto.username);
-            
-            
+
+
             return await res.send({ info: true, message: "Username updated successfully" });
         }
         catch (e) {
@@ -81,7 +59,7 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async getUserByUserId(@Query('user') user: string, @Req() req) {
         const users = await this.prisma.getUserByUserId(user);
-        if(!users)
+        if (!users)
             throw new NotFoundException("User not found");
         return users;
     }
@@ -103,16 +81,12 @@ export class UserController {
         return modifiedFiltered;
     }
 
-    
-
-
     @Post('sendFriendRequest')
     @UseGuards(AuthGuard('jwt'))
     async sendFriendRequest(@Body() req: any) {
         const user = await this.UserService.getUser(req.target);
-
-
         if (!user) return;
+
         const isRequestExist = await this.UserService.isRequestExist(req.target, req.sender);
         if (isRequestExist && isRequestExist.status === "Declined")
             await this.UserService.pendFriendRequest(isRequestExist.id, req.sender, req.target);
@@ -132,25 +106,59 @@ export class UserController {
         await this.UserService.makeFriends1(req.myId, req.notif.senderId);
         await this.UserService.makeFriends2(req.myId, req.notif.senderId);
         await this.ChatService.createDM(req.myId, req.notif.senderId);
-        // await this.ChatService.createDM(req.notif.senderId);
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
 
     }
 
-
     @Post('declineFriendRequest')
     @UseGuards(AuthGuard('jwt'))
     async declineFriendRequest(@Body() req: any) {
         const isExiste = await this.UserService.isRequestExistAndPending(req.notif.id, req.myId);
-
         if (isExiste !== 1) return;
-        // await this.UserService.a(req.notif.id);
+
         await this.UserService.declineFriendRequest(req.notif.id);
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
-        // return myNotifications;
 
+    }
+
+    @Post('sendPlayAgain')
+    @UseGuards(AuthGuard('jwt'))
+    async sendPlayAgain(@Body() req: any) {
+        const user = await this.UserService.getUser(req.target);
+        if (!user) return;
+
+        const isRequestExist = await this.UserService.isPlayRequest(req.target, req.sender);
+        
+        if (isRequestExist )
+            await this.UserService.deletePlayRequest(req.target, req.sender);
+
+        await this.UserService.createPlayRequest(req.target, req.sender);
+        this.eventEmitter.emit("refreshNotifications");
+        this.eventEmitter.emit("refreshfriendShip");
+    }
+
+    @Post('acceptInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async acceptInviteToPlay(@Body() req: any) {
+        const isExiste = await this.UserService.isRequestExistAndPendingToPlay(req.notif.id, req.myId);
+        if (isExiste !== 1) return;
+
+        await this.UserService.acceptInviteToPlay(req.notif.id);
+        this.eventEmitter.emit("refreshNotifications");
+        this.eventEmitter.emit("refreshfriendShip");
+    }
+
+    @Post('declineInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async declineInviteToPlay(@Body() req: any) {
+        const isExiste = await this.UserService.isRequestExistAndPendingToPlay(req.notif.id, req.myId);
+        if (isExiste !== 1) return;
+
+        await this.UserService.declineInviteToPlay(req.notif.id);
+        this.eventEmitter.emit("refreshNotifications");
+        this.eventEmitter.emit("refreshfriendShip");
     }
 
     @Get('getMyNotifications')
@@ -160,24 +168,25 @@ export class UserController {
         return myNotifications;
 
     }
+    @Get('getInviteToPlay')
+    @UseGuards(AuthGuard('jwt'))
+    async getInviteToPlay(@Query('userId') userId: string) {
+        const myNotifications = await this.UserService.getInviteToPlay(userId);
+        return myNotifications;
+    }
 
     @Get('requestStatus')
     @UseGuards(AuthGuard('jwt'))
     async requestStatus(@Query('myId') myId: string, @Query('receiverId') receiverId: string) {
         const request = await this.UserService.isRequestExist(myId, receiverId);
         if (!request) return 0;
-        // this.eventEmitter.emit("refreshfriendShip");
         return request;
     }
 
     @Get('checkIfFriend')
     @UseGuards(AuthGuard('jwt'))
     async checkIfFriend(@Query('myId') myId: string, @Query('receiverId') otherUser: string) {
-        console.log("myId", myId);
-        console.log("receiverId", otherUser);
         const checkIfFriend = await this.UserService.checkIfFriend(myId, otherUser);
-        console.log("checkIfFriend", checkIfFriend);
-        // this.eventEmitter.emit("refreshfriendShip");
         return (checkIfFriend);
     }
 
@@ -196,7 +205,6 @@ export class UserController {
             }
             await this.UserService.removeFriendRequest(isRequestExist.id);
         };
-
 
         await this.UserService.blockedUsers(req.myId, req.target);
         await this.UserService.blockedByUsers(req.myId, req.target);
@@ -220,7 +228,6 @@ export class UserController {
         this.eventEmitter.emit("refreshNotifications");
     }
 
-
     @Post('accept')
     @UseGuards(AuthGuard('jwt'))
     async Accept(@Body() req: any) {
@@ -228,8 +235,8 @@ export class UserController {
         if (!user) return;
 
         const isRequestExist = await this.UserService.isRequestExist(req.myId, req.receiverId);
-
         req.notif = isRequestExist;
+
         if (isRequestExist) this.acceptFriendRequest(req);
 
     }
@@ -248,34 +255,4 @@ export class UserController {
         const combinedBlockedUsers = [...blocklist.blockedByUsers, ...blocklist.blockedUsers];
         return combinedBlockedUsers;
     }
-
-
-
-    // sendRequest(receiver) //
-    //// -- check receiver exists
-    //// -- check if request between userID and receiver
-    //// -- prisma.friendRequest.create({..., status: PENDING})
-    //// -- return success
-    // acceptRequest(requestId) //
-    //// -- check request exists
-    //// -- check if request is PENDING
-    //// -- request.senderId !== user.id
-    //// -- prisma.friendRequest.update({ data: { status: ACCEPTED }})
-    //// -- prisma.user.update(id:senderId, { data: { friends: connect: friendRequest.ReceiverId }})
-    //// -- return success
-    // declineRequest(requestId) //
-    //// -- request.senderId !== user.id
-    //// -- check request exists
-    //// -- check if request is PENDING
-    //// -- prisma.friendRequest.update({ data: { status: DECLINED }})
-    //// -- return success
-
-
-    // block(userId)
-    //// -- prisma.user.update(id:senderId, { data: { friends: disconnect: userId, blockedUsers: connect: userId }})
-
-    // unblock(userId)
-    //// -- prisma.user.update(id:senderId, { data: { blockedUsers: disconnect: userId }})
-
-
 }

@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ChangeProtectedChannelPassword, ChangeToProtected, ChatChannelDTO } from './chat.dto';
 import { UserService } from 'src/user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import * as bcrypt from 'bcrypt';
 
 @Controller('/chat')
 @UseGuards(AuthGuard('jwt'))
@@ -25,12 +26,12 @@ export class ChatController {
     const isNameAlreadyExistes = await this.chatService.roomNameCheck(chatGroup.name);
     if (isNameAlreadyExistes)
       throw new BadRequestException('Name already taken')
+    
+    const saltOrRounds = 10;
+    console.log("chatGroup.password", chatGroup.password);
+    chatGroup.password = await bcrypt.hash(chatGroup.password, saltOrRounds);
+    console.log("chatGroup.password", chatGroup.password);
     return await this.chatService.createGroup(chatGroup);
-  }
-
-  @Post('/createUser')
-  async createUser(@Body() user: any) {
-    return await this.chatService.createUser(user);
   }
 
   @Post('uploads')

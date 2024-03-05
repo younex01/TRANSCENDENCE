@@ -16,10 +16,6 @@ export default function Achievement({
   achievedpic: string;
   notAchivedpic: string;
 }) {
-  // const [done, setDone] = useState(true);
-  // "bg-[#f4f6ff] flex justify-between h-full mb-[14px] rounded-lg overflow-hidden lg:col-span-2 2xl:col-span-1"
-  console.log("achieved", achieved);
-  console.log("name", name);
 
   return (
     <div

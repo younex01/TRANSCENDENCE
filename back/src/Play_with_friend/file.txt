@@ -1,0 +1,21 @@
+f random mnin kikono 2 la3bin w katkhrj w t3awd dkhol player makidkhlosh
+
+f invite 1 invite 2 and 3 invite 4 walakin 1 dkhl m3a 3 3llaaash
+
+
+opponents[]
+
+oppenents.push
+
+for i in this.id:
+{
+    if()
+    {
+        join the game[i]
+    }
+    else if (makaynch )
+    {
+        new  game
+    }
+}
+

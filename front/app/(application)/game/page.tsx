@@ -1,9 +1,9 @@
 "use client";
-import PongGame from "./againstAi/PongGame";
+import PongGame from "./../../components/game//PongGame";
 import { useEffect, useRef, useState } from "react";
-import { PlayWithFriend } from "./againstAi/PlayWithFriend";
+import { PlayWithFriend } from "./../../components/game/PlayWithFriend";
 import Image from "next/image";
-import { YourFriendsGame } from "@/app/(application)/game/againstOthers/againstFriend";
+// import { YourFriendsGame } from "@/app/(application)/game/againstOthers/againstFriend";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
@@ -14,13 +14,19 @@ import Link from "next/link";
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
   const [playRandom, setplayRandom] = useState<boolean>(false);
+  const [playFriend, setplayFriend] = useState<boolean>(false);
   const [hide, setHide] = useState<string>("");
   const [playFreind, setplayFriends] = useState<boolean>(false);
   const [addMembers, setAddMembers] = useState<boolean>(false);
   const [hToPlay, setHowToPlay] = useState<boolean>(false);
   const [activeButton, setActiveButton] = useState("ai");
+
+  const [groupData, setGroupData] = useState<any>([]);
   // const [win, setWin] = useState<boolean>(false);
   const buttonAi = useRef<HTMLCanvasElement>(null);
+
+
+  const userData = useSelector(selectProfileInfo);
 
   // const [click, setClick] = useState(false)
   // const handleClick = () => {
@@ -33,6 +39,7 @@ export default function Home() {
   const [myFreinds, setMyFreinds] = useState([]);
 
   const profileInfo = useSelector(selectProfileInfo);
+  
 
 
   useEffect(() => {
@@ -52,19 +59,39 @@ export default function Home() {
     listFriends();
   }, [profileInfo]);
 
+  // const Play = async (tar:string):Promise<void> => 
+  // {
+  //   console.log("invite to play");
+  //   console.log(userData.id);
+  //   // console.log(groupData.members[0].id);
+  //   await axios.post(
+  //     `http://localhost:4000/user/sendPlayAgain`,
+  //     { sender: userData.id, target:tar}, // to handel
+  //     { withCredentials: true });
+  // }
 
-  const PlayWithFriend = () => {
-    setHide("hidden");
-    setplayFriends((prev) => {
+  const handleClickFr = () => {
+    if (buttonAi.current) buttonAi.current.style.display = "none";
+    setplayFriend((prev) => {
       return !prev;
     });
   };
 
 
+
+  // const PlayWithFriend = () => {
+  //   setHide("hidden");
+  //   setplayFriends((prev) => {
+  //     return !prev;
+  //   });
+  // };
+
+
   return (
     <div className="bg-[#dbe0f6] w-full overflow-y-auto overflow-auto">
       {/* <div  className="bg-red-500"> */}
-      <div className="flex flex-col justify-around items-center  w-full h-[100vh]">
+      <div className="flex flex-col justify-around items-center  w-full h-[100vh]"
+          ref={buttonAi}>
         <div
           className={`flex flex-col justify-around items-center h-[17%] ${hide}`}
         >
@@ -130,9 +157,10 @@ export default function Home() {
                               </div>
                             </div>
                             <div className="flex mt-4 md:text-[16px] text-[12px] sm:text-[14px] md:w-[120px] w-max-content">
-                              <Link href="">
+                              <Link href="../Play">
                                 <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
-                                  onClick={PlayWithFriend}>
+                                  // onClick={() => Play(groupData.members[0].id)}
+                                  >
 
                                   Invite
                                 </button>
@@ -182,7 +210,7 @@ export default function Home() {
           >
             <div className="pb-5">
               <button
-                // onClick={handleClickFr}
+                onClick={handleClickFr}
                 className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
               >
                 <img
@@ -205,13 +233,13 @@ export default function Home() {
             </button>
             {hToPlay && (
               <div className="fixed flex justify-center items-center h-full w-full left-0 top-0 bg-[#000000] bg-opacity-80 z-50">
-                <div className="fixed  rounded-[20px] max-w-[550px] w-[60%] mx-[50px] h-[40%] bg-[#6e7aaa] flex flex-col items-center">
-                  <div className="flex flex-col items-center justify-evenly h-[35%] w-full">
+                <div className="fixed  rounded-[20px] max-w-[550px] w-[55%] mx-[50px] h-[35%] bg-[#6e7aaa] flex flex-col items-center justify-start ">
+                  <div className="flex flex-col items-center justify-start w-full">
                     <button
                       className="absolute top-4 right-4 text-[#D7D7D7] cursor-pointer"
                       onClick={() => setHowToPlay(false)}>X</button>
-                    <div className="rounded-lg w-[50%] h-[13%] flex justify-center items-center font-normal text-[16px] sm:font-semibold sm:text-[23px]"><p className="text-[#252f5b]">How To Play ?</p></div>
-                    <div className="flex items-center justify-center w-full h-[110px] gap-3">
+                    <div className="rounded-lg w-[50%] flex justify-center items-center font-normal text-[16px] pt-2 sm:font-semibold sm:text-[23px]"><p className="text-[#252f5b]">How To Play ?</p></div>
+                    <div className="flex items-center justify-center w-full h-[110px] gap-2">
                       <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
 
                       onClick={() => {setActiveButton('ai')}}>
@@ -239,14 +267,14 @@ export default function Home() {
                         alt=""
                         className="w-[22px] h-[22px] bg-cover"
                       />
-                      <div > Against Random</div>
+                      <div className=""> Against Random</div>
                         </button>
                     </div>
                   </div>
                     {activeButton === 'random' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                        <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-hidden overflow-y-auto scrollbar-hide ">
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
-                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
@@ -256,33 +284,37 @@ export default function Home() {
                     )
                     }
                     {activeButton === 'ai' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                        <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-y-auto scrollbar-hide ">
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
-                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
                             {/* <li></li> */}
                           </ul>
-                        </div>
+                          </div>
                     )}
                     {activeButton === 'friends' && (
-                        <div className="w-[60%] h-[30%] flex flex-col items-center justify-center">
+                        <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-hidden overflow-y-auto scrollbar-hide ">
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
-                            <h3 className="font-bold self-center text-[24px]">Rules</h3>
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
                             {/* <li></li> */}
                           </ul>
-                        </div>
+                          </div>
                     )}
                 </div>
 
               </div>
             )}
           </div>
+          
       </div>
+        {playFriend && <PlayWithFriend />}
+        {playAi && <PongGame />}
+      
     </div>
   );
 }

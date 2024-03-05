@@ -1,6 +1,10 @@
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 import React, { useEffect, useRef, useState } from 'react'
 import { Winner } from './Winner';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
+import Cookies from 'js-cookie';
 
 export const PlayWithFriend = () => {
     
@@ -25,10 +29,39 @@ export const PlayWithFriend = () => {
     const [player, setPlayer] = useState<Player>()
     const [computer, setComputer] = useState<Player>()
     const [winnerName, setWinnerName] = useState<string>("");
+
+    const [firstName,setFirstName] = useState<string>("Player1");
+    const [secondName,setSecondName] = useState<string>("Player2");
+
+    const [pic1,setPic1] = useState<string>("");
+    const [pic2,setPic2] = useState<string>("");
+
+    const myData = useSelector(selectProfileInfo);
+
+
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsSmallScreen(window.innerWidth < 910 || window.innerHeight < 450);
+      };
+  
+      handleResize(); // Check initially
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
     
     //select canvas
     let canv = canvasRef.current;
     const [ball, setBall] = useState<Ball>();
+
+
+    function getMouesPosition(e:any, canvas: HTMLCanvasElement):any {
+      console.log(e);
+      var mouseX = e * canvas.width / canvas.clientWidth | 0;
+      var mouseY = e * canvas.height / canvas.clientHeight | 0;
+      return {x: mouseX, y: mouseY};
+  }
     
     useEffect(() => {
       if (player && computer && playAgain)
@@ -103,16 +136,18 @@ export const PlayWithFriend = () => {
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(player.x,player.y,player.width,player.height);
+        if(player.score != 0)
+          setScore1(player.score);
       }
-      setScore1(player.score);
     }
     const drawSecondPlayer = (computer: Player) =>{
       if (ctx && canvas && computer)
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(computer.x,computer.y,computer.width,computer.height);
+        if (computer.score != 0)
+          setScore2(computer.score);
       }
-      setScore2(computer.score);
     }
   
     const drawRect = () => {
@@ -146,18 +181,28 @@ export const PlayWithFriend = () => {
   
     useEffect(() => {
       const keydownHandler = (e:any) => {
-        if (e.key === "ArrowUp" ) {
-          socket?.emit("arrow_move","down");
+        if(player && canvas && computer)
+        {
+          if (e.key === "ArrowUp" ) {
+            if(player.y <= 0 || computer?.y <= 0)
+              return;
+            socket?.emit("arrow_move","down");
+          }
         }
-        if (e.key === "ArrowDown") {
+        if(player && canvas && computer)
+        {
+          if (e.key === "ArrowDown") {
+          if(player.y >= 490 || computer?.y >= 490)
+            return;
           socket?.emit("arrow_move","up");
         }
+      }
       };
       const mousemoveHandler = (e:any) => {
           if (canvas)
           {
             let rect = canvas.getBoundingClientRect();
-            let newPosition = e.clientY - rect.top;
+            let newPosition = getMouesPosition(e.clientY - rect.top, canvas).y;
             //send to the server positon of the player
             socket?.emit("mouse_move",newPosition);
           }
@@ -178,6 +223,8 @@ export const PlayWithFriend = () => {
       //draw the player
       drawFirstPlayer(data.players[0]);
       drawSecondPlayer(data.players[1]);
+      setPlayer(data.players[0]);
+      setComputer(data.players[1]);
     } 
     
     
@@ -186,59 +233,93 @@ export const PlayWithFriend = () => {
           setWinnerName(name);
     }
 
-
-
-useEffect(() => {
-  socket?.onAny((event, data) => {
-    if (event === "start")
-    {
-      setText("freind has join");
-      if (divv.current)
-      {
-        console.log("remove div");
-        divv.current.style.display = 'none';
+    
+    const fetchData = async () => {
+      try {
+      const response = await axios.get('http://localhost:4000/user/me', {withCredentials: true});
+      const userData = response.data.user;
+      socket?.emit("user_id",userData.id);
+      // console.log("myData");
+      // console.log(myData.id);
+      // console.log(userData);
+      // socket?.emit("playAgainRequest", myData.id)
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
-      setStart(false);
-      setGame(true);//todo update
-    }
-    else if (event == "update")
-    {
-      canv = canvasRef.current;
-      if(canv)
-      {
-        console.log("start the game");
-        setCanvas(canv)
-        setCtx(canv.getContext('2d'))
-      }
-      render(data);
-    }
-    else if(event == "winner")
-    {
-      console.log("i am in the winner");
-      checkWinner(data);
-    }
-    // else if(event == "give_up")
-    // {
-
-    // }
-  })
-  return () => {socket?.offAny()}
+    };
+    
+    useEffect(() => {
+      socket?.onAny((event, data) => {
+        if (event === "start")
+        {
+          setText("freind has join");
+          if (divv.current)
+          {
+            console.log("remove div");
+            divv.current.style.display = 'none';
+            fetchData();
+          }
+          setStart(false);
+          setGame(true);//todo update
+        }
+        else if (event == "update")
+        {
+          setFirstName(data.players[0].name);
+          setSecondName(data.players[1].name);
+          setPic1(data.players[0].pic);
+          setPic2(data.players[1].pic);
+          canv = canvasRef.current;
+          if(canv)
+          {
+            console.log("start the game");
+            setCanvas(canv)
+            setCtx(canv.getContext('2d'))
+            render(data);
+          }
+        }
+        else if(event == "winner")
+        {
+          console.log("Player give up");
+          // checkWinner(data);
+          setComputerWinnes((prev) => {return !prev})
+          setWinnerName(data);
+        }
+        else if(event = "already_in_game")
+        {
+          setText("Sorry !! you already in game.");
+        }
       })
-      
-    const handleRandom = () => {
-    console.log("send connection");
-    const newSocket = io("http://localhost:3001");
-    setSocket(newSocket);
-    setRandom(false);
-    setStart(true);
-    setText("wait for freind to join");
-  }
-  // ref={divv}
+      return () => {socket?.offAny()}
+    })
+    
+    
+    
+
+    useEffect(() => {
+
+      console.log("send connection");
+      const token = Cookies.get('JWT_TOKEN');
+      const newSocket = io("http://localhost:3001",{
+        query: {
+          token: token
+        }
+      });
+      setSocket(newSocket);
+      console.log("newSocket", newSocket.id);
+
+      setStart(true);
+      setText("wait for freind to join");
+
+      newSocket.off();
+
+      return () => {
+        newSocket.close();
+      };
+  },[])
   
   return (
     <>
-    <div  className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
-        {random && <button onClick={handleRandom} className='w-[50px] h-[50px] bg-white'>random friend</button>}
+    <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 
@@ -246,17 +327,17 @@ useEffect(() => {
             <div className="flex justify-around  flex-col">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
-                    <div className="bg-slate-500 w-20 h-20 rounded-full"></div>
+                <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
                     <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
                 </div>
                 <div className="flex flex-raw">
                     <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                    <div className="bg-slate-500 w-20 h-20 rounded-full "></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})`, backgroundSize: 'cover'}}></div>
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">
-                <span className="text-white pr-12">sanji</span>
-                <span className="text-white pl-12">AI</span>
+                <span className="text-white pr-12">{firstName}</span>
+                <span className="text-white pl-12">{secondName}</span>
                 </div>
                 <div className="flex justify-center">
                 {!winning &&
@@ -265,6 +346,11 @@ useEffect(() => {
                     id="pong"
                     height="450"
                     width="900"
+                    style={{
+                      width: isSmallScreen ? '100vmin' : '900px',
+                      height: isSmallScreen ? '50vmin' : '450px',
+                      objectFit: 'contain'
+                    }}
                     className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}

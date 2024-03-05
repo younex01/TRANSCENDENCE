@@ -4,7 +4,9 @@ import animationData from   "./onepice.json"
 
 
 export default function CustomLoading() {
-    return  <Lottie animationData={animationData} play style={{ width: 180, height: 180 }} />
+    return  <>
+    <div>loading...</div>
+    </>
   }
 
 

@@ -34,7 +34,7 @@ export class UserService {
     });
   }
 
-  async updateProfile(status: string, userId:string) {
+  async updateProfile(status: string, userId: string) {
     if (!await this.getUser(userId)) return;
     return this.prisma.user.update({
       where: { id: userId },
@@ -42,15 +42,25 @@ export class UserService {
     })
   }
 
-  async userNameCheck(name:string) {
+  async userNameCheck(name: string) {
     return this.prisma.user.count({
-      where : {username:name}
+      where: { username: name }
     });
   }
 
 
   async createFriendRequest(target: string, sender: string) {
     return this.prisma.friendRequest.create({
+      data: {
+        senderId: sender,
+        receiverId: target,
+        status: "Pending"
+      },
+    });
+  }
+
+  async createPlayRequest(target: string, sender: string) {
+    return this.prisma.inviteToPlay.create({
       data: {
         senderId: sender,
         receiverId: target,
@@ -76,12 +86,42 @@ export class UserService {
       include: {
         sender: true,
         receiver: true
-      }
+      },
+      orderBy: { updatedAt: 'desc' }
+    });
+  }
+
+  async getInviteToPlay(userId: string) {
+    return this.prisma.inviteToPlay.findMany({
+      where: {
+        OR: [
+          { receiverId: userId },
+          { senderId: userId }
+        ]
+      },
+      include: {
+        sender: true,
+        receiver: true
+      },
+      orderBy: { updatedAt: 'desc' }
     });
   }
 
   async isRequestExistAndPending(notifId: string, myId: string) {
     return this.prisma.friendRequest.count({
+      where: {
+        id: notifId,
+        status: "Pending",
+        OR: [
+          { receiverId: myId },
+          { senderId: myId }
+        ]
+      },
+    });
+  }
+
+  async isRequestExistAndPendingToPlay(notifId: string, myId: string) {
+    return this.prisma.inviteToPlay.count({
       where: {
         id: notifId,
         status: "Pending",
@@ -100,15 +140,44 @@ export class UserService {
       },
     });
   }
-  async roomNameCheck(username: string) {
-    return this.prisma.user.findFirst({
-      where: { username},
+
+  async deletePlayRequest(myId: string, receiverId: string) {
+    return this.prisma.inviteToPlay.deleteMany({
+      where: {
+        OR: [
+          { receiverId: receiverId, senderId: myId, },
+          { receiverId: myId, senderId: receiverId, }
+        ]
+      },
     });
   }
-  
+
+  async isPlayRequest(myId: string, receiverId: string) {
+    return this.prisma.inviteToPlay.findFirst({
+      where: {
+        OR: [
+          { receiverId: receiverId, senderId: myId, },
+          { receiverId: myId, senderId: receiverId, }
+        ]
+      },
+    });
+  }
+
   async pendFriendRequest(notifId: string, sender: string, target: string) {
 
     return this.prisma.friendRequest.update({
+      where: { id: notifId },
+      data: {
+        senderId: sender,
+        receiverId: target,
+        status: "Pending"
+      }
+    });
+  }
+
+  async pendPlayRequest(notifId: string, sender: string, target: string) {
+
+    return this.prisma.inviteToPlay.update({
       where: { id: notifId },
       data: {
         senderId: sender,
@@ -123,7 +192,7 @@ export class UserService {
     return this.prisma.friendRequest.update({
       where: { id: notifId },
       data: {
-        status: "Accepted"
+        status: "Accepted",
       }
     });
   }
@@ -131,6 +200,25 @@ export class UserService {
   async declineFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({
+      where: { id: notifId },
+      data: {
+        status: "Declined"
+      }
+    });
+  }
+  async acceptInviteToPlay(notifId: string) {
+
+    return this.prisma.inviteToPlay.update({
+      where: { id: notifId },
+      data: {
+        status: "Accepted"
+      }
+    });
+  }
+
+  async declineInviteToPlay(notifId: string) {
+
+    return this.prisma.inviteToPlay.update({
       where: { id: notifId },
       data: {
         status: "Declined"

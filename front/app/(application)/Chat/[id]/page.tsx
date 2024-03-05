@@ -28,6 +28,7 @@ export default function Page(props: any) {
   const [myBlockList, setMyBlockList] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [clicked, setIsclicked] = useState(false);
+  const [remainingDuration, setRemainingDuration] = useState(60);
 
   const refreshConvos = useSelector((state: RootState) => state.refresh.refresh);
   const dispatch = useDispatch();
@@ -78,6 +79,15 @@ export default function Page(props: any) {
     fetchChatGroups();
   }, [props.params.id, refresh, refreshNotifs, refreshStatus]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRemainingDuration(prevDuration => prevDuration - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   const handleToggleSettings = (index: any) => {
     const newMemberSettings = [...memberSettings];
     if (memberSettings[index] === true) {
@@ -90,12 +100,17 @@ export default function Page(props: any) {
     setMemberSettings(newMemberSettings);
   };
 
-  function handleChannelCommands(arg: string, data: any, index: any) {
+  function handleChannelCommands(arg: string, data: any, index: any, duration:string) {
+    console.log("wach hadi hya li kadkhol liha ???");
+    
     socket?.emit(arg, {
+      username: userData.username,
       message: "",
       userId: userData.id,
+      target_username: data.username,
       target: data.id,
-      roomId: groupData?.id
+      roomId: groupData?.id,
+      duration: duration
     })
     handleToggleSettings(index);
   }
@@ -109,6 +124,7 @@ export default function Page(props: any) {
     });
     socket?.on("refresh", (channelStatus: any) => {
       setRefresh(!refresh);
+      dispatch(setRefreshConvos(!refreshConvos))
       if (channelStatus) toast.success(`This channel has been set to ${channelStatus}`)
     });
 
@@ -174,7 +190,7 @@ export default function Page(props: any) {
 
   function setToPublic() {
     socket?.emit("setRoomToPublic", {
-      message: `announcement ${userData.id.split('-')[0]} has set this room to Public`,
+      message: `announcement ${userData.username} has set this room to Public`,
       roomId: groupData?.id,
       userId: userData.id,
     });
@@ -188,7 +204,7 @@ export default function Page(props: any) {
         return;
       }
         const data = {
-          message: `announcement ${userData.id.split('-')[0]} has set this room to Protected`,
+          message: `announcement ${userData.username} has set this room to Protected`,
           roomId: groupData?.id,
           userId: userData.id,
           password: Password
@@ -240,6 +256,14 @@ export default function Page(props: any) {
     dispatch(setRefreshConvos(!refreshConvos))
   }
   
+const Play = async (tar:string):Promise<void> => 
+  {
+    console.log("invite to play");
+    console.log(userData.id);
+    console.log(groupData.members[0].id);
+    await axios.post(`http://localhost:4000/user/sendPlayAgain`,{ sender: userData.id, target:tar}, { withCredentials: true });
+  }
+  
   useEffect(() => {
     const sendPlayRequest = async () => {
       if (clicked) {
@@ -256,15 +280,15 @@ export default function Page(props: any) {
   }, [clicked]);
 
 
-  const inviteToPlay = async (target:string) => {
-    try {
-      axios.post(
-        `http://localhost:4000/game/accept`, { myId: userData.id, target }, { withCredentials: true } );
-      setRefreshNoifications(!refreshNotifs);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  // const inviteToPlay = async (target:string) => {
+  //   try {
+  //     axios.post(
+  //       `http://localhost:4000/game/accept`, { myId: userData.id, target }, { withCredentials: true } );
+  //     setRefreshNoifications(!refreshNotifs);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
   
 
   if(groupData === 404){
@@ -272,21 +296,9 @@ export default function Page(props: any) {
   }
 
   return (
-    // (groupData === 404) ?
-    
-    //   <div className='absolute w-screen h-screen bg-black z-[2000] flex justify-center items-center'>
-    //     <div className='flex flex-col gap-4'>
-    //       <div className='flex justify-center items-center gap-4'>
-    //         <div className='text-white border-r-[0.5px] border-white px-4  py-2 text-[25px]'>404 </div>
-    //         <div className='text-white'>This page could not be found.</div>
-    //       </div>
-    //       <div className='flex justify-center items-center gap-4'>
-    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Profile'}>Home page</Link>
-    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white  hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Chat'}>Chat</Link>
-    //       </div>
-    //     </div>
-    //   </div>
-    ((groupData.type === "DM" && isLoading) ?
+    groupData === 404 ? <NotUser />
+
+    :((groupData.type === "DM" && isLoading) ?
 
       (
         <div className='h-screen w-full flex flex-1 relative z-10'>
@@ -300,17 +312,19 @@ export default function Page(props: any) {
               {DMsSettings &&
               <>
                 {(blockType !== "friends") ?
-                    <div className='rounded-[20px] w-[200px] h-[70px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
-                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
+                  <div className='rounded-[20px] w-[200px] h-[70px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
+                      <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
+                  </div>
+                  :
+                  ( 
+                    <div className='rounded-[20px] w-[200px] h-[140px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
+                      <Link href="../Play">
+                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px] '  onClick={() => Play(groupData.members[0].id)}>Invite to Play</button>
+                      </Link>
+                      <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
                     </div>
-                    :
-                    ( 
-                      <div className='rounded-[20px] w-[200px] h-[140px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
-                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px] '  onClick={() => setIsclicked(true)}>Invite to Play</button>
-                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
-                      </div>
-                    )
-              }
+                  )
+                }
               </>
               }
             </div>
@@ -511,7 +525,7 @@ export default function Page(props: any) {
               {(isMuted > 0) ?
                 (
                   <div className='sendBox flex justify-between items-center w-full h-[100px] absolute bottom-0 border-t-[2px] bg-opacity-[52%] overflow-hidden'>
-                    <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%] cursor-not-allowed outline-none' type="search" placeholder='you are muted' readOnly value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
+                    <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%] cursor-not-allowed outline-none' type="search" placeholder={`you are muted for ${remainingDuration}`} readOnly value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
                     <div className='flex justify-center w-[50px] h-[50px] bg-[#000000] bg-opacity-[24%] mr-[10px] ml-[10px] rounded-[25px]'> <button className='mr-[4px] cursor-not-allowed'> <img src="/send.svg" alt="/send.svg" onClick={sendMessage} /> </button> </div>
                   </div>
                 )
@@ -573,26 +587,26 @@ export default function Page(props: any) {
                                         {((groupData?.owner === userData.id) || (checkIfAdmin(userData.id))) ?
                                           <>
                                             {checkIfUserMuted(groupData?.members[index].id) ?
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("unmute", groupData?.members[index], index) }}>unmute</div>
+                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("unmute", groupData?.members[index], index, "") }}>unmute</div>
                                               :
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("mute", groupData?.members[index], index) }}>mute</div>
+                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("mute", groupData?.members[index], index, "60") }}>mute for 1m</div>
                                             }
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("kick", groupData?.members[index], index) }}>kick</div>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("ban", groupData?.members[index], index) }}>ban</div>
+                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("kick", groupData?.members[index], index, "") }}>kick</div>
+                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("ban", groupData?.members[index], index, "") }}>ban</div>
                                             {groupData?.owner === userData.id && (
                                               checkIfAdmin(groupData?.members[index].id) ?
-                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("removeAdmin", groupData?.members[index], index) }}>remove admin</div>
+                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("removeAdmin", groupData?.members[index], index, "") }}>remove admin</div>
                                                 :
-                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData?.members[index], index) }}>make admin</div>
+                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData?.members[index], index, "") }}>make admin</div>
                                             )
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
@@ -602,7 +616,7 @@ export default function Page(props: any) {
                                       (
                                         <div className='font-semibold absolute right-12 top-4 bg-[#e6ebfe] flex flex-col border-[1px] rounded-[10px] p-1 z-[1000]'>
                                           <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                          <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                          <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
                                         </div>
                                       )
                                       :
@@ -610,24 +624,24 @@ export default function Page(props: any) {
                                         {((groupData.owner === userData.id) || (checkIfAdmin(userData.id))) ?
                                           <>
                                             {checkIfUserMuted(groupData.members[index].id) ?
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("unmute", groupData.members[index], index) }}>unmute</div>
+                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("unmute", groupData.members[index], index, "") }}>unmute</div>
                                               :
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("mute", groupData.members[index], index) }}>mute</div>
+                                                <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("mute", groupData?.members[index], index, "60") }}>mute for 1m</div>
                                             }
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("kick", groupData.members[index], index) }}>kick</div>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("ban", groupData?.members[index], index) }}>ban</div>
+                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("kick", groupData.members[index], index, "" )}}>kick</div>
+                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("ban", groupData?.members[index], index, "") }}>ban</div>
                                             {checkIfAdmin(groupData.members[index].id) ?
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("removeAdmin", groupData.members[index], index) }}>remove admin</div>
+                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("removeAdmin", groupData.members[index], index, "")}}>remove admin</div>
                                               :
-                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData.members[index], index) }}>make admin</div>
+                                              <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData.members[index], index, "")}}>make admin</div>
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
@@ -851,7 +865,7 @@ export default function Page(props: any) {
 
 //   function setToPublic() {
 //     socket?.emit("setRoomToPublic", {
-//       message: `announcement ${userData.id.split('-')[0]} has set this room to Public`,
+//       message: `announcement ${userData.username} has set this room to Public`,
 //       roomId: groupData?.id,
 //       userId: userData.id,
 //     });
@@ -863,7 +877,7 @@ export default function Page(props: any) {
 //       return;
 //     }
 //     socket?.emit("setRoomToProtected", {
-//       message: `announcement ${userData.id.split('-')[0]} has set this room to Protected`,
+//       message: `announcement ${userData.username} has set this room to Protected`,
 //       roomId: groupData?.id,
 //       userId: userData.id,
 //       password: Password
@@ -1107,7 +1121,7 @@ export default function Page(props: any) {
 //               {(isMuted > 0) ?
 //                 (
 //                   <div className='sendBox flex justify-between items-center w-full h-[100px] absolute bottom-0 border-t-[2px] bg-opacity-[52%] overflow-hidden'>
-//                     <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%] cursor-not-allowed outline-none' type="search" placeholder='you are muted' readOnly value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
+//                     <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%] cursor-not-allowed outline-none' type="search" placeholder={`you are muted for ${remainingDuration}`} readOnly value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
 //                     <div className='flex justify-center w-[50px] h-[50px] bg-[#000000] bg-opacity-[24%] mr-[10px] ml-[10px] rounded-[25px]'> <button className='mr-[4px] cursor-not-allowed'> <img src="/send.svg" alt="/send.svg" onClick={sendMessage} /> </button> </div>
 //                   </div>
 //                 )

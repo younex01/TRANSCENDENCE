@@ -62,7 +62,6 @@ export default function createGroupChat(props: any) {
             name: channelName,
             avatar: backEndImagePath.data,
             status: "Private",
-            password: channelPassWord,
             owner: userData.id,
             addingToPrivateRoomList
           };
@@ -162,7 +161,9 @@ export default function createGroupChat(props: any) {
               <div className='text-[#d7d7d7] myfont text-[29px]'>Channel Profile Picture</div>
               <div className='h-[100px] w-[100px] rounded-[50px] border-[1px] border-color1 flex items-center justify-center relative bg-slate-600 group'>
                 <img className='h-[100px] w-[100px] rounded-[50px] border-[1px] border-color1 absolute object-cover' src={photoPath} alt='' />
-                <input className='h-[100px] w-[100px] rounded-[50px] absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" />
+                <input className='h-[100px] w-[100px] rounded-[50px] absolute opacity-0 z-10 cursor-pointer'
+                  accept="image/*"
+                  onChange={handleFileChange} type="file" />
                 <div className='h-[100px] w-[100px] rounded-[50px] absolute hidden group-hover:flex items-center justify-center text-center bg-slate-600/50 text-white tracking-wider'>Selected Profile</div>
               </div>
             </div>

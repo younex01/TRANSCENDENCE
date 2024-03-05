@@ -1,8 +1,8 @@
 import { SubscribeMessage, WebSocketGateway, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { ChatService } from './chat.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import * as bcrypt from 'bcrypt';
 
 @WebSocketGateway(
   {
@@ -36,7 +36,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
     const groupData = await this.chatService.getRoom(payload.groupId);
-    if (payload.password && payload.password !== groupData.password) {
+    console.log("await bcrypt.compare(payload.password, groupData.password)", await bcrypt.compare(payload.password, groupData.password));
+    if (!await bcrypt.compare(payload.password, groupData.password)) {
+      console.log("tfwtf wach makaydkholch ???");
+      
       client.emit("joinFailed", "Wrong Password");
       return;
     }
@@ -60,8 +63,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload: any) {
+    console.log("payload.username", payload.duration);
+    console.log("payload.username", payload);
+    
+    
     payload.message = `announcement ${payload.username} has muted ${payload.target_username}`
-    await this.chatService.MuteUserFromRoom(payload.target, payload.roomId)
+    await this.chatService.MuteUserFromRoom(`${payload.target} + ${payload.duration}`, payload.roomId)
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
   }
@@ -141,30 +148,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       })
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

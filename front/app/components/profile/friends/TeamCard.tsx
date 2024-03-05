@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image"; // Make sure to import your image component/library
-import {
-  selectFreindInfo,
-  selectFreindRequestInfo,
-} from "../../../../redux/features/freinds/requestSlice";
+import { selectFreindInfo, selectFreindRequestInfo }
+from "../../../../redux/features/freinds/requestSlice";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import axios from "axios";
@@ -24,7 +22,8 @@ const TeamCard = ({
   fname: string;
   status: string;
 }) => {
-  
+
+
   const myData = useSelector(selectProfileInfo);
 
   const [groupId, setGroupId] = useState<any>();
@@ -52,6 +51,12 @@ const TeamCard = ({
     fetchData();
   }, [myData.id, userId]);
 
+  const Play = async (tar: string): Promise<void> => {
+    console.log("invite to play", tar);
+    // console.log(userData.id);
+    // console.log(groupData.members[0].id);
+    await axios.post(`http://localhost:4000/user/sendPlayAgain`, { sender: myData.id, target: tar }, { withCredentials: true });
+  }
   return (
     <div className="w-[80%] lg:w-[98%] flex flex-col justify-evenly items-center h-[85%] rounded-[30px] bg-[#f5f7ff] relative overflow-hidden ">
       <div className="flex flex-col gap-[8px] items-center">
@@ -80,37 +85,40 @@ const TeamCard = ({
       </div>
       {!isMyId && isFriend ? (
         <div className="w-full flex justify-center items-center gap-[16px] ">
-          <button className=" rounded-[10px] cursor-pointer w-[60%] bg-[#d3dafb] h-[40px] flex flex-row-reverse items-center justify-center gap-[8px] hover:bg-[#c3cdfb]">
-            <div className="">
-              <p className="text-[#252f5b] text-[14px] font-semibold">
-                Lets Play
-              </p>
-            </div>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 38 36"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="Group 88">
-                <path
-                  id="Union"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M17.4827 3.16998V0.169983H14.4827H10.862C7.99126 0.169983 5.3193 0.970635 3.37028 2.91966C1.42126 4.86868 0.620605 7.54063 0.620605 10.4114V23.6872C0.620605 26.558 1.42126 29.2299 3.37028 31.1789C5.3193 33.128 7.99126 33.9286 10.862 33.9286H14.4827H17.4827V30.9286V3.16998ZM3.62061 10.4114C3.62061 5.74551 6.19613 3.16998 10.862 3.16998H11.4827H14.4827V6.16998V27.9286V30.9286H11.4827H10.862C6.19613 30.9286 3.62061 28.3531 3.62061 23.6872V10.4114ZM9.05164 14.0321C10.718 14.0321 12.0689 12.6812 12.0689 11.0148C12.0689 9.34843 10.718 7.99757 9.05164 7.99757C7.38526 7.99757 6.0344 9.34843 6.0344 11.0148C6.0344 12.6812 7.38526 14.0321 9.05164 14.0321Z"
-                  fill="#252f5b"
-                />
-                <path
-                  id="Subtract"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M20.4829 0.169983L20.4829 35.17H27.2415C30.0247 35.17 32.6849 34.3369 34.6434 32.2385C36.6019 30.1401 37.3795 27.2899 37.3795 24.3079L37.3795 11.0321C37.3795 8.05006 36.6019 5.19984 34.6434 3.10145C32.6849 1.00307 30.0247 0.169983 27.2415 0.169983H20.4829ZM28.3277 15.8596C26.6614 15.8596 25.3105 17.2105 25.3105 18.8769C25.3105 20.5433 26.6614 21.8941 28.3277 21.8941C29.9941 21.8941 31.345 20.5433 31.345 18.8769C31.345 17.2105 29.9941 15.8596 28.3277 15.8596Z"
-                  fill="#252f5b"
-                />
-              </g>
-            </svg>
-          </button>
+          <Link href="../../Play " className=" w-[60%]">
+
+            <button className=" rounded-[10px] cursor-pointer w-[100%] bg-[#d3dafb] h-[40px] flex flex-row-reverse items-center justify-center gap-[8px] hover:bg-[#c3cdfb]" onClick={() => Play(userId)}>
+              <div className="">
+                <p className="text-[#252f5b] text-[14px] font-semibold">
+                  Lets Play
+                </p>
+              </div>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 38 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="Group 88">
+                  <path
+                    id="Union"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M17.4827 3.16998V0.169983H14.4827H10.862C7.99126 0.169983 5.3193 0.970635 3.37028 2.91966C1.42126 4.86868 0.620605 7.54063 0.620605 10.4114V23.6872C0.620605 26.558 1.42126 29.2299 3.37028 31.1789C5.3193 33.128 7.99126 33.9286 10.862 33.9286H14.4827H17.4827V30.9286V3.16998ZM3.62061 10.4114C3.62061 5.74551 6.19613 3.16998 10.862 3.16998H11.4827H14.4827V6.16998V27.9286V30.9286H11.4827H10.862C6.19613 30.9286 3.62061 28.3531 3.62061 23.6872V10.4114ZM9.05164 14.0321C10.718 14.0321 12.0689 12.6812 12.0689 11.0148C12.0689 9.34843 10.718 7.99757 9.05164 7.99757C7.38526 7.99757 6.0344 9.34843 6.0344 11.0148C6.0344 12.6812 7.38526 14.0321 9.05164 14.0321Z"
+                    fill="#252f5b"
+                  />
+                  <path
+                    id="Subtract"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M20.4829 0.169983L20.4829 35.17H27.2415C30.0247 35.17 32.6849 34.3369 34.6434 32.2385C36.6019 30.1401 37.3795 27.2899 37.3795 24.3079L37.3795 11.0321C37.3795 8.05006 36.6019 5.19984 34.6434 3.10145C32.6849 1.00307 30.0247 0.169983 27.2415 0.169983H20.4829ZM28.3277 15.8596C26.6614 15.8596 25.3105 17.2105 25.3105 18.8769C25.3105 20.5433 26.6614 21.8941 28.3277 21.8941C29.9941 21.8941 31.345 20.5433 31.345 18.8769C31.345 17.2105 29.9941 15.8596 28.3277 15.8596Z"
+                    fill="#252f5b"
+                  />
+                </g>
+              </svg>
+            </button>
+          </Link>
 
           <Link
             className="rounded-[10px] cursor-pointer w-[16%] bg-[#d3dafb] h-[40px] flex  items-center justify-center hover:bg-[#c3cdfb] "
@@ -131,8 +139,8 @@ const TeamCard = ({
           </Link>
         </div>
       )
-    : null
-    }
+        : null
+      }
     </div>
   );
 };

@@ -33,6 +33,9 @@ export interface Player {
     height: number;
     name: string;
     giveUp: boolean;
+    db_id: string;
+    pic:string;
+    g_id:string;
 }
 
 export interface Game{

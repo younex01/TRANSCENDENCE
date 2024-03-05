@@ -6,6 +6,7 @@ import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import Image from 'next/image';
+import { io } from 'socket.io-client';
 
 export default function SearchPanel() {
 
@@ -18,6 +19,7 @@ export default function SearchPanel() {
   const [allUsers, setAllUsers] = useState([])
   const [refreshNotifs, setRefreshNoifications] = useState<boolean>()
   const [myNotification, setMyNotifications] = useState<[]>();
+  const [invitToPlay, setInvitToPlay] = useState<[]>();
 
   useEffect(() => {
     const getUsers = async (searchForUser: string) => {
@@ -40,7 +42,8 @@ export default function SearchPanel() {
     const getMyNotifications = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
-        // const notifications = await axios.get(`http://localhost:4000/game/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
+        console.log("notification");
+        console.log(notifications.data);
         setMyNotifications(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -48,6 +51,21 @@ export default function SearchPanel() {
     };
 
     getMyNotifications();
+  }, [refreshNotifs]);
+
+  useEffect(() => {
+    const getInviteToPlay = async () => {
+      try {
+        const notifications = await axios.get(`http://localhost:4000/user/getInviteToPlay?userId=${myData.id}`, { withCredentials: true });
+        console.log("notification");
+        console.log(notifications.data);
+        setInvitToPlay(notifications.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    getInviteToPlay();
   }, [refreshNotifs]);
 
   useEffect(() => {
@@ -68,9 +86,43 @@ export default function SearchPanel() {
     }
   }
 
+
   const declineFriendRequest = async (notif: any) => {
     try {
       axios.post(`http://localhost:4000/user/declineFriendRequest`, { notif, myId: myData.id }, { withCredentials: true });
+      setRefreshNoifications(!refreshNotifs);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+
+  const acceptInvitToPlay = async (notif: any) => {
+    try {
+      axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
+      setRefreshNoifications(!refreshNotifs);
+      console.log("Notif", notif.senderId, "Myid", myData.id);
+
+      const socket = io('http://localhost:3002', {
+        query: {
+          token: "token",
+          id: myData.id
+        }
+      });
+      // Emit an event with data to the backend gateway
+      socket.emit('accepted_request', { key: myData.id, value: notif.senderId });
+      console.log("accepted request");
+      //socket.close();
+
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+
+  const declineInvitToPlay = async (notif: any) => {
+    try {
+      axios.post(`http://localhost:4000/user/declineInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -104,12 +156,12 @@ export default function SearchPanel() {
               <Link href={`/Profile/${user.id}`} key={index} >
                 <div className='flex justify-start items-center  rounded-[14px]  bg-[#f3f5ff] hover:bg-[#e9edff] h-[90px] gap-2 p-2 md:p-4 cursor-pointer'>
                   <div className='min-h-[70px] min-w-[70px] relative'>
-                    <Image 
-                          src={`${user.avatar}`}
-                          alt={`${user.avatar}`}
-                          fill={true}
-                          className='rounded-full object-cover' />
-                    </div>
+                    <Image
+                      src={`${user.avatar}`}
+                      alt={`${user.avatar}`}
+                      fill={true}
+                      className='rounded-full object-cover' />
+                  </div>
                   <div>
                     <div className='font-semibold  text-[#252f5b] text-[12px] md:text-[16px]'>{user.firstName} {user.lastName}</div>
                     <div className="text-[10px] md:text-[14px] text-[#7d84a3]">{user.username}</div>
@@ -125,8 +177,43 @@ export default function SearchPanel() {
       <div className='notifications relative bg-white p-2 rounded-lg'>
         <img src="../../../images/Bell.svg" alt="../../../images/Bell.svg" className='w-8 h-8' onClick={() => { setIsClicked(!isClicked); setRefreshNoifications(!refreshNotifs) }} />
         {isClicked && (
-          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[0.5px]'>
-            {myNotification && myNotification.reverse().map((notif: any, index: any) =>
+          <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[2px]'>
+            {invitToPlay && invitToPlay.map((notif: any, index: any) =>
+              <>
+                {notif.status === "Pending" ? (
+                  <>
+
+                    {notif.receiverId === myData.id && (
+                      <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
+                        <div className=' flex  p-3  gap-4' >
+                          <div className='relative h-[50px] w-[50px]'>
+                            <div className=' h-[50px] w-[50px] rounded-full overflow-hidden'>
+                              <img className='h-full w-full object-cover' src={`${notif.sender.avatar}`} alt={`${notif.sender.avatar}`} />
+                            </div>
+                            {/* <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
+                              <img className='h-[9px] w-[9px]' src="vector.svg" alt="vector.svg" />
+                            </div> */}
+                          </div>
+                          <div className='flex flex-col '>
+                            <div className='font-bold text-[#452975]'>Let's Play</div>
+                            <div className='text-[15px]'>{notif.sender.firstName} {notif.sender.lastName}</div>
+                          </div>
+                        </div>
+                        <div className='flex flex-col sm:flex-row gap-1 pr-3'>
+                          <Link href="../Play">
+                            <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-white  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#7449c0] bg-[#7239D3]' onClick={() => acceptInvitToPlay(notif)}>accept</button>
+                          </Link>
+                          <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-[#452b72]  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#d9d8db]  bg-[#e5e2e9]' onClick={() => declineInvitToPlay(notif)}>decline</button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : false}
+              </>
+            )}
+            {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+
+            {myNotification && myNotification.map((notif: any, index: any) =>
               <>
                 {notif.status === "Pending" ? (
                   <>
@@ -194,7 +281,7 @@ export default function SearchPanel() {
                               </div>
                             </div>
                             <div className='flex flex-col '>
-                              <div className='font-bold text-[#452975]'>Your friend request have been Declined:</div>
+                              <div className='font-bold text-[#452975]'>Your friend request has been Declined:</div>
                               <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
                             </div>
                           </div>
@@ -223,7 +310,7 @@ export default function SearchPanel() {
                                 <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
                               </div>
                             </div>
-                            <div className='absolute right-2 bottom-1 flex flex-col text-[10px]'> {new Date(notif.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+                            <div className='absolute right-2 bottom-1 flex flex-col text-[10px]'> {new Date(notif.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
 
                           </div>
                         </>
@@ -236,8 +323,8 @@ export default function SearchPanel() {
             )}
           </div>
         )}
-        </div>
-      {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+        {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+      </div>
     </div>
   )
 }

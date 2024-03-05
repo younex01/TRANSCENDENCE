@@ -10,10 +10,6 @@ export class ChatService {
     return this.prisma.chatGroup.create({ data: chatGroup });
   }
 
-  async createUser(user: any) {
-    return this.prisma.user.create({ data: user });
-  }
-  
   async roomNameCheck(roomName:string) {
     return this.prisma.chatGroup.count({
       where : {name:roomName}
@@ -155,8 +151,10 @@ export class ChatService {
   }
 
   async checkIfMuted(userId: string, roomId: string) {
+    console.log("yarbi tkhdem hh : ", userId);
+    
     return this.prisma.chatGroup.count({
-      where: { id: roomId, mutedUsers: { has: userId } },
+      where: { id: roomId, mutedUsers: { has: userId.split(" ")[0] } },
     });
   }
 
@@ -192,14 +190,16 @@ export class ChatService {
 
   async MuteUserFromRoom(userId: string, roomId: string) {
 
+    console.log("userId", userId);
+    
     const room = await this.getGroupWithMembers(roomId);
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId.split(" ")[0]);
 
     if (!room || !user) return;
     const userIndex = room.members.findIndex((member) => member.id === user.id);
 
     if (userIndex === -1) return;
-    if (await this.checkIfMuted(userId, roomId) < 1) {
+    if (await this.checkIfMuted(userId.split(" ")[0], roomId) < 1) {
       return this.prisma.chatGroup.update({
         where: { id: roomId },
         data: {
@@ -223,7 +223,7 @@ export class ChatService {
 
     if (userIndex === -1) return;
 
-    const newMutedList = room.mutedUsers.filter((user) => user != userId);
+    const newMutedList = room.mutedUsers.filter((user) => user.split(" ")[0] != userId);
 
     return this.prisma.chatGroup.update({
       where: { id: roomId },

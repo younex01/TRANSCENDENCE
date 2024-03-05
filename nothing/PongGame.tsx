@@ -82,7 +82,7 @@ const PongGame = () => {
         const rn = Math.random();
         let randomNumber = Math.random();
         let result = randomNumber < 0.5 ? -1 : 1;
-        setBall({x: canvas.width / 2, y: canvas.height / 2, radius: 15,speed: 0.9, velocityX:( 5 + rn) * result , velocityY: 10 * result , color: "WHITE"})
+        setBall({x: canvas.width / 2, y: canvas.height / 2, radius: 15,speed: 0.6, velocityX:( 5 + rn) * result , velocityY: 10 * result , color: "WHITE"})
         setPlayer({x: 0, y: canvas.height / 2 - 50, width: 20, height: 100, color: "WHITE", score:0 })
         setComputer({x: canvas.width - 20, y: canvas.height / 2 - 50, width: 20, height: 100, color: "WHITE", score:0 })
       }
@@ -230,7 +230,7 @@ const PongGame = () => {
     {
       ball.x = canvas?.width / 2;
       ball.y = canvas.height / 2;
-      ball.speed = 0.9;
+      ball.speed = 0.6;
       const random = Math.random();
       let randomNumber = Math.random();
       let result = randomNumber < 0.5 ? -1 : 1;
@@ -287,7 +287,7 @@ const PongGame = () => {
         else
           ball.velocityX = -1 * Math.abs(ball.velocityX);
         //increse speed
-        ball.speed += 0.1;
+        // ball.speed += 0.1;
       }
       ComputerMovement()
       if (ball.x - ball.radius <  0)
@@ -360,6 +360,7 @@ const PongGame = () => {
                 id="pong"
                 height="450"
                 width="900"
+                // style={{ width: "100vmin", height: "55vmin" }}
                 className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
               >
               </canvas>}
