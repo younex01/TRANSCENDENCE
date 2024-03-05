@@ -11,7 +11,6 @@ export class GameService {
     private bSide: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
     private pSide: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
     eventService: any;
-  jwtService: any;
 
     constructor(
       private readonly userService: UserService,
@@ -19,17 +18,18 @@ export class GameService {
     ) {}
 
     async addGameResult(players:Player[],userId:string,result:boolean){
-      // const existingGameResult = await this.prisma.gameResult.findFirst({
+
+      // this.prisma.inviteToPlay.deleteMany({
       //   where: {
-      //     userId,
+      //     senderId: players[0].db_id,
+      //     receiverId: players[1].db_id,
       //   },
       // });
+
   
-      // if (existingGameResult) {
-      //   // Game result already exists for this user
-      //   return existingGameResult;
-      // } else {
         // Game result does not exist, create a new one
+        if (!players[1].pic || !players[0].pic)
+          return;
         return this.prisma.gameResult.create({
           data: {
             opponent_pic: players[1].pic,
@@ -39,9 +39,77 @@ export class GameService {
             userId,
           },
         });
-      // }
+
     }
+
+    async test2(games :Game[] ,id:string):Promise<number>{
+
+      for (let i =0; i< games.length; i++)
+      {
+        const friendRequest = await this.prisma.friendRequest.findFirst({
+          where: {
+            senderId: id,
+            receiverId: games[i].players[0].db_id
+          }
+        });
+        if(friendRequest && friendRequest.status === "Accepted")
+          return (i);
+      }
+        return -1;
+    }
+    async test(games :Game ,id:string):Promise<boolean>{
+      const friendRequest = await this.prisma.friendRequest.findFirst({
+        where: {
+          senderId: id,
+          receiverId: games.players[0].db_id
+        }
+      });
+      if(friendRequest)
+        return (friendRequest.status === "Accepted");
+      else
+        return false;
+    }
+
+    findIndexBySenderId(games :Game[],id:string, map:Map<string,string>):number
+    {
+      let result : number = -1;
+      for(let i = 0; i < games.length;i++)
+      {
+        console.log(games[i].players[0],id,map);
+        if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
+        {
+          map.delete(id);
+          console.log("i",i);
+          result = i;
+          break;
+        }
+      }
+      return result;
+    }
+
+    async getReceiverIdBySenderId(senderId: string,player:Player[],opponents:string[]):Promise<void> {
+      console.log(senderId);
+      try {
+        const invite = await this.prisma.inviteToPlay.findFirst({
+          where: {
+            senderId: senderId
+          }
+        });
     
+        if (invite) {
+          console.log(invite.receiverId)
+          player[0].opponent_id = invite.receiverId;
+          opponents.push(invite.receiverId);
+        } else {
+          console.log('No invite found for senderId:', senderId);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error retrieving receiverId:', error);
+        return null;
+      }
+    }
+
     //fix the movement in the the player if we replay the game
     checkWinner(players: Player[],rooms:{[roomId: string]: string[];}, roomId: string, server: Server): boolean{
       if (!players[0] || !players[1])
@@ -49,7 +117,7 @@ export class GameService {
       if (players[0].score >= 5)
       {
         server.to(roomId).emit("winner",players[0].name);
-        this.addGameResult(players, players[0].db_id,true);
+        this.addGameResult(players, players[0].db_id,false);
         // players[0].score = 0;
         // players[1].score = 0;
         return true;
@@ -93,7 +161,7 @@ export class GameService {
         this.bSide.top < this.pSide.bottom
         );
     }
-    
+
     handleArrowMove(data: string, socketId: string, players: Player[]): void {
       if (data === "up") {
         if (socketId === players[0].id) {
@@ -102,9 +170,6 @@ export class GameService {
           players[1].y += 20;
         }
       } else if (data === "down") {
-        console.log(players[0].y);
-        if(players[0].y >= 450 || players[1].y >= 450)
-          return;
         if (socketId === players[0].id) {
           players[0].y -= 20;
         } else {
@@ -112,7 +177,7 @@ export class GameService {
         }
       }
     }
-  
+
     handleMouseMove(data: number, socketId: string, players: Player[]): void {
       if (!players[0])
         return;
@@ -139,50 +204,92 @@ export class GameService {
       }
     }
 
-    deletePlayerFromPlayers(players: {[id:number]: Player[]},id:string):{[id:number]: Player[]}
-    {
-      const indexs = Object.keys(players);
+    async removeInviteToPlay(players: Player[]){
+      try {
+        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
+          where: {
+            senderId: players[0].db_id,
+            receiverId: players[0].opponent_id,
+          },
+        });
 
-      for(let i = 0; i < indexs.length;i++)
-      {
-          if(players[indexs[i]].length == 1 && players[indexs[i]][0].id == id)
-              delete players[indexs[i]];    
-          else if(players[indexs[i]].length == 2)
-          {
-            if(players[indexs[i]][0].id == id)
-              delete players[indexs[i]];
-            else if(players[indexs[i]][1].id == id)
-              delete players[indexs[i]];
-          }
+        if (deletedInvite) {
+          console.log("Invite removed successfully");
+        }
+        
+      } catch (error) {
+        console.error("Error removing invite:", error);
+        // Handle error appropriately
       }
-      const index = Object.keys(players);
-      if(index[0] !== '0')
-      {
-          let new_players : { [id: string]: Player[] } = {};
-          for (let i =0; i < index.length; i++)
-          {
-                new_players[i.toString()] = players[index[i]];
-          }
-          return (new_players);
+    }
+
+    async removeInviteToPlay1(i: number, players: Player[]){
+      try {
+        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
+          where: {
+            senderId: players[0].db_id,
+            receiverId: players[1].db_id,
+          },
+        });
+        
+        // If no invite was found based on the first combination, try the second combination
+        if (!deletedInvite.count) {
+          await this.prisma.inviteToPlay.deleteMany({
+            where: {
+              senderId: players[1].db_id,
+              receiverId: players[0].db_id,
+            },
+          });
+        }
+        
+        console.log("Invite removed successfully");
+      } catch (error) {
+        console.error("Error removing invite:", error);
+        // Handle error appropriately
       }
-      return players;
+    }
+    async removeInviteToPlay2(i: number, players: Player[]){
+      try {
+        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
+          where: {
+            senderId: players[1].db_id,
+            receiverId: players[0].db_id,
+          },
+        });
+        
+        // If no invite was found based on the first combination, try the second combination
+        if (!deletedInvite.count) {
+          await this.prisma.inviteToPlay.deleteMany({
+            where: {
+              senderId: players[0].db_id,
+              receiverId: players[1].db_id,
+            },
+          });
+        }
+        
+        console.log("Invite removed successfully");
+      } catch (error) {
+        console.error("Error removing invite:", error);
+        // Handle error appropriately
+      }
     }
 
     removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
-      let check:number = 0;
-      console.log("here");
+
+      
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
         if (game[i].players.length === 2)
         {
-          if (game[i].players[0].id == id || game[i].players[1].id == id)
+          if (game[i].players[0].id === id || game[i].players[1].id === id)
           {
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
+              console.log("this player is give up the game");
               //this player is give up the game
               const roomId = Object.keys(game[i].rooms);
               if (game[i].players[0].id === id)
@@ -199,31 +306,26 @@ export class GameService {
               }
             }
             game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
-            // if(gameId > -1)
-            //   gameId--;
+            gameId--;
             game.splice(i, 1);
-            // check++;
             break;
           }
+          // this.removeInviteToPlay1(i,game);
+          // this.removeInviteToPlay2(i,game);
         }
         else
         {
           //check if the room of the game has the id and the lenght is 1 if that is true remove the game
           if (game[i].players[0].id === id && game[i].players.length == 1)
           {
+            // this.removeInviteToPlay1(i,game);
+            // this.removeInviteToPlay2(i,game);
             game.splice(i, 1);
-            // if(gameId > -1)
-            //   gameId--;
-            // check++;
             break;
+
           }
-        } 
+        }
       }
-      for(let i =0;i< game.length;i++)
-      {
-        game[i].nb = i;
-      }
-      gameId = game.length - 1;
       return gameId;
   }
 
@@ -236,54 +338,49 @@ export class GameService {
   startTheGame(players: Player[], rooms: {[roomId: string]: string[]}, roomId: string, server: Server, ball: Ball, canvas: Canvas) {
     // ball.x = canvas.width / 2;
     // ball.y = canvas.height / 2;
-    
+    // this.removeInviteToPlay1(0,players);
+    // this.removeInviteToPlay2(0,players);
     const intervalId = setInterval(async () => {
-      
 
-      if (canvas)
-      {
-        if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
-          clearInterval(intervalId);
-          //close socket
-        }
-        
-
-        // Emit game update to clients
-        const gameData = {
-          ball,
-          players,
-        };
-        server.to(roomId).emit('update', gameData);
-
-        // Update ball position
-        ball.x += ball.velocityX * ball.speed;
-        ball.y += ball.velocityY * ball.speed;
-
-        // Handle ball collisions with canvas boundaries
-        if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-          ball.velocityY = -ball.velocityY;
-        }
-        
-        // Handle ball collisions with players
-        let collisionResult = this.collision(ball, canvas, players);
-        if (collisionResult) {
-          if (ball.x < canvas.width / 2)
-            ball.velocityX = Math.abs(ball.velocityX);
-          else
-            ball.velocityX = -1 * Math.abs(ball.velocityX);
-        }
-        if (players[0] && players[1])
-        {
-          // Handle scoring
-          if (ball.x - ball.radius < 0) {
-            players[1].score++;
-            this.resetBall(ball, canvas);
-          } else if (ball.x + ball.radius > 900) {
-            players[0].score++;
-            this.resetBall(ball, canvas);
-          }
-        }
+      if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
+        clearInterval(intervalId);
       }
+
+      // Emit game update to clients
+      const gameData = {
+        ball,
+        players,
+      };
+      server.to(roomId).emit('update', gameData);
+
+      // Update ball position
+      ball.x += ball.velocityX * ball.speed;
+      ball.y += ball.velocityY * ball.speed;
+
+      // Handle ball collisions with canvas boundaries
+      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+        ball.velocityY = -ball.velocityY;
+      }
+
+      // Handle ball collisions with players
+      let collisionResult = this.collision(ball, canvas, players);
+      if (collisionResult) {
+        if (ball.x < canvas.width / 2)
+          ball.velocityX = Math.abs(ball.velocityX);
+        else
+          ball.velocityX = -1 * Math.abs(ball.velocityX);
+      }
+       if (players[0] && players[1])
+       {
+         // Handle scoring
+         if (ball.x - ball.radius < 0) {
+           players[1].score++;
+           this.resetBall(ball, canvas);
+         } else if (ball.x + ball.radius > 900) {
+           players[0].score++;
+           this.resetBall(ball, canvas);
+         }
+       }
 
     }, 1000 / 60);
   }
@@ -293,7 +390,7 @@ export class GameService {
     players[0].score = 0;
     players[1].score = 0;
   }
-  
+
   findNbById(game: Game[], id: string) 
   {
 
@@ -310,8 +407,6 @@ export class GameService {
   {
     for(let game of games)
     {
-      if (!game.players)
-        return;
       if (game.players.length == 2)
       {
         if(game.players[0].id == socket_id)
@@ -341,19 +436,4 @@ export class GameService {
       }
     }
   }
-
-
-
-  // public getUserInfosFromToken(token: string): any {
-  //   try {
-  //     const decoded = this.jwtService.decoded(token, {
-  //     secret: process.env.JWT_KEY,
-  //     });
-  //     return decoded;
-  //   } catch (error) {
-  //     console.error('JWT verification failed:', error.message);
-  //     return null;
-  //   }
-  // }
-
 }

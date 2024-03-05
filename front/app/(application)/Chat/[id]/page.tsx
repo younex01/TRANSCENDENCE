@@ -245,6 +245,17 @@ export default function Page(props: any) {
     dispatch(setRefreshConvos(!refreshConvos))
   }
   
+const Play = async (tar:string):Promise<void> => 
+  {
+    console.log("invite to play");
+    console.log(userData.id);
+    console.log(groupData.members[0].id);
+    await axios.post(
+      `http://localhost:4000/user/sendPlayAgain`,
+      { sender: userData.id, target:tar}, // to handel
+      { withCredentials: true });
+  }
+  
   useEffect(() => {
     const sendPlayRequest = async () => {
       if (clicked) {
@@ -261,15 +272,15 @@ export default function Page(props: any) {
   }, [clicked]);
 
 
-  const inviteToPlay = async (target:string) => {
-    try {
-      axios.post(
-        `http://localhost:4000/game/accept`, { myId: userData.id, target }, { withCredentials: true } );
-      setRefreshNoifications(!refreshNotifs);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  // const inviteToPlay = async (target:string) => {
+  //   try {
+  //     axios.post(
+  //       `http://localhost:4000/game/accept`, { myId: userData.id, target }, { withCredentials: true } );
+  //     setRefreshNoifications(!refreshNotifs);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
   
 
   if(groupData === 404){
@@ -277,21 +288,9 @@ export default function Page(props: any) {
   }
 
   return (
-    // (groupData === 404) ?
-    
-    //   <div className='absolute w-screen h-screen bg-black z-[2000] flex justify-center items-center'>
-    //     <div className='flex flex-col gap-4'>
-    //       <div className='flex justify-center items-center gap-4'>
-    //         <div className='text-white border-r-[0.5px] border-white px-4  py-2 text-[25px]'>404 </div>
-    //         <div className='text-white'>This page could not be found.</div>
-    //       </div>
-    //       <div className='flex justify-center items-center gap-4'>
-    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Profile'}>Home page</Link>
-    //           <Link className='w-[120px] h-[50px] bg-[#9a9b9e] hover:bg-white  hover:text-black rounded-[10px] flex justify-center items-center hover:font-bold' href={'/Chat'}>Chat</Link>
-    //       </div>
-    //     </div>
-    //   </div>
-    ((groupData.type === "DM" && isLoading) ?
+    groupData === 404 ? <NotUser />
+
+    :((groupData.type === "DM" && isLoading) ?
 
       (
         <div className='h-screen w-full flex flex-1 relative z-10'>
@@ -311,7 +310,9 @@ export default function Page(props: any) {
                     :
                     ( 
                       <div className='rounded-[20px] w-[200px] h-[140px] top-[90px] right-8 absolute mr-[10px] flex flex-col items-center justify-evenly border-[1px] bg-white'>
-                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px] '  onClick={() => setIsclicked(true)}>Invite to Play</button>
+                        <Link href="../Play">
+                        <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px] '  onClick={() => Play(groupData.members[0].id)}>Invite to Play</button>
+                        </Link>
                         <button className='font-normal text-[22px] hover:text-[#7583b9] text-[#4e5c95] font-sans-only flex justify-center items-center hover:border-l hover:border-r border-white rounded-tr-[20px] rounded-tl-[20px] gap-[10px]'>Visit profile </button>
                       </div>
                     )
@@ -592,12 +593,12 @@ export default function Page(props: any) {
                                             )
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
@@ -607,7 +608,7 @@ export default function Page(props: any) {
                                       (
                                         <div className='font-semibold absolute right-12 top-4 bg-[#e6ebfe] flex flex-col border-[1px] rounded-[10px] p-1 z-[1000]'>
                                           <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                          <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div>
+                                          <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                         </div>
                                       )
                                       :
@@ -627,12 +628,12 @@ export default function Page(props: any) {
                                               <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData.members[index], index) }}>make admin</div>
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData.members[index], index) }}>invite to play</div>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>

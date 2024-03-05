@@ -9,9 +9,11 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { GameModule } from './random-friend/game.module';
+import { PlayFriendModule } from './Play_with_friend/game.module';
 
 @Module({
-  imports: [ChatModule, AuthModule, UserModule, JwtModule.register({
+  imports: [ChatModule, AuthModule, UserModule,GameModule, PlayFriendModule, JwtModule.register({
     global: true,
     secret: 'dontTellAnyone',
     signOptions: { expiresIn: '30d' },

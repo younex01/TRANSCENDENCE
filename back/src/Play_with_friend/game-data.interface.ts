@@ -36,6 +36,7 @@ export interface Player {
     db_id: string;
     pic:string;
     g_id:string;
+    opponent_id:string;
 }
 
 export interface Game{
