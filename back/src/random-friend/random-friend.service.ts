@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { Ball, Canvas, Game, Player, Sides } from './game-data.interface';
 import { Server } from 'socket.io';
 import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
+import * as jwt from 'jsonwebtoken';
 
 
 @Injectable()
@@ -97,18 +98,19 @@ export class GameService {
     handleArrowMove(data: string, socketId: string, players: Player[]): void {
       if (data === "up") {
         if (socketId === players[0].id) {
+          if(players[0].y <= 350)
           players[0].y += 20;
-        } else {
+      } else {
+        if(players[1].y <= 350)
           players[1].y += 20;
         }
       } else if (data === "down") {
-        console.log(players[0].y);
-        if(players[0].y >= 450 || players[1].y >= 450)
-          return;
         if (socketId === players[0].id) {
-          players[0].y -= 20;
+          if(players[0].y > 0)
+            players[0].y -= 20;
         } else {
-          players[1].y -= 20;
+          if(players[1].y > 1)
+            players[1].y -= 20;
         }
       }
     }
@@ -132,7 +134,6 @@ export class GameService {
         if (players[i].id === Id)
         {
           players.splice(i, 1);
-          console.log(`player with index ${i} removed`);
           players.length = players.length;
           return;
         }
@@ -173,7 +174,6 @@ export class GameService {
       //remove player from players + check if players lengh == 1 to remove the room
       //update the id from game
       let check:number = 0;
-      console.log("here");
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
@@ -344,16 +344,14 @@ export class GameService {
 
 
 
-  // public getUserInfosFromToken(token: string): any {
-  //   try {
-  //     const decoded = this.jwtService.decoded(token, {
-  //     secret: process.env.JWT_KEY,
-  //     });
-  //     return decoded;
-  //   } catch (error) {
-  //     console.error('JWT verification failed:', error.message);
-  //     return null;
-  //   }
-  // }
+  public getUserInfosFromToken(token: string): any {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      return decoded;
+    } catch (error) {
+      console.error('JWT verification failed:', error.message);
+      return null;
+    }
+  }
 
 }

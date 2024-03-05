@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Cookies from 'js-cookie';
+import { Play } from 'next/font/google';
 
 export default function page() {
 
@@ -184,17 +185,13 @@ export default function page() {
 
     useEffect(() => {
       const keydownHandler = (e:any) => {
-        if(player && canvas && computer)
-        {
-          if(player.y >= canvas?.height || player.y <= 0 || computer?.y >= canvas?.height || computer?.y <= 0)
-            return;
-        }
-        if (e.key === "ArrowUp" ) {
-          socket?.emit("arrow_move","down");
-        }
-        if (e.key === "ArrowDown") {
-          socket?.emit("arrow_move","up");
-        }
+          if (e.key === "ArrowUp" ) {
+            socket?.emit("arrow_move","down");
+          }
+          if (e.key === "ArrowDown") {
+            socket?.emit("arrow_move","up");
+          }
+
       };
       const mousemoveHandler = (e:any) => {
           if (canvas)

@@ -3,6 +3,7 @@ import { Socket , Server} from 'socket.io';
 import { Ball, Canvas, Game, Player } from './game-data.interface';
 import { GameService } from './Play_with_friend.service';
 
+
 @WebSocketGateway(3002, {cors: '*'})
 export class PlayFriendGateway implements OnGatewayDisconnect {
 
@@ -30,7 +31,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   async handleConnection(socket: Socket): Promise<void> {
     
     //check if the user is in the game 
-    const token = socket.handshake.query.token;
+    const token:any = socket.handshake.query.token;
     if (token === "token")
       return;
     const senderId:any = socket.handshake.query.id;
@@ -43,19 +44,21 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
     // });
     // console.log(socket.handshake.query.id);
     // console.log(this.ids);
+    const token_id = this.gameService.getUserInfosFromToken(token);
+    // const user = this.gameService.getUserInfosFromToken(token);
     const existingUser = Array.from(this.connectedUsers.values());
-    if (existingUser.includes(token)) {
-      console.log(`Token ${token} already connected with another client`);
+    if (existingUser.includes(token_id.sub)) {
+      // console.log(`Token ${token_id.sub} already connected with another client`);
       socket.emit("already_in_game");
       socket.disconnect();
       return;
     }
-    this.connectedUsers.set(socket.id, token);
-
+    
+    this.connectedUsers.set(socket.id, token_id.sub);
     
     
     const index: any = this.gameService.findIndexBySenderId(this.game,senderId,this.acc_rqst);
-    console.log(index);
+    // console.log(index);
     //check if there's a room waiting for senderId to join by data base of invit to play 
     //update the opponent
 
@@ -66,7 +69,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
       if(!availibleRoomId) return;
       this.game[index].rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
-      console.log(`join this room ${availibleRoomId}`);
+      // console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
       this.game[index].players.push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: "",opponent_id:""});
       // console.log(this.game[index].players);
@@ -82,8 +85,8 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
       const newRoomId = socket.id;
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
-      console.log("new room created!!");
-      console.log(newRoomId);
+      // console.log("new room created!!");
+      // console.log(newRoomId);
       
       this.gameService.getReceiverIdBySenderId(senderId,this.players,this.opponents);
       this.players.push({id: newRoomId, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: senderId,pic: "", g_id: "",opponent_id:""});
@@ -103,7 +106,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
       this.rooms = {};
       this.id++;
       this.gameService.handle_id(senderId,"", socket.id,this.game);
-      console.log("send.id",senderId);
+      // console.log("send.id",senderId);
     }
   }
     
@@ -139,10 +142,10 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   @SubscribeMessage('accepted_request')
   handle_request(@MessageBody() data: { key: string, value: string } , @ConnectedSocket() client: Socket) : void
   {
-    console.log(data.key,data.value);
+    // console.log(data.key,data.value);
     this.acc_rqst.set(data.key,data.value);
-    console.log(this.acc_rqst);
-    console.log("received request");
+    // console.log(this.acc_rqst);
+    // console.log("received request");
     client.disconnect();
   }
 
@@ -170,6 +173,3 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   }
 }
 
-function then(arg0: (result: any) => void) {
-  throw new Error('Function not implemented.');
-}

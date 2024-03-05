@@ -192,8 +192,8 @@ export const PlayWithFriend = () => {
         if(player && canvas && computer)
         {
           if (e.key === "ArrowDown") {
-          if(player.y >= 490 || computer?.y >= 490)
-            return;
+          // if(player.y >= 490 || computer?.y >= 490)
+          //   return;
           socket?.emit("arrow_move","up");
         }
       }

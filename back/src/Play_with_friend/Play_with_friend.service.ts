@@ -3,6 +3,7 @@ import { Ball, Canvas, Game, Player, Sides } from './game-data.interface';
 import { Server } from 'socket.io';
 import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
+import * as jwt from 'jsonwebtoken';
 
 
 @Injectable()
@@ -75,11 +76,11 @@ export class GameService {
       let result : number = -1;
       for(let i = 0; i < games.length;i++)
       {
-        console.log(games[i].players[0],id,map);
+        // console.log(games[i].players[0],id,map);
         if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
         {
           map.delete(id);
-          console.log("i",i);
+          // console.log("i",i);
           result = i;
           break;
         }
@@ -88,7 +89,7 @@ export class GameService {
     }
 
     async getReceiverIdBySenderId(senderId: string,player:Player[],opponents:string[]):Promise<void> {
-      console.log(senderId);
+      // console.log(senderId);
       try {
         const invite = await this.prisma.inviteToPlay.findFirst({
           where: {
@@ -97,11 +98,11 @@ export class GameService {
         });
     
         if (invite) {
-          console.log(invite.receiverId)
+          // console.log(invite.receiverId)
           player[0].opponent_id = invite.receiverId;
           opponents.push(invite.receiverId);
         } else {
-          console.log('No invite found for senderId:', senderId);
+          // console.log('No invite found for senderId:', senderId);
           return null;
         }
       } catch (error) {
@@ -165,15 +166,19 @@ export class GameService {
     handleArrowMove(data: string, socketId: string, players: Player[]): void {
       if (data === "up") {
         if (socketId === players[0].id) {
+          if(players[0].y <= 350)
           players[0].y += 20;
-        } else {
+      } else {
+        if(players[1].y <= 350)
           players[1].y += 20;
         }
       } else if (data === "down") {
         if (socketId === players[0].id) {
-          players[0].y -= 20;
+          if(players[0].y > 0)
+            players[0].y -= 20;
         } else {
-          players[1].y -= 20;
+          if(players[1].y > 1)
+            players[1].y -= 20;
         }
       }
     }
@@ -197,7 +202,7 @@ export class GameService {
         if (players[i].id === Id)
         {
           players.splice(i, 1);
-          console.log(`player with index ${i} removed`);
+          // console.log(`player with index ${i} removed`);
           players.length = players.length;
           return;
         }
@@ -223,57 +228,6 @@ export class GameService {
       }
     }
 
-    async removeInviteToPlay1(i: number, players: Player[]){
-      try {
-        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
-          where: {
-            senderId: players[0].db_id,
-            receiverId: players[1].db_id,
-          },
-        });
-        
-        // If no invite was found based on the first combination, try the second combination
-        if (!deletedInvite.count) {
-          await this.prisma.inviteToPlay.deleteMany({
-            where: {
-              senderId: players[1].db_id,
-              receiverId: players[0].db_id,
-            },
-          });
-        }
-        
-        console.log("Invite removed successfully");
-      } catch (error) {
-        console.error("Error removing invite:", error);
-        // Handle error appropriately
-      }
-    }
-    async removeInviteToPlay2(i: number, players: Player[]){
-      try {
-        const deletedInvite = await this.prisma.inviteToPlay.deleteMany({
-          where: {
-            senderId: players[1].db_id,
-            receiverId: players[0].db_id,
-          },
-        });
-        
-        // If no invite was found based on the first combination, try the second combination
-        if (!deletedInvite.count) {
-          await this.prisma.inviteToPlay.deleteMany({
-            where: {
-              senderId: players[0].db_id,
-              receiverId: players[1].db_id,
-            },
-          });
-        }
-        
-        console.log("Invite removed successfully");
-      } catch (error) {
-        console.error("Error removing invite:", error);
-        // Handle error appropriately
-      }
-    }
-
     removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
       //remove player from players
       //remove player from players + check if players lengh == 1 to remove the room
@@ -289,7 +243,7 @@ export class GameService {
           {
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
-              console.log("this player is give up the game");
+              // console.log("this player is give up the game");
               //this player is give up the game
               const roomId = Object.keys(game[i].rooms);
               if (game[i].players[0].id === id)
@@ -436,4 +390,15 @@ export class GameService {
       }
     }
   }
+
+  public getUserInfosFromToken(token: string): any {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      return decoded;
+    } catch (error) {
+      console.error('JWT verification failed:', error.message);
+      return null;
+    }
+  }
+
 }
