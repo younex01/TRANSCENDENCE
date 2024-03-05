@@ -297,7 +297,7 @@ const Play = async (tar:string):Promise<void> =>
           <div className='w-full h-full relative'>
             <div className='header flex items-center h-[130px] border-b-[2px] bg-opacity-[50%] relative pl-14 md:pl-2'>
               <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${groupData.avatar}`} alt={`${groupData.avatar}`} />
-                <div className={`absolute w-[10px] h-[10px] ${groupData.members[0].status === "Online" ? "bg-green-700" : groupData.members[0].status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                <div className={`absolute w-[10px] h-[10px] ${groupData.members[0].status === "Online" ? "bg-green-700" : groupData.members[0].status === "inGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
               </div>
               <div className='text-[40px] font-sans-only text-[#2E2E2E] opacity-[76%]'>{groupData.name}</div>
               <button className='flex items-center justify-center absolute rounded-[20px] active:bg-[#c2c2c2] right-8 p-4 h-[50px] w-[50px]' onClick={() => setDMsSettings(!DMsSettings)}> <img className='w-[33px] h-[33px] ' src="/3no9at.svg" alt="/3no9at.svg" /> </button>
@@ -561,7 +561,7 @@ const Play = async (tar:string):Promise<void> =>
                           <div key={index} className='w-[100%] py-4 mb-1 mt-1 flex items-center justify-between bg-white max-w-[350px] px-4 rounded-[10px] relative '>
                             <div className='flex overflow-visible'>
                               <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${members.avatar}`} alt={`${members.avatar}`} />
-                                <div className={`absolute w-[10px] h-[10px] ${members.status === "Online" ? "bg-green-700" : members.status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                                <div className={`absolute w-[10px] h-[10px] ${members.status === "Online" ? "bg-green-700" : members.status === "inGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
                               </div>
                               <div className='z-20'>
                                 <div className='font-bold'>{members.username}</div>

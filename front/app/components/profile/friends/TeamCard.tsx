@@ -25,6 +25,19 @@ const TeamCard = ({
   status: string;
 }) => {
   
+
+  // myId = myData.id;      target = userId
+
+  const Play = async (tar:string):Promise<void> => 
+  {
+    console.log("invite to play");
+
+    await axios.post(
+      `http://localhost:4000/user/sendPlayAgain`,
+      { sender: myData.id, target:tar}, // to handel
+      { withCredentials: true });
+  }
+  
   const myData = useSelector(selectProfileInfo);
 
   const [groupId, setGroupId] = useState<any>();
@@ -59,7 +72,7 @@ const TeamCard = ({
           <Link href={`./../../Profile/${userId}`}>
             <div>
               <div className='relative'>
-                <div className={`absolute w-[10px] h-[10px] ${status === "Online" ? "bg-green-700" : status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                <div className={`absolute w-[10px] h-[10px] ${status === "Online" ? "bg-green-700" : status === "inGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
               </div>
               <div className="w-[80px] h-[80px] overflow-hidden">
                 <Image
@@ -80,6 +93,7 @@ const TeamCard = ({
       </div>
       {!isMyId && isFriend ? (
         <div className="w-full flex justify-center items-center gap-[16px] ">
+           <Link href="../Play" onClick={() => Play(userId)}>
           <button className=" rounded-[10px] cursor-pointer w-[60%] bg-[#d3dafb] h-[40px] flex flex-row-reverse items-center justify-center gap-[8px] hover:bg-[#c3cdfb]">
             <div className="">
               <p className="text-[#252f5b] text-[14px] font-semibold">
@@ -111,6 +125,7 @@ const TeamCard = ({
               </g>
             </svg>
           </button>
+           </Link>
 
           <Link
             className="rounded-[10px] cursor-pointer w-[16%] bg-[#d3dafb] h-[40px] flex  items-center justify-center hover:bg-[#c3cdfb] "

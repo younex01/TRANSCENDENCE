@@ -56,7 +56,7 @@ export default function Convos() {
               <Link href={`/Chat/${myGroupChats.id}`}>
                 <div className='flex '>
                 <div className='z-10 relative'><img className={`min-w-[50px] max-w-[50px] h-[50px] rounded-[25px] mr-3`} src={`${myGroupChats.avatar}`} alt={`${myGroupChats.avatar}`} />
-                  <div className={`absolute w-[10px] h-[10px] ${myGroupChats.members[0].status === "Online" ? "bg-green-700" : myGroupChats.members[0].status === "InGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
+                  <div className={`absolute w-[10px] h-[10px] ${myGroupChats.members[0].status === "Online" ? "bg-green-700" : myGroupChats.members[0].status === "inGame" ? "bg-red-600" : "bg-gray-600"} rounded-full right-[17%] top-2`}></div>
                 </div>
                   <div className='pl-2 flex flex-col items-start'>
                     <div className='text-[20px] font-normal text-[#2e2e2e] font-sans-only test'> {myGroupChats.name}</div>

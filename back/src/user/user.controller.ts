@@ -128,10 +128,10 @@ export class UserController {
         const user = await this.UserService.getUser(req.target);
         if (!user) return;
 
-        const isRequestExist = await this.UserService.isPlayRequest(req.target, req.sender);
+        const isRequestExist = await this.UserService.isPlayRequest(req.sender);
         
         if (isRequestExist )
-            await this.UserService.deletePlayRequest(req.target, req.sender);
+            await this.UserService.deletePlayRequest(req.sender);
 
         await this.UserService.createPlayRequest(req.target, req.sender);
         this.eventEmitter.emit("refreshNotifications");

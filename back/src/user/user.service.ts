@@ -136,24 +136,18 @@ export class UserService {
     });
   }
 
-  async deletePlayRequest(myId: string, receiverId: string) {
+  async deletePlayRequest(myId: string) {
     return this.prisma.inviteToPlay.deleteMany({
       where: {
-        OR: [
-          { receiverId: receiverId, senderId: myId, },
-          { receiverId: myId, senderId: receiverId, }
-        ]
+          senderId: myId
       },
     });
   }
 
-  async isPlayRequest(myId: string, receiverId: string) {
+  async isPlayRequest(myId: string) {
     return this.prisma.inviteToPlay.findFirst({
       where: {
-        OR: [
-          { receiverId: receiverId, senderId: myId, },
-          { receiverId: myId, senderId: receiverId, }
-        ]
+          senderId: myId, 
       },
     });
   }

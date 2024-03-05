@@ -211,8 +211,8 @@ export default function Profile(props: any) {
                         <div className="font-light text-[#7d84a3] text-[15px]"> {userData.username}</div>
                       </div>
                       {props.params.id !== myData.id && (
-                        <div className={`${userData.status === "Online" ? "bg-green-700" : userData.status === "InGame" ? "bg-red-600" : "bg-gray-600"} bg-[#3c4778] flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-1 text-white `}>
-                          <h4 className="text-[11px] p-[2px]">{userData.status === "Online" ? "Online" : userData.status === "InGame" ? "In A Game" : "Offline"}</h4>
+                        <div className={`${userData.status === "Online" ? "bg-green-700" : userData.status === "inGame" ? "bg-red-600" : "bg-gray-600"} bg-[#3c4778] flex justify-center items-center w-max-content sm:ml-3 px-2 h-full rounded-full mt-1 text-white `}>
+                          <h4 className="text-[11px] p-[2px]">{userData.status === "Online" ? "Online" : userData.status === "inGame" ? "In A Game" : "Offline"}</h4>
 
                         </div>
                       )}

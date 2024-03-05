@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
 import * as jwt from 'jsonwebtoken';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 
 @Injectable()
@@ -15,7 +16,8 @@ export class GameService {
 
     constructor(
       private readonly userService: UserService,
-      private readonly prisma: PrismaService
+      private readonly prisma: PrismaService,
+      private eventEmitter: EventEmitter2
     ) {}
 
     async addGameResult(players:Player[],userId:string,result:boolean){
@@ -119,16 +121,18 @@ export class GameService {
       {
         server.to(roomId).emit("winner",players[0].name);
         this.addGameResult(players, players[0].db_id,false);
-        // players[0].score = 0;
-        // players[1].score = 0;
+        this.userService.updateProfile("Online",players[0].db_id);
+        this.userService.updateProfile("Online",players[1].db_id);
+        this.eventEmitter.emit("refreshStatus");
         return true;
       }
       else if (players[1].score >= 5)
       {
         server.to(roomId).emit("winner",players[1].name)
         this.addGameResult(players, players[1].db_id,false);
-        // players[0].score = 0;
-        // players[1].score = 0;
+        this.userService.updateProfile("Online",players[0].db_id);
+        this.userService.updateProfile("Online",players[1].db_id);
+        this.eventEmitter.emit("refreshStatus");
         return true;
       }
       return false;
@@ -259,6 +263,9 @@ export class GameService {
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);
               }
             }
+            this.userService.updateProfile("Online", game[i].players[0].db_id);
+            this.userService.updateProfile("Online", game[i].players[1].db_id);
+            this.eventEmitter.emit("refreshStatus");
             game[i].players = game[i].players.filter(player => player.id !== id);//to think about it
             gameId--;
             game.splice(i, 1);
@@ -274,6 +281,8 @@ export class GameService {
           {
             // this.removeInviteToPlay1(i,game);
             // this.removeInviteToPlay2(i,game);
+            this.userService.updateProfile("Online", game[i].players[0].db_id);
+            this.eventEmitter.emit("refreshStatus");
             game.splice(i, 1);
             break;
 

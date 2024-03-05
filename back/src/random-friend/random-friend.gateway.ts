@@ -2,11 +2,13 @@ import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, We
 import { Socket , Server} from 'socket.io';
 import { Ball, Canvas, Game, Player } from './game-data.interface';
 import { GameService } from './random-friend.service';
+import { UserService } from 'src/user/user.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @WebSocketGateway(3001, {cors: '*'})
 export class RandomFriendGateway implements OnGatewayDisconnect {
 
-  constructor(private readonly gameService: GameService) {};
+  constructor(private readonly gameService: GameService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
 
   @WebSocketServer()
   server: Server;
@@ -43,7 +45,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         return;
       }
       
-      this.connectedUsers.set(socket.id, token_id);
+      this.connectedUsers.set(socket.id, token_id.sub);
       // console.log('Token received:', token);
       // console.log('socket',socket.id);
       // console.log(this.connectedUsers);
@@ -56,6 +58,8 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     if (availibleRoomId)
     {
       //update the status to in game for player2
+
+
       let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
@@ -73,6 +77,10 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         players: this.players[this.id],
         rooms: this.rooms
       };
+      this.userService.updateProfile("inGame",this.connectedUsers.get(this.players[this.id][0].id));
+      this.eventEmitter.emit("refreshStatus");
+      this.userService.updateProfile("inGame",this.connectedUsers.get(this.players[this.id][1].id));
+      this.eventEmitter.emit("refreshStatus");
       this.game.push(newGame);
 
       this.rooms = Object.fromEntries(
@@ -152,6 +160,18 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     // leave the client id from the 
     // console.log("before---game");
     // console.log(this.game);
+    // for(let i = 0; i < this.game.length; i++)
+    // {
+    //   if(this.game[i].players[0].id == client.id)
+    //   {
+    //     this.userService.updateProfile("Online",this.players[this.id][0].db_id);
+    //   }
+    //   else if(this.game[i].players[1].id == client.id)
+    //   {
+    //     this.userService.updateProfile("Online",this.players[this.id][1].db_id);
+    //   }
+    // }
+
     this.connectedUsers.delete(client.id);
     // console.log("----------Player");
     // console.log(this.players);

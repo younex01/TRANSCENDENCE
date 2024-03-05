@@ -41,6 +41,7 @@ export default function Home() {
   const profileInfo = useSelector(selectProfileInfo);
   
 
+  
 
   useEffect(() => {
 
@@ -59,6 +60,16 @@ export default function Home() {
     listFriends();
   }, [profileInfo]);
 
+  const Play = async (tar:string):Promise<void> => 
+  {
+    console.log("invite to play");
+
+    await axios.post(
+      `http://localhost:4000/user/sendPlayAgain`,
+      { sender: profileInfo.id, target:tar}, // to handel
+      { withCredentials: true });
+  }
+
   // const Play = async (tar:string):Promise<void> => 
   // {
   //   console.log("invite to play");
@@ -73,6 +84,13 @@ export default function Home() {
   const handleClickFr = () => {
     if (buttonAi.current) buttonAi.current.style.display = "none";
     setplayFriend((prev) => {
+      return !prev;
+    });
+  };
+
+  const handleClickAi = () => {
+    if (buttonAi.current) buttonAi.current.style.display = "none";
+    setPlayAi((prev) => {
       return !prev;
     });
   };
@@ -157,11 +175,11 @@ export default function Home() {
                               </div>
                             </div>
                             <div className="flex mt-4 md:text-[16px] text-[12px] sm:text-[14px] md:w-[120px] w-max-content">
-                              <Link href="../Play">
+                              <Link href="../Play" onClick={() => Play(value.id)}>
                                 <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
                                   // onClick={() => Play(groupData.members[0].id)}
                                   >
-
+{/* target = value.id       myId = profileInfo.id */}
                                   Invite
                                 </button>
                               </Link>
@@ -187,9 +205,8 @@ export default function Home() {
               style={{ backgroundImage: `url(/hh1.jpg)` }}
             >
               <div className="pb-5">
-                <Link href='/game/againstAi'>
                   <button
-                    onClick= { () => setPlayAi(true)}
+                    onClick= {handleClickAi}
                     className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
                   >
                     <img
@@ -199,7 +216,6 @@ export default function Home() {
                     />
                     Against AI
                   </button>
-                </Link>
               </div>
             </div>
           </div>
@@ -242,7 +258,7 @@ export default function Home() {
                     <div className="flex items-center justify-center w-full h-[110px] gap-2">
                       <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
 
-                      onClick={() => {setActiveButton('ai')}}>
+                      onClick={handleClickAi}>
                       <img
                         src="/robot.svg"
                         alt=""
@@ -312,8 +328,10 @@ export default function Home() {
           </div>
           
       </div>
+        <div >
         {playFriend && <PlayWithFriend />}
         {playAi && <PongGame />}
+        </div>
       
     </div>
   );

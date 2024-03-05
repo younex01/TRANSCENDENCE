@@ -315,7 +315,9 @@ export default function page() {
     </div>
         {game && 
             <>
-            <div className="flex justify-around  flex-col bg-[#dbe0f6]">
+            <div className="flex items-center justify-center h-screen bg-[#dbe0f6]">
+
+            <div className="flex justify-around  flex-col ">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
                     <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})` , backgroundSize: 'cover' }} ></div>
@@ -347,6 +349,8 @@ export default function page() {
                 </canvas>}
                 {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
                 </div>
+            </div>
+
             </div>
             </>
         }
