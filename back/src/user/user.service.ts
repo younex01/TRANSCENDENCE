@@ -396,6 +396,31 @@ export class UserService {
     });
   }
 
+  async getGameResult(myId: string) {
+    console.log("myId", myId);
+    
+    return this.prisma.gameResult.findMany({
+      where: { 
+        OR:[
+          {userId: myId },
+          {opponentId: myId }
+        ]
+      },
+      include: {
+        user: true,
+      }
+    });
+  }
+
+  async getAchievements(myId: string, achievement: string) {
+    return this.prisma.achievement.update({
+      where: { id: myId},
+      data: {
+        [achievement]: true
+      }
+    })
+  }
+
 
 
 

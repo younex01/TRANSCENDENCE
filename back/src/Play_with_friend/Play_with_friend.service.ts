@@ -18,29 +18,34 @@ export class GameService {
       private readonly prisma: PrismaService
     ) {}
 
-    async addGameResult(players:Player[],userId:string,result:boolean){
+    async addGameResult(players: Player[], userId: string, result: boolean) {
 
-      // this.prisma.inviteToPlay.deleteMany({
-      //   where: {
-      //     senderId: players[0].db_id,
-      //     receiverId: players[1].db_id,
-      //   },
-      // });
-
-  
-        // Game result does not exist, create a new one
-        if (!players[1].pic || !players[0].pic)
-          return;
-        return this.prisma.gameResult.create({
+      // console.log("kyaaaaaaaaaaah", players);
+      // if (userId === players[0].db_id) {
+        const status = players[0].score > players[1].score ? "win" : "lose";
+        this.prisma.gameResult.create({
           data: {
-            opponent_pic: players[1].pic,
-            score_player: players[0].score,
-            score_opponent: players[1].score,
-            result,
-            userId,
-          },
-        });
-
+            userId: players[1].db_id,
+            opponentId: players[0].db_id,
+            status: status,
+            userScore: players[1].score,
+            opponentScore: players[0].score,
+          }
+        })
+      // }
+      // else {
+  
+      //   const status = players[1].score > players[0].score ? "win" : "lose";
+      //   this.prisma.gameResult.create({
+      //     data: {
+      //       userId: players[0].db_id,
+      //       opponentId: players[1].db_id,
+      //       status: status,
+      //       userScore: players[0].score,
+      //       opponentScore: players[1].score,
+      //     }
+      //   })
+      // }
     }
 
     async test2(games :Game[] ,id:string):Promise<number>{
@@ -393,7 +398,7 @@ export class GameService {
 
   public getUserInfosFromToken(token: string): any {
     try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      const decoded = jwt.verify(token, "dontTellAnyone");
       return decoded;
     } catch (error) {
       console.error('JWT verification failed:', error.message);

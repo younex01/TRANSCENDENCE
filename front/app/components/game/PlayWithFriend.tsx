@@ -324,7 +324,7 @@ export const PlayWithFriend = () => {
     </div>
         {game && 
             <>
-            <div className="flex justify-around  flex-col">
+            <div className="flex justify-around flex-col">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
                 <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
@@ -351,7 +351,7 @@ export const PlayWithFriend = () => {
                       height: isSmallScreen ? '50vmin' : '450px',
                       objectFit: 'contain'
                     }}
-                    className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
+                    className="bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
                 >
                 </canvas>}
                 {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}

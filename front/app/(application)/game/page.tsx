@@ -312,9 +312,9 @@ export default function Home() {
           </div>
           
       </div>
+      
         {playFriend && <PlayWithFriend />}
         {playAi && <PongGame />}
-      
     </div>
   );
 }

@@ -66,14 +66,28 @@ CREATE TABLE "Message" (
 
 -- CreateTable
 CREATE TABLE "GameResult" (
-    "id" SERIAL NOT NULL,
-    "opponent_pic" TEXT NOT NULL,
-    "score_player" INTEGER NOT NULL,
-    "score_opponent" INTEGER NOT NULL,
-    "result" BOOLEAN NOT NULL,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "opponentId" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "userScore" INTEGER NOT NULL,
+    "opponentScore" INTEGER NOT NULL,
 
     CONSTRAINT "GameResult_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Achievement" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "achiev1" BOOLEAN NOT NULL,
+    "achiev2" BOOLEAN NOT NULL,
+    "achiev3" BOOLEAN NOT NULL,
+    "achiev4" BOOLEAN NOT NULL,
+    "achiev5" BOOLEAN NOT NULL,
+    "achiev6" BOOLEAN NOT NULL,
+
+    CONSTRAINT "Achievement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -126,6 +140,9 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_chatGroupId_fkey" FOREIGN KEY ("ch
 
 -- AddForeignKey
 ALTER TABLE "GameResult" ADD CONSTRAINT "GameResult_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Achievement" ADD CONSTRAINT "Achievement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_friend" ADD CONSTRAINT "_friend_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

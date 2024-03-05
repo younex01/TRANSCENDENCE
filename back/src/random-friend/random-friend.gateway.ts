@@ -37,13 +37,16 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       const token_id = this.gameService.getUserInfosFromToken(token);
       // const user = this.gameService.getUserInfosFromToken(token);
       const existingUser = Array.from(this.connectedUsers.values());
+      console.log("existingUser",token_id);
+      
       if (existingUser.includes(token_id.sub)) {
+
         socket.emit("already_in_game");
         socket.disconnect();
         return;
       }
       
-      this.connectedUsers.set(socket.id, token_id);
+      this.connectedUsers.set(socket.id, token_id.sub);
       // console.log('Token received:', token);
       // console.log('socket',socket.id);
       // console.log(this.connectedUsers);

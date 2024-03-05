@@ -73,6 +73,7 @@ export default function Achievement({
           src={imagePath}
           alt={name}
           fill={true}
+          draggable={false}
           // sizes="100vw"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="w-full h-full object-cover"
@@ -81,3 +82,5 @@ export default function Achievement({
     </div>
   );
 }
+
+//select none to not select any text in the page rember 

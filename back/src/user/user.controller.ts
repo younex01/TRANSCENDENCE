@@ -137,9 +137,7 @@ export class UserController {
         this.eventEmitter.emit("refreshNotifications");
         this.eventEmitter.emit("refreshfriendShip");
     }
-
-
-
+    
 
 
 
@@ -330,7 +328,50 @@ export class UserController {
         return combinedBlockedUsers;
     }
 
+    @Get('lastGames')
+    @UseGuards(AuthGuard('jwt'))
+    async lastGames(@Query("userId") userId: string) {
+        const lastGames : any= await this.UserService.getGameResult(userId);
+        console.log("lastGames", lastGames);
+        
+    
+        const lastGamesWithOpponents: any = await Promise.all(
+            lastGames.map(async (result) => {
+                if (result.opponentId !== userId) {
+                    const opponent = await this.UserService.getUser(result.opponentId);
+                    return { ...result, opponent };
+                }
+                return result;
+            })
+        );
+        console.log("lastGamesWithOpponents", lastGamesWithOpponents);
+    
+        return lastGamesWithOpponents;
+    }
 
+    @Post('achievements')
+    @UseGuards(AuthGuard('jwt'))
+    async achievements(@Body() userId: string) {
+        const gameResult : any= await this.UserService.getGameResult(userId);
+        let check: number = 0;
+        for(let i = 0; i < gameResult.length; i++) {
+            if (gameResult[i].winnerId === userId) {
+                gameResult[i].status = "won";
+                check++;
+            } else {
+                gameResult[i].status = "lost";
+            }
+        }
+        switch (check) {
+            case  3: this.UserService.getAchievements(userId, "achiev1");
+            case  5: this.UserService.getAchievements(userId, "achiev2");
+            case  10: this.UserService.getAchievements(userId, "achiev3");
+            case 15: this.UserService.getAchievements(userId, "achiev4");
+        }
+
+    }
+
+    
 
     // sendRequest(receiver) //
     //// -- check receiver exists
@@ -360,3 +401,6 @@ export class UserController {
 
 
 }
+
+
+

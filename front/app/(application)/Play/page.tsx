@@ -309,7 +309,7 @@ export default function page() {
 
 
   return (
-    <>
+    <div className='w-full bg-[#dbe0f6]  flex justify-center items-center'>
     <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
         {start && <div className='text-white'>{text}</div>}
     </div>
@@ -330,7 +330,7 @@ export default function page() {
                 <span className="text-white pr-12">{firstName}</span>
                 <span className="text-white pl-12">{secondName}</span>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center w-full h-full">
                 {!winning &&
                     <canvas
                     ref={canvasRef}
@@ -350,6 +350,6 @@ export default function page() {
             </div>
             </>
         }
-    </>
+    </div>
   )
 }

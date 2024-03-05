@@ -11,8 +11,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     constructor(private readonly prisma: PrismaService,
         private readonly service: AuthService) {
         super({
-            clientID: process.env.CLIENT_ID, // matnssach t7etha f ".env" !!!!!
-            clientSecret: process.env.CLIENT_SECRET, // matnssach t7etha f ".env" !!!!!
+            clientID: 'u-s4t2ud-1bdfb4911333ace17c174b3425984b08828423d2d510b3ba59ede898792699ae', // matnssach t7etha f ".env" !!!!!
+            clientSecret: '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', // matnssach t7etha f ".env" !!!!!
             callbackURL: 'http://localhost:4000/auth/redirect',
         });
     }
