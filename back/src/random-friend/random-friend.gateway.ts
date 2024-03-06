@@ -1,14 +1,14 @@
 import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket , Server} from 'socket.io';
 import { Ball, Canvas, Game, Player } from './game-data.interface';
-import { GameService } from './random-friend.service';
+import { GameRandomService } from './random-friend.service';
 import { UserService } from 'src/user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @WebSocketGateway(3001, {cors: '*'})
 export class RandomFriendGateway implements OnGatewayDisconnect {
 
-  constructor(private readonly gameService: GameService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
+  constructor(private readonly gameService: GameRandomService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
 
   @WebSocketServer()
   server: Server;
@@ -21,7 +21,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
   private players: {[id:number]: Player[]} = {};
   private ids:string[] = [];
 
-  private readonly connectedUsers = new Map<string, any>();
+  public connectedUsers = new Map<string, any>();
 
 
   //to do
@@ -29,39 +29,25 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('connecte')
   async handleConnection(@MessageBody() socket: Socket): Promise<void> {
-    // this.connectedUsers[socket.id] = socket;
     const availibleRoomId = Object.keys(this.rooms).find(roomId => this.rooms[roomId].length == 1);
+    const token:any = socket.handshake.query.token;
+    const token_id = this.gameService.getUserInfosFromToken(token);
+    const user = await this.userService.getUser(token_id.sub);
 
+    const existingUser = Array.from(this.connectedUsers.values());
+    if (existingUser.includes(token_id.sub) || user.status === "inGame") {
+      socket.emit("already_in_game");
+      socket.disconnect();
+      return;
+    }
 
-    //check if the user is in the game 
-      // 'token' is sent from the client when it connects
-      const token:any = socket.handshake.query.token;
-      const token_id = this.gameService.getUserInfosFromToken(token);
-      // const user = this.gameService.getUserInfosFromToken(token);
-      const existingUser = Array.from(this.connectedUsers.values());
-      if (existingUser.includes(token_id.sub)) {
-        socket.emit("already_in_game");
-        socket.disconnect();
-        return;
-      }
+    
+    this.connectedUsers.set(socket.id, token_id.sub);
 
       
-      this.connectedUsers.set(socket.id, token_id.sub);
-      // console.log('Token received:', token);
-      // console.log('socket',socket.id);
-      // console.log(this.connectedUsers);
-      // console.log(existingUser);
+    if (availibleRoomId)
+    {
       
-      
-      // Your logic here
-      // console.log("----->token:",token);
-      
-      if (availibleRoomId)
-      {
-
-        // if(this.gameService.isBlocked(token_id.sub, this.players[this.id][0].db_id))
-        //   console.log("is blocked user")
-
       let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
@@ -89,17 +75,6 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         Object.entries(this.rooms)
           .filter(([roomId, players]) => !players.includes(socket.id))
       );
-      // console.log("------------Game-Data-------------");
-      // console.log(this.game)
-      // console.log("------------rooms-Data-------------");
-      // console.log(this.rooms)
-      // this.players = {};
-      // this.rooms = {};
-      // const roomId = Object.keys(this.rooms);
-      // const index = Object.keys(this.rooms).findIndex(roomId => roomId === roomId[0]);
-      // if (index !== -1) {
-      //   delete this.rooms[roomId[index]];
-      // }
       this.gameService.startTheGame(this.game[this.id].players, this.game[this.id].rooms, availibleRoomId, this.server, this.game[this.id].ball, this.canvas);
     }
     else
@@ -116,8 +91,6 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       }
       if (this.players[this.id].length == 0)
         this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: token_id.sub,pic: "", g_id: ""});
-
-      
     }
   }
 
@@ -155,56 +128,13 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     this.gameService.handle_id(id,g_id, client.id,this.game);
   }
 
-
-
   handleDisconnect(client: Socket) {
-    //update the status to offline "ïn game ststus"
-    //send emit message to the winner if the game still work
-    // pop the client from the room list
-    // leave the client id from the 
-    // console.log("before---game");
-    // console.log(this.game);
-    // for(let i = 0; i < this.game.length; i++)
-    // {
-    //   if(this.game[i].players[0].id == client.id)
-    //   {
-    //     this.userService.updateProfile("Online",this.players[this.id][0].db_id);
-    //   }
-    //   else if(this.game[i].players[1].id == client.id)
-    //   {
-    //     this.userService.updateProfile("Online",this.players[this.id][1].db_id);
-    //   }
-    // }
-
     this.connectedUsers.delete(client.id);
-    // console.log("----------Player");
-    // console.log(this.players);
     this.players = this.gameService.deletePlayerFromPlayers(this.players, client.id);
-    // console.log("------------Rooms-Data-------------");
-    // console.log(this.rooms);
-    // if(this.rooms && this.game.length == 0 && this.id == 0)
-    // {
-    //   const index = Object.keys(this.rooms);
-    //   if(this.rooms[index[0]][0] == client.id)
-    //     this.id -= 1;
-    // }
     this.rooms = Object.fromEntries(
       Object.entries(this.rooms)
         .filter(([roomId, players]) => !players.includes(client.id))
     );
     this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
-    // console.log("handle disconnect",this.id);
-    // console.log(this.players);
-    // console.log("after---game");
-    // console.log(this.game);
-    // this.players = {};
-    // this.rooms = {};
-    // console.log("------------Game-Data-------------");
-    // console.log(this.game);
-    // console.log("------------rooms-Data-------------");
-    // console.log(this.rooms);
-    // console.log("------------Players-Data-------------");
-    // console.log(this.players);
-    // console.log(this.id);
   }
 }

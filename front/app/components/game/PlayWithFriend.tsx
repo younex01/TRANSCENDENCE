@@ -10,7 +10,6 @@ export const PlayWithFriend = () => {
     
     const [socket,setSocket] = useState<Socket>()
     const [text,setText] = useState<string>("")
-    const [random,setRandom] = useState<boolean>(true);
     const [start, setStart] = useState<boolean>(false);
     const [game, setGame] = useState<boolean>(false);
     const divv = useRef<HTMLCanvasElement>(null);
@@ -35,8 +34,6 @@ export const PlayWithFriend = () => {
 
     const [pic1,setPic1] = useState<string>("");
     const [pic2,setPic2] = useState<string>("");
-
-    const myData = useSelector(selectProfileInfo);
 
 
     const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -66,10 +63,6 @@ export const PlayWithFriend = () => {
     useEffect(() => {
       if (player && computer && playAgain)
       {
-        // player.score = 0;
-        // computer.score = 0;
-        // setScore1(0);
-        // setScore2(0);
         setComputerWinnes(false);
         setPlayerWinnes(false);
       }
@@ -226,12 +219,6 @@ export const PlayWithFriend = () => {
       setPlayer(data.players[0]);
       setComputer(data.players[1]);
     } 
-    
-    
-    const checkWinner = (name: string) => {
-          setComputerWinnes((prev) => {return !prev})
-          setWinnerName(name);
-    }
 
     
     const fetchData = async () => {
@@ -274,12 +261,11 @@ export const PlayWithFriend = () => {
             console.log("start the game");
             setCanvas(canv)
             setCtx(canv.getContext('2d'))
-            render(data);
           }
+          render(data);
         }
         else if(event == "winner")
         {
-          console.log("Player give up");
           // checkWinner(data);
           setComputerWinnes((prev) => {return !prev})
           setWinnerName(data);

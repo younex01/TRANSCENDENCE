@@ -18,6 +18,8 @@ const PongGame = () => {
   const [player, setPlayer] = useState<Player>()
   const [computer, setComputer] = useState<Player>()
   const [winnerName, setWinnerName] = useState<string>("");
+
+  const [pic1,setPic1] = useState<string>("");
   
   //select canvas
   const canv = canvasRef.current;
@@ -341,7 +343,7 @@ const PongGame = () => {
         <div className="flex justify-around  flex-col">
             <div className="flex justify-around  flex-raw pt-10">
               <div className="flex flex-raw">
-                <div className="bg-slate-500 w-20 h-20 rounded-full"></div>
+              <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
                 <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
               </div>
               <div className="flex flex-raw">

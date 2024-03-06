@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
 import * as jwt from 'jsonwebtoken';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { GameRandomService } from 'src/random-friend/random-friend.service';
 
 
 @Injectable()
@@ -17,7 +18,7 @@ export class GameService {
     constructor(
       private readonly userService: UserService,
       private readonly prisma: PrismaService,
-      private eventEmitter: EventEmitter2
+      private eventEmitter: EventEmitter2,
     ) {}
 
     async addGameResult(players:Player[],userId:string,result:boolean){
@@ -233,11 +234,6 @@ export class GameService {
     }
 
     removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
-      //remove player from players
-      //remove player from players + check if players lengh == 1 to remove the room
-      //update the id from game
-
-      
       for (let i=0;i<game.length;i++)
       {
         // players[i] = players[i].filter(player => player.id !== id)
@@ -271,16 +267,11 @@ export class GameService {
             game.splice(i, 1);
             break;
           }
-          // this.removeInviteToPlay1(i,game);
-          // this.removeInviteToPlay2(i,game);
         }
         else
         {
-          //check if the room of the game has the id and the lenght is 1 if that is true remove the game
           if (game[i].players[0].id === id && game[i].players.length == 1)
           {
-            // this.removeInviteToPlay1(i,game);
-            // this.removeInviteToPlay2(i,game);
             this.userService.updateProfile("Online", game[i].players[0].db_id);
             this.eventEmitter.emit("refreshStatus");
             game.splice(i, 1);
@@ -299,10 +290,6 @@ export class GameService {
   }
 
   startTheGame(players: Player[], rooms: {[roomId: string]: string[]}, roomId: string, server: Server, ball: Ball, canvas: Canvas) {
-    // ball.x = canvas.width / 2;
-    // ball.y = canvas.height / 2;
-    // this.removeInviteToPlay1(0,players);
-    // this.removeInviteToPlay2(0,players);
     const intervalId = setInterval(async () => {
 
       if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
@@ -387,13 +374,6 @@ export class GameService {
           game.players[1].name = user.username;
           game.players[1].pic = user.avatar;
           game.players[1].g_id = g_id;
-          //send to player the g_id  to he play again
-          // console.log("------------------");
-          // console.log(game.players[0].g_id);
-          // console.log(game.players[0].db_id);
-          // console.log("------------------");
-          // console.log(game.players[1].g_id);
-          // console.log(game.players[1].db_id);
         }
 
       }
