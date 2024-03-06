@@ -23,31 +23,24 @@ export class GameService {
 
     console.log("kyaaaaaaaaaaah", players);
 
-    if (userId === players[0].db_id) {
-      const status = players[0].score > players[1].score ? "lose" : "win";
+      const status = players[0].score > players[1].score ? "win" : "lose";
       const data = {
+        userId: players[0].db_id,
+        opponentId: players[1].db_id,
+        status: status,
+        userScore: players[0].score,
+        opponentScore: players[1].score,
+      }      
+      const status2 = players[1].score > players[0].score ? "win" : "lose";
+      const data2 = {
         userId: players[1].db_id,
         opponentId: players[0].db_id,
-        status: status,
+        status: status2,
         userScore: players[1].score,
         opponentScore: players[0].score,
       }
-      console.log("kyaaaaaaaaaaah data", data);
-      return this.prisma.gameResult.create({ data })
-    }
-    else {
-
-      const status = players[1].score > players[0].score ? "win" : "lose";
-      return this.prisma.gameResult.create({
-        data: {
-          userId: players[1].db_id,
-          opponentId: players[0].db_id,
-          status: status,
-          userScore: players[1].score,
-          opponentScore: players[0].score,
-        }
-      })
-    }
+      console.log("kyaaaaaaaaaaadata", data);
+      return await this.prisma.gameResult.create({ data: data }) && await this.prisma.gameResult.create({ data: data2 });
   
   }
 
@@ -255,9 +248,9 @@ export class GameService {
         let collisionResult = this.collision(ball, canvas, players);
         if (collisionResult) {
           if (ball.x < canvas.width / 2)
-            ball.velocityX = Math.abs(ball.velocityX);
+            ball.velocityX = 1.05 * Math.abs(ball.velocityX);
           else
-            ball.velocityX = -1 * Math.abs(ball.velocityX);
+            ball.velocityX = -1.05 * Math.abs(ball.velocityX);
         }
         if (players[0] && players[1]) {
           // Handle scoring

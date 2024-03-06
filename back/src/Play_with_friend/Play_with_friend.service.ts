@@ -325,9 +325,9 @@ export class GameService {
       let collisionResult = this.collision(ball, canvas, players);
       if (collisionResult) {
         if (ball.x < canvas.width / 2)
-          ball.velocityX = Math.abs(ball.velocityX);
+          ball.velocityX = 1.05 * Math.abs(ball.velocityX);
         else
-          ball.velocityX = -1 * Math.abs(ball.velocityX);
+          ball.velocityX = -1.05 * Math.abs(ball.velocityX);
       }
        if (players[0] && players[1])
        {

@@ -412,19 +412,31 @@ export class UserService {
     });
   }
 
+
   async getAchievements(myId: string, achievement: string) {
-    return this.prisma.achievement.update({
-      where: { id: myId},
+    const existingRecord = await this.prisma.achievement.findFirst({
+      where: {
+         userId: myId 
+        },
+    });
+  
+    if(!existingRecord) return;
+  
+    return this.prisma.achievement.updateMany({
+      where: { id: existingRecord.id }, // Updated to use userId instead of id
       data: {
         [achievement]: true
       }
-    })
+    });
   }
+  
+  
 
-
-
-
-
+  async getAllAchievements(myId: string) {
+    return this.prisma.achievement.findFirst({
+      where: { userId: myId }
+    });
+    }
 
 
 

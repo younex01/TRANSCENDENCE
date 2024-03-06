@@ -80,12 +80,12 @@ CREATE TABLE "GameResult" (
 CREATE TABLE "Achievement" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "achiev1" BOOLEAN NOT NULL,
-    "achiev2" BOOLEAN NOT NULL,
-    "achiev3" BOOLEAN NOT NULL,
-    "achiev4" BOOLEAN NOT NULL,
-    "achiev5" BOOLEAN NOT NULL,
-    "achiev6" BOOLEAN NOT NULL,
+    "achiev1" BOOLEAN NOT NULL DEFAULT false,
+    "achiev2" BOOLEAN NOT NULL DEFAULT false,
+    "achiev3" BOOLEAN NOT NULL DEFAULT false,
+    "achiev4" BOOLEAN NOT NULL DEFAULT false,
+    "achiev5" BOOLEAN NOT NULL DEFAULT false,
+    "achiev6" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Achievement_pkey" PRIMARY KEY ("id")
 );

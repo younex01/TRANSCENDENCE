@@ -121,7 +121,7 @@ model GameResult {
 
 model Achievement{
   id            String    @id @default(uuid())
-  userId        String
+  userId        String @unique
   achiev1       Boolean @default(false)
   achiev2       Boolean @default(false)
   achiev3       Boolean @default(false)

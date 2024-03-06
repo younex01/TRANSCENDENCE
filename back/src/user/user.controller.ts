@@ -80,6 +80,8 @@ export class UserController {
     @Get('getUserByUserId')
     @UseGuards(AuthGuard('jwt'))
     async getUserByUserId(@Query('user') user: string, @Req() req) {
+        console.log("wtffffff");
+        
         const users = await this.prisma.getUserByUserId(user);
         if(!users)
             throw new NotFoundException("User not found");
@@ -332,44 +334,97 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async lastGames(@Query("userId") userId: string) {
         const lastGames : any= await this.UserService.getGameResult(userId);
+
+        if(lastGames.user)
         console.log("lastGames", lastGames);
         
     
-        const lastGamesWithOpponents: any = await Promise.all(
-            lastGames.map(async (result) => {
-                if (result.opponentId !== userId) {
-                    const opponent = await this.UserService.getUser(result.opponentId);
-                    return { ...result, opponent };
-                }
-                return result;
-            })
-        );
-        console.log("lastGamesWithOpponents", lastGamesWithOpponents);
+        // const lastGamesWithOpponents: any = await Promise.all(
+        //     lastGames.map(async (result) => {
+        //         if (result.opponentId !== userId) {
+        //             const opponent = await this.UserService.getUser(result.opponentId);
+        //             return { ...result, opponent };
+        //         }
+        //         return result;
+        //     })
+        // );
+        // console.log("lastGamesWithOpponents", lastGamesWithOpponents);
     
-        return lastGamesWithOpponents;
+        return lastGames;
     }
 
     @Post('achievements')
     @UseGuards(AuthGuard('jwt'))
-    async achievements(@Body() userId: string) {
+    async achievements(@Query("userId") userId: string) {
+        console.log("userIduserIduserIduserIduserIduserIduserId", userId);
+        
         const gameResult : any= await this.UserService.getGameResult(userId);
+
+        console.log("gameResult", gameResult.lenght);
         let check: number = 0;
         for(let i = 0; i < gameResult.length; i++) {
-            if (gameResult[i].winnerId === userId) {
-                gameResult[i].status = "won";
+            if (gameResult[i].userId === userId && gameResult[i].status === "win") {
+                // console.log("check 1", check);
                 check++;
-            } else {
-                gameResult[i].status = "lost";
+            } 
+            else {
+                console.log("check 2");
+                
+                // gameResult[i].status = "lost";
             }
         }
-        switch (check) {
-            case  3: this.UserService.getAchievements(userId, "achiev1");
-            case  5: this.UserService.getAchievements(userId, "achiev2");
-            case  10: this.UserService.getAchievements(userId, "achiev3");
-            case 15: this.UserService.getAchievements(userId, "achiev4");
+        if(check >= 3){
+            console.log("heeereeerererererere");  
+            this.UserService.getAchievements(userId, "achiev1");
+        }
+        if(check >= 5){
+            console.log("heeereeerererererere22"); 
+            this.UserService.getAchievements(userId, "achiev2");
+        }
+        if(check >= 7){
+            console.log("heeereeerererererere"); 
+            this.UserService.getAchievements(userId, "achiev3");
+        }
+        if(check >= 15){
+            console.log("heeereeerererererere"); 
+            this.UserService.getAchievements(userId, "achiev4");
+        }
+        if(check >= 20){
+            console.log("heeereeerererererere"); 
+            this.UserService.getAchievements(userId, "achiev5");
+        }
+        if(check >= 25){
+            console.log("heeereeerererererere"); 
+            this.UserService.getAchievements(userId, "achiev6");
         }
 
+        // switch (check) {
+        //     case  3: this.UserService.getAchievements(userId, "achiev1");
+        //     case  5: this.UserService.getAchievements(userId, "achiev2");
+        //     case  10: this.UserService.getAchievements(userId, "achiev3");
+        //     case 15: this.UserService.getAchievements(userId, "achiev4");
+        // }
+        
+        console.log("gameResult1111111", gameResult);
+        console.log("check", check);
+        
+        
+        return check;
     }
+
+    @Get('getAllAchievements')
+    @UseGuards(AuthGuard('jwt'))
+    async getAllAchievements(@Query("userId") userId: string) {
+        const allAchievements = await this.UserService.getAllAchievements(userId);
+        console.log("allAchievements", allAchievements);
+        return allAchievements;
+    }
+
+
+
+
+    
+    
 
     
 

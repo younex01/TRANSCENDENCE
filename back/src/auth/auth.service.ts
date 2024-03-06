@@ -19,6 +19,17 @@ export class AuthService {
                 avatar: dto.avatar,
             },
         });
+        const achievment = await this.prisma.achievement.create({
+            data: {
+                userId: dto.id.toString(),
+                achiev1: false,
+                achiev2: false,
+                achiev3: false,
+                achiev4: false,
+                achiev5: false,
+                achiev6: false,
+            }
+        });
         
         return createNewUser;
     }

@@ -262,7 +262,7 @@ export default function Profile(props: any) {
               </div>
             </div>
             <div className="xl:w-[900px] w-[100%] h-full">
-              <Achievements />
+              <Achievements userId={props.params.id} />
             </div>
           </div>
 
