@@ -44,21 +44,23 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         socket.disconnect();
         return;
       }
+
       
       this.connectedUsers.set(socket.id, token_id.sub);
       // console.log('Token received:', token);
       // console.log('socket',socket.id);
       // console.log(this.connectedUsers);
       // console.log(existingUser);
-
-
+      
+      
       // Your logic here
-    // console.log("----->token:",token);
+      // console.log("----->token:",token);
+      
+      if (availibleRoomId)
+      {
 
-    if (availibleRoomId)
-    {
-      //update the status to in game for player2
-
+        // if(this.gameService.isBlocked(token_id.sub, this.players[this.id][0].db_id))
+        //   console.log("is blocked user")
 
       let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
@@ -68,7 +70,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       //
       this.id = this.game.length;
       if (this.players[this.id] && this.players[this.id].length == 1)
-        this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: "",pic: "",g_id: ""});
+        this.players[this.id].push({id: socket.id, playerNb: 2, x: 880, y: 175 ,score:0, width: 20, height: 100,name:"player2",giveUp: false,db_id: token_id.sub,pic: "",g_id: ""});
       // console.log("------------players-Data-------------",this.id);
       // console.log(this.players);
       const newGame: Game = {
@@ -113,7 +115,9 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
         this.players[this.id] = [];
       }
       if (this.players[this.id].length == 0)
-        this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: "",pic: "", g_id: ""});
+        this.players[this.id].push({id: socket.id, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: token_id.sub,pic: "", g_id: ""});
+
+      
     }
   }
 

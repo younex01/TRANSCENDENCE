@@ -370,4 +370,20 @@ resetBall(ball:Ball , canvas:Canvas)
     }
   }
 
+  isBlocked(userId:string, oppId:string):boolean
+  {
+    const blocked:any =  this.userService.getBlockedUsers(userId);
+    if (blocked.blockedByUsers)
+    {
+      if(blocked.blockedByUsers.include(oppId))
+        return true;
+    }
+    if (blocked.blockedUser)
+    {
+      if(blocked.blockedUser.include(oppId))
+        return true;
+    }
+    return false;
+  }
+
 }

@@ -391,7 +391,21 @@ export class UserService {
   }
 
 
+  async getBlockedUsers(userId: string): Promise<{ blockedByUsers: string[]; blockedUsers: string[] }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { blockedByUsers: true, blockedUsers: true },
+    });
 
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
+
+    return {
+      blockedByUsers: user.blockedByUsers ?? [],
+      blockedUsers: user.blockedUsers ?? [],
+    };
+  }
 
 
 
