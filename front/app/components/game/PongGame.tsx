@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Winner } from "./Winner";
+import { useSelector } from "react-redux";
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 
 const PongGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -18,12 +20,24 @@ const PongGame = () => {
   const [player, setPlayer] = useState<Player>()
   const [computer, setComputer] = useState<Player>()
   const [winnerName, setWinnerName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
 
   const [pic1,setPic1] = useState<string>("");
+  const userData = useSelector(selectProfileInfo);
   
   //select canvas
   const canv = canvasRef.current;
   const [ball, setBall] = useState<Ball>();
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 910 || window.innerHeight < 450);
+    };
+    handleResize(); // Check initially
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   useEffect(() => {
     if (player && computer && playAgain)
@@ -315,6 +329,11 @@ const PongGame = () => {
   }
   
   useEffect(() => {
+
+    setPic1(userData.avatar);
+    setFirstName(userData.username);
+
+
     const intervalId = setInterval(() => {
       if(canv)
       {
@@ -352,7 +371,7 @@ const PongGame = () => {
               </div>
             </div>
             <div className="flex justify-around items-center flex-raw py-5">
-              <span className="text-white pr-12">sanji</span>
+              <span className="text-white pr-12">{firstName}</span>
               <span className="text-white pl-12">AI</span>
             </div>
             <div className="flex justify-center">
@@ -362,7 +381,11 @@ const PongGame = () => {
                 id="pong"
                 height="450"
                 width="900"
-                // style={{ width: "100vmin", height: "55vmin" }}
+                style={{
+                  width: isSmallScreen ? '100vmin' : '900px',
+                  height: isSmallScreen ? '50vmin' : '450px',
+                  objectFit: 'contain'
+                }}
                 className="bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw"
               >
               </canvas>}
