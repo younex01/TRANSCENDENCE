@@ -42,8 +42,6 @@ export default function SearchPanel() {
     const getMyNotifications = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
-        console.log("notification");
-        console.log(notifications.data);
         setMyNotifications(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -57,8 +55,6 @@ export default function SearchPanel() {
     const getInviteToPlay = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getInviteToPlay?userId=${myData.id}`, { withCredentials: true });
-        console.log("notification");
-        console.log(notifications.data);
         setInvitToPlay(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -101,7 +97,6 @@ export default function SearchPanel() {
     try {
       axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
-      console.log("Notif", notif.senderId, "Myid", myData.id);
 
       const socket = io('http://localhost:3002', {
         query: {
@@ -109,10 +104,7 @@ export default function SearchPanel() {
           id: myData.id
         }
       });
-      // Emit an event with data to the backend gateway
       socket.emit('accepted_request', { key: myData.id, value: notif.senderId });
-      console.log("accepted request");
-      //socket.close();
 
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -242,7 +234,7 @@ export default function SearchPanel() {
                     )}
 
                     {notif.senderId === myData.id && (
-
+                      
                       <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
                         <div className=' flex  p-3  gap-4' >
                           <div className='relative h-[50px] w-[50px]'>
@@ -265,11 +257,11 @@ export default function SearchPanel() {
                     )}
                   </>
                 )
-                  :
-                  notif.status === "Declined" ? (
-
-                    notif.senderId === myData.id && (
-                      <>
+                :
+                notif.status === "Declined" ? (
+                  
+                  notif.senderId === myData.id && (
+                    <>
                         <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff]'>
                           <div className=' flex  p-3  gap-4' >
                             <div className='relative h-[50px] w-[50px]'>
@@ -288,11 +280,11 @@ export default function SearchPanel() {
                         </div>
                       </>
                     )
-
-                  )
+                    
+                    )
                     :
                     notif.status === "Accepted" && (
-
+                      
                       notif.senderId === myData.id && (
                         <>
                           <div key={index} className='flex w-[95%] h-[90px] sm:h-[80px] justify-between items-center rounded-[16px] bg-[#eef1ff] relative'>
@@ -315,9 +307,9 @@ export default function SearchPanel() {
                           </div>
                         </>
                       )
-
-                    )
-                }
+                      
+                      )
+                    }
 
               </>
             )}

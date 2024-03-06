@@ -19,7 +19,7 @@ export const Winner = ({ setPlayAgain, setWinning, winnerName}:Props) => {
 
 
   return (
-    <div className="bg-slate-500 h-[450px] w-[900px] rounded-3xl flex justify-around item-center flex-col">
+    <div className="bg-slate-500 h-screen w-[900px] rounded-3xl flex justify-around item-center flex-col">
       <div className='text-7xl pt-12 font-bold text-white max-md:max-w-full max-md:text-4xl flex justify-around items-center'>{winnerName} Win's</div>
       <div className='flex justify-around items-center flex-row'>
         <Link href="/Profile"> <button className='bg-amber-100 p-2 rounded-3xl text-3xl'>leave</button> </Link>

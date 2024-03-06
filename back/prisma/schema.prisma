@@ -9,7 +9,6 @@ datasource db {
   provider = "postgresql"
   url      = "postgres://mazino:mazino@localhost:5432/PGdb"
 }
-
 model User {
   id                   String          @id
   username             String          @unique
@@ -23,20 +22,16 @@ model User {
   groups               ChatGroup[]     @relation("UserGroup")
   sentRequests         friendRequest[] @relation("sent")
   receivedRequests     friendRequest[] @relation("received")
-  // sentPlayRequests     gameInvite[]    @relation("sent")
-  // receivedPlayRequests gameInvite[]    @relation("received")
   friends              User[]          @relation("friend")
   symmenticfriends     User[]          @relation("friend")
   blockedByUsers       String[]
   blockedUsers         String[]
   status               String?
-  // notifications        Notification[]
-  gameHistory               GameResult[]
-  sentToPlay         inviteToPlay[] @relation("sent")
-  receivedToPlay     inviteToPlay[] @relation("received")
-            
+  sentToPlay           inviteToPlay[]  @relation("sent")
+  receivedToPlay       inviteToPlay[]  @relation("received")
+  gameResult          GameResult[]
+  achievements        Achievement[]
 }
-
 model friendRequest {
   id         String   @id @default(uuid())
   sender     User     @relation("sent", fields: [senderId], references: [id])
@@ -47,7 +42,6 @@ model friendRequest {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
-
 model inviteToPlay {
   id         String   @id @default(uuid())
   sender     User     @relation("sent", fields: [senderId], references: [id])
@@ -58,17 +52,6 @@ model inviteToPlay {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
-
-// model Notification {
-//   id              String        @id @default(uuid())
-//   createdAt       DateTime      @default(now())
-//   type            String
-//   user            User          @relation(fields: [userId], references: [id])
-//   userId          String
-//   friendRequest   friendRequest @relation(fields: [friendRequestId], references: [id])
-//   friendRequestId String
-// }
-
 model ChatGroup {
   id           String    @id @default(uuid())
   name         String?   @unique
@@ -83,7 +66,6 @@ model ChatGroup {
   bannedUssers String[]
   type         String?
 }
-
 model Message {
   id          Int       @id @default(autoincrement())
   content     String
@@ -93,13 +75,23 @@ model Message {
   chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
   chatGroupId String
 }
-
 model GameResult {
-  id                    Int  @id @default(autoincrement())
-  opponent_pic          String
-  score_player          Int
-  score_opponent        Int
-  result                Boolean
-  user                  User    @relation(fields: [userId], references: [id])
-  userId                String
+  id           String    @id @default(uuid())
+  userId        String
+  opponentId    String
+  status        String
+  userScore     Int
+  opponentScore Int
+  user          User     @relation(fields: [userId], references: [id])
+}
+model Achievement{
+  id            String    @id @default(uuid())
+  userId        String @unique
+  achiev1       Boolean @default(false)
+  achiev2       Boolean @default(false)
+  achiev3       Boolean @default(false)
+  achiev4       Boolean @default(false)
+  achiev5       Boolean @default(false)
+  achiev6       Boolean @default(false)
+  user          User     @relation(fields: [userId], references: [id])
 }

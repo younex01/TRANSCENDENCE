@@ -13,28 +13,17 @@ import Link from "next/link";
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
-  const [playRandom, setplayRandom] = useState<boolean>(false);
   const [playFriend, setplayFriend] = useState<boolean>(false);
   const [hide, setHide] = useState<string>("");
-  const [playFreind, setplayFriends] = useState<boolean>(false);
   const [addMembers, setAddMembers] = useState<boolean>(false);
   const [hToPlay, setHowToPlay] = useState<boolean>(false);
   const [activeButton, setActiveButton] = useState("ai");
 
   const [groupData, setGroupData] = useState<any>([]);
-  // const [win, setWin] = useState<boolean>(false);
   const buttonAi = useRef<HTMLCanvasElement>(null);
 
 
   const userData = useSelector(selectProfileInfo);
-
-  // const [click, setClick] = useState(false)
-  // const handleClick = () => {
-  //   setClick((prev) => {
-  //     return !prev;
-  //   });
-  // };
-
 
   const [myFreinds, setMyFreinds] = useState([]);
 
@@ -46,10 +35,7 @@ export default function Home() {
 
     const listFriends = async () => {
       try {
-        // console.log("------------------->:(------------------->:userId", userId);
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${profileInfo.id}`, { withCredentials: true });
-        
-        console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -59,16 +45,6 @@ export default function Home() {
     listFriends();
   }, [profileInfo]);
 
-  // const Play = async (tar:string):Promise<void> => 
-  // {
-  //   console.log("invite to play");
-  //   console.log(userData.id);
-  //   // console.log(groupData.members[0].id);
-  //   await axios.post(
-  //     `http://localhost:4000/user/sendPlayAgain`,
-  //     { sender: userData.id, target:tar}, // to handel
-  //     { withCredentials: true });
-  // }
 
   const handleClickFr = () => {
     if (buttonAi.current) buttonAi.current.style.display = "none";
@@ -89,7 +65,6 @@ export default function Home() {
 
   return (
     <div className="bg-[#dbe0f6] w-full overflow-y-auto overflow-auto">
-      {/* <div  className="bg-red-500"> */}
       <div className="flex flex-col justify-around items-center  w-full h-[100vh]"
           ref={buttonAi}>
         <div
@@ -102,9 +77,7 @@ export default function Home() {
             You can challenge your friends or play with AI online. Let's start !
           </div>
         </div>
-        {/* <div ref={buttonAi} className="flex flex-col bg-opacity-90 bg-red-500"> */}
         <div
-          // ref={buttonAi}
           className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10">
           <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[50%] gap-10">
             <div
@@ -159,7 +132,6 @@ export default function Home() {
                             <div className="flex mt-4 md:text-[16px] text-[12px] sm:text-[14px] md:w-[120px] w-max-content">
                               <Link href="../Play">
                                 <button className=" md:w-[120px] w-max-content px-3 h-[45px] hover:bg-[#4f587d] bg-[#6E7AAE] text-[#D7D7D7] rounded-[15px] ml-6" 
-                                  // onClick={() => Play(groupData.members[0].id)}
                                   >
 
                                   Invite
@@ -278,7 +250,6 @@ export default function Home() {
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )
@@ -290,7 +261,6 @@ export default function Home() {
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )}
@@ -301,7 +271,6 @@ export default function Home() {
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )}
@@ -312,31 +281,9 @@ export default function Home() {
           </div>
           
       </div>
+      
         {playFriend && <PlayWithFriend />}
         {playAi && <PongGame />}
-      
     </div>
   );
 }
-
-
-
-
-
-
-                      {/* <div className="absolute bottom-5 right-9 font-[IBM-Plex-Serif] font-thin flex items-center justify-center">
-                        <button
-                          className="w-[139px] h-[40px] bg-color1 text-[30px] text-[#D7D7D7] flex items-center justify-center rounded-[19px] mr-2"
-                          onClick={handleClickFr}
-                        >
-                          Confirme
-                        </button>
-                        <button
-                          className="w-[139px] h-[40px] bg-[#FFFFFF] bg-opacity-[41%] text-[30px] flex items-center justify-center rounded-[19px] opacity-[69%]"
-                          onClick={() => {
-                            setAddMembers(!addMembers);
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div> */}

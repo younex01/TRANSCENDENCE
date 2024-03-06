@@ -1,24 +1,48 @@
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectLastGames } from "@/redux/features/lastGamesSlice/lastGameSlice";
 import Lottie from 'react-lottie-player';
 import animationData from   "../../../public/nothing.json"
+import axios from "axios";
 // import Lottie from "lottie-react";
 
 
-export default function LastGames() {
+export default function LastGames({userId} : {userId: any}) {
   const profilepic = useSelector(selectProfileInfo);
-  const lastGames = useSelector(selectLastGames);
+  // const lastGames = useSelector(selectLastGames);
   const [data, setData] = useState<any>();
+  const [userData, setUserData] = useState<any>();
+  const [last_games, setLastGames] = useState<any>([]);
 
   useEffect(() => {
     setData(profilepic);
   }, [profilepic]);
+
+  useEffect(() => {const listFriends = async () => {
+    try {
+      console.log("userIdin last", userId);
+      
+      const response = await axios.get(`http://localhost:4000/user/lastGames?userId=${userId}`, { withCredentials: true });
+      const userData = await axios.get(`http://localhost:4000/user/getUserByUserId?user=${userId}`, { withCredentials: true });
+      setUserData(userData.data);
+      console.log("response here", response.data);
+      setLastGames(response.data);
+    } catch (error) {
+      console.error("Error :", error);
+    }
+
+  };
+  listFriends();
+
+  }, []);
+
+  console.log("**********************porfilepic", userId);
   
 
+
   return (
-    <div className="flex flex-col items-center justify-center h-[100%] w-[100%]">
+    <div className="flex flex-col items-center justify-center  w-[100%]">
       <div className="items-center pl-10 py-3  text-gray  w-[100%] h-[48px]  mb-2 sticky top-0 bg-[#f4f6fb] text-[18px] text-[#263266]  font-medium flex gap-[6px]">
       <svg
               width="20"
@@ -48,74 +72,60 @@ export default function LastGames() {
       </div>
 
       <div className="flex flex-col items-center justify-center w-full h-full">
-        {lastGames.length === 0 ? (
+        {last_games.length === 0 ? (
           <Lottie animationData={animationData} play style={{ width: 300, height: 300 }} />
         ) : (
           <>
-            {lastGames &&
-              lastGames.map((game: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex flex-row items-center justify-center w-full lg:w-10/12 2xl:w:10/12 "
-                >
+            {last_games &&
+              last_games.reverse().map((game: any, index: number) => (
+                game.userId !== userId ?
+                <div key={index} className="flex flex-row items-center justify-center w-full lg:w-10/12 2xl:w:10/12 " >
                   <div className="w-[50%] h-[150px] flex flex-row items-center justify-around">
                     <div className="flex flex-col items-center justify-center">
-                      <p
-                        className="text-[16px] font-bold text-[#263266]"
-                      >
-                        {profilepic.username}
-                      </p>
-                      <h4
-                        className={
-                          game.result ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`
-                        }
-                      >
-                        {game.score.player}
-                      </h4>
+                      <p className="text-[16px] font-bold text-[#263266]"> {game.user.username} </p>
+                      <h4 className={game.userScore <  game.opponentScore ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`}> {game.opponentScore} </h4>
                     </div>
                     <div className="w-[80px] h-[80px]">
-                      <img
-                        src={data?.avatar}
-                        alt="sangi"
-                        className="w-[80px] h-[80px] object-cover rounded-full"
-                      />
+                      <img src={userData?.avatar} alt="first player" className="w-[80px] h-[80px] object-cover rounded-full" />
                     </div>
                   </div>
-                  <div className="w-[80px] h-[50px] mb-[1px] flex justify-center items-center">
-                    <img
-                      src="../../../images/VS.svg"
-                      alt="VS"
-                      className="h-[30px] w-[30px]"
-                    />
-                  </div>
+                  <div className="w-[80px] h-[50px] mb-[1px] flex justify-center items-center"> <img src="../../../images/VS.svg" alt="VS" className="h-[30px] w-[30px]"/> </div>
 
                   <div className="w-[50%] h-[150px] flex flex-row items-center justify-around">
                     <div className="w-[80px] h-[80px]">
-                      <img
-                        src="../../../hh1.jpg "
-                        alt="sangi"
-                        className="w-[80px] h-[80px] object-cover rounded-full"
-                      />
+                      <img src={game.user?.avatar} alt="second" className="w-[80px] h-[80px] object-cover rounded-full"/>
                     </div>
                     <div className="flex flex-col items-center justify-center">
-                      <p
-                        className="text-[16px] font-bold text-[#263266]"
-                      >
-                        name
-                      </p>
-                      <h4
-                        className={
-                          !game.result ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`
-                        }
-                      >
-                        {game.score.opponent}
-                      </h4>
+                      <p className="text-[16px] font-bold text-[#263266]">{game.user?.username}</p>
+                      <h4 className={game.userScore >  game.opponentScore ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`}>{game.userScore}</h4>
                     </div>
                   </div>
-                  {/* <div className={`${game.result === "victory" ? "bg-green-500" : "bg-red-500"} w-[130px] mb-[18px] h-[40px] rounded-lg flex justify-center items-center`}>
-                  <h4 className="">{game.result === "victory" ? "Victory" : "Loss"}</h4>
-                </div> */}
                 </div>
+                :null
+                // <div key={index} className="flex flex-row items-center justify-center w-full lg:w-10/12 2xl:w:10/12 " >
+                //   <div className="w-[50%] h-[150px] flex flex-row items-center justify-around">
+                //     <div className="flex flex-col items-center justify-center">
+                //       <p className="text-[16px] font-bold text-[#263266]"> {profilepic.username} </p>
+                //       <h4 className={game.userScore >  game.opponentScore ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`}> {game.userScore} </h4>
+                //     </div>
+                //     <div className="w-[80px] h-[80px]">
+                //       <img src={data?.avatar} alt="first player" className="w-[80px] h-[80px] object-cover rounded-full" />
+                //     </div>
+                //   </div>
+                //   <div className="w-[80px] h-[50px] mb-[1px] flex justify-center items-center"> <img src="../../../images/VS.svg" alt="VS" className="h-[30px] w-[30px]"/> </div>
+
+                //   <div className="w-[50%] h-[150px] flex flex-row items-center justify-around">
+                //     <div className="w-[80px] h-[80px]">
+                //       <img src={game.opponent?.avatar} alt="second" className="w-[80px] h-[80px] object-cover rounded-full"/>
+                //     </div>
+                //     <div className="flex flex-col items-center justify-center">
+                //       <p className="text-[16px] font-bold text-[#263266]">{game.opponent?.username}</p>
+                //       <h4 className={game.userScore <  game.opponentScore ? `text-[#308a48] font-semibold text-[14px]` : `text-[#802c2c] font-semibold text-[14px]`}>{game.opponentScore}</h4>
+                //     </div>
+                //   </div>
+                // </div>
+                // :
+                
               ))}
           </>
         )}

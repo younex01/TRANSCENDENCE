@@ -48,23 +48,18 @@ export default function page() {
         setIsSmallScreen(window.innerWidth < 910 || window.innerHeight < 450);
       };
   
-      handleResize(); // Check initially
+      handleResize(); 
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
     
 
-    //select canvas
     let canv = canvasRef.current;
     const [ball, setBall] = useState<Ball>();
 
     useEffect(() => {
       if (player && computer && playAgain)
       {
-        // player.score = 0;
-        // computer.score = 0;
-        // setScore1(0);
-        // setScore2(0);
         setComputerWinnes(false);
         setPlayerWinnes(false);
       }
@@ -77,8 +72,6 @@ export default function page() {
       console.log("[",mouseX,mouseY,"]");
       return {x: mouseX, y: mouseY};
     }
-
-    //ball interface
     interface Ball{
       x:number;
       y:number;
@@ -198,7 +191,6 @@ export default function page() {
           {
             let rect = canvas.getBoundingClientRect();
             let newPosition = getMouesPosition(e.clientY - rect.top, canvas).y;
-            //send to the server positon of the player
             socket?.emit("mouse_move",newPosition);
           }
       };
@@ -213,9 +205,7 @@ export default function page() {
     const render = (data:Game) => {
       drawRect();
       drawNet()
-      //draw the ball
       drawCircle(data.ball);
-      //draw the player
       drawFirstPlayer(data.players[0]);
       drawSecondPlayer(data.players[1]);
     } 
@@ -232,10 +222,6 @@ export default function page() {
       const response = await axios.get('http://localhost:4000/user/me', {withCredentials: true});
       const userData = response.data.user;
       socket?.emit("user_id",userData.id);
-      // console.log("myData");
-      // console.log(myData.id);
-      // console.log(userData);
-      // socket?.emit("playAgainRequest", myData.id)
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -253,7 +239,7 @@ export default function page() {
             fetchData();
           }
           setStart(false);
-          setGame(true);//todo update
+          setGame(true);
         }
         else if (event == "update")
         {
@@ -309,7 +295,7 @@ export default function page() {
 
 
   return (
-    <>
+    <div className='w-full bg-[#dbe0f6]  flex justify-center items-center'>
     <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
         {start && <div className='text-white'>{text}</div>}
     </div>
@@ -330,7 +316,7 @@ export default function page() {
                 <span className="text-white pr-12">{firstName}</span>
                 <span className="text-white pl-12">{secondName}</span>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center w-full h-full">
                 {!winning &&
                     <canvas
                     ref={canvasRef}
@@ -350,6 +336,6 @@ export default function page() {
             </div>
             </>
         }
-    </>
+    </div>
   )
 }

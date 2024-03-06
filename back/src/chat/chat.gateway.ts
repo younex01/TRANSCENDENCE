@@ -71,6 +71,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload: any) {
+    console.log("payload.username", payload.username);
+    console.log("payload.username", payload);
+    
     payload.message = `announcement ${payload.username} has muted ${payload.target_username}`
     const timestampIn60Seconds = new Date();
     timestampIn60Seconds.setSeconds(timestampIn60Seconds.getSeconds() + 60);

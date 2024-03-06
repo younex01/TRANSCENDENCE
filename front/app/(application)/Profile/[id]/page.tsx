@@ -24,6 +24,8 @@ export default function Profile(props: any) {
   const [unblock, setUnblock] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
 
+  
+  
   useEffect(() => {
     const getUserData = async () => {
       console.log("useeffect ldakhl dyalha");
@@ -31,11 +33,11 @@ export default function Profile(props: any) {
         const response = await axios.get(
           `http://localhost:4000/user/getUserByUserId?user=${props.params.id}`,
           { withCredentials: true }
-        );
-        setUserData(response.data);
-        setIsLoading(false);
-      } catch (error: any) {
-        if (error.response.status === 404)
+          );
+          setUserData(response.data);
+          setIsLoading(false);
+        } catch (error: any) {
+          if (error.response.status === 404)
           setUserNotFound(true);
         console.error("Error fetching user data:", error);
         setIsLoading(false);
@@ -43,7 +45,9 @@ export default function Profile(props: any) {
     };
     getUserData();
   }, [props.params.id, refreshNotifs, refreshStatus]);
-
+  
+  console.log("userid-- in props--------------", props.params.id);
+  console.log("userid------in redux store----------", myData.id);
   useEffect(() => {
     const sendFriendRequest = async () => {
       if (clicked) {
@@ -254,11 +258,11 @@ export default function Profile(props: any) {
               </div>
 
               <div className="h-[70vh] max-h-[590px] rounded-[16px] mb-8 px-3 mx-5 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]">
-                <LastGames />
+                <LastGames userId={props.params.id} />
               </div>
             </div>
             <div className="xl:w-[900px] w-[100%] h-full">
-              <Achievements />
+              <Achievements userId={props.params.id} />
             </div>
           </div>
 

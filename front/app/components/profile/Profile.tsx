@@ -44,7 +44,7 @@ export default function Profile() {
             </div>
           </div>
           <div className='h-[70vh] max-h-[580px] w-[94%] rounded-[16px] mt-3 overflow-y-visible overflow-x-hidden no-scrollbar bg-[#f4f6fb]'>
-            <LastGames/>
+            <LastGames userId={ProfileInfo.id}/>
           </div>
         </div>
       )}

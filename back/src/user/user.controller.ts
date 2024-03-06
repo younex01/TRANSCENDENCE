@@ -58,6 +58,7 @@ export class UserController {
     @Get('getUserByUserId')
     @UseGuards(AuthGuard('jwt'))
     async getUserByUserId(@Query('user') user: string, @Req() req) {
+        
         const users = await this.prisma.getUserByUserId(user);
         if (!users)
             throw new NotFoundException("User not found");
@@ -255,4 +256,56 @@ export class UserController {
         const combinedBlockedUsers = [...blocklist.blockedByUsers, ...blocklist.blockedUsers];
         return combinedBlockedUsers;
     }
+
+    @Get('lastGames')
+    @UseGuards(AuthGuard('jwt'))
+    async lastGames(@Query("userId") userId: string) {
+        const lastGames : any= await this.UserService.getGameResult(userId);
+        return lastGames;
+    }
+
+    @Post('achievements')
+    @UseGuards(AuthGuard('jwt'))
+    async achievements(@Query("userId") userId: string) {
+        
+        const gameResult : any= await this.UserService.getGameResult(userId);
+
+        let check: number = 0;
+        for(let i = 0; i < gameResult.length; i++) {
+            if (gameResult[i].userId === userId && gameResult[i].status === "win") {
+                check++;
+            } 
+        }
+        if(check >= 3){
+            this.UserService.getAchievements(userId, "achiev1");
+        }
+        if(check >= 5){
+            this.UserService.getAchievements(userId, "achiev2");
+        }
+        if(check >= 7){
+            this.UserService.getAchievements(userId, "achiev3");
+        }
+        if(check >= 15){
+            this.UserService.getAchievements(userId, "achiev4");
+        }
+        if(check >= 20){
+            this.UserService.getAchievements(userId, "achiev5");
+        }
+        if(check >= 25){
+            this.UserService.getAchievements(userId, "achiev6");
+        }
+        
+        
+        return check;
+    }
+
+    @Get('getAllAchievements')
+    @UseGuards(AuthGuard('jwt'))
+    async getAllAchievements(@Query("userId") userId: string) {
+        const allAchievements = await this.UserService.getAllAchievements(userId);
+        return allAchievements;
+    }
 }
+
+
+

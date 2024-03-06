@@ -4,6 +4,7 @@ import {
   setProfileData,
 } from "@/redux/features/profile/profileSlice";
 import axios from "axios";
+import Image from "next/image";
 import React, { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -98,9 +99,12 @@ export default function QRcode() {
 
           <div className="w-full  flex items-center justify-center ">
             <div className=" overflow-hidden w-[250px] h-[250px] rounded-[24px] border-[1px]">
-              <img
+              <Image
                 src={image}
                 alt="Your Image Alt Text"
+                draggable={false}
+                width={250}
+                height={250}
                 className={
                   !datauser.twoFactorAuthEnabled
                     ? `object-cover w-[250px] h-[250px]`

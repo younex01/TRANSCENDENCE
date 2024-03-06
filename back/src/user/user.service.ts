@@ -102,8 +102,7 @@ export class UserService {
       include: {
         sender: true,
         receiver: true
-      },
-      orderBy: { updatedAt: 'desc' }
+      }
     });
   }
 
@@ -398,10 +397,47 @@ export class UserService {
     });
   }
 
+  async getGameResult(myId: string) {
+    console.log("myId", myId);
+
+    return this.prisma.gameResult.findMany({
+      where: {
+        OR: [
+          { userId: myId },
+          { opponentId: myId }
+        ]
+      },
+      include: {
+        user: true,
+      }
+    });
+  }
+
+
+  async getAchievements(myId: string, achievement: string) {
+    const existingRecord = await this.prisma.achievement.findFirst({
+      where: {
+        userId: myId
+      },
+    });
+
+    if (!existingRecord) return;
+
+    return this.prisma.achievement.updateMany({
+      where: { id: existingRecord.id }, // Updated to use userId instead of id
+      data: {
+        [achievement]: true
+      }
+    });
+  }
 
 
 
-
+  async getAllAchievements(myId: string) {
+    return this.prisma.achievement.findFirst({
+      where: { userId: myId }
+    });
+  }
 
 
 
