@@ -20,6 +20,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, payload: any) {
+    const roomData = await this.chatService.getRoom(payload.roomId);
+    if (!roomData) return;
+    
+    const user = await this.chatService.getUser(payload.userId);
+    if (!user) return;
+
+
+    if (await this.chatService.checkIfBanned(payload.userId, payload.roomId) === 1) return
+    if (await this.chatService.checkIfMuted(payload.userId, payload.roomId) === 1) return
+
     await this.chatService.addMessagesToRoom(payload);
     const message = await this.chatService.getGroupMessages(payload.roomId);
     this.server.to(payload.roomId).emit('getAllMessages', message, payload.roomId);
@@ -35,11 +45,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit("alreadyJoined", `You are already on that channel`);
       return;
     }
+    
     const groupData = await this.chatService.getRoom(payload.groupId);
-    console.log("await bcrypt.compare(payload.password, groupData.password)", await bcrypt.compare(payload.password, groupData.password));
-    if (!await bcrypt.compare(payload.password, groupData.password)) {
-      console.log("tfwtf wach makaydkholch ???");
-      
+    if (payload.password && !await bcrypt.compare(payload.password, groupData.password)) {
       client.emit("joinFailed", "Wrong Password");
       return;
     }
@@ -54,7 +62,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('kick')
   async kick(client: Socket, payload: any) {
     payload.message = `announcement ${payload.username} has kicked ${payload.target_username} from this room`
-    await this.chatService.kickUserFromRoom(payload.target, payload.roomId)
+    if (await this.chatService.kickUserFromRoom(payload.target, payload.roomId) === -1) return
     await this.handleSendMessage(client, payload)
     this.server.to(payload.roomId).emit("refresh");
     const roomData = await this.chatService.getRoom(payload.roomId);
@@ -63,13 +71,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('mute')
   async Mute(client: Socket, payload: any) {
-    console.log("payload.username", payload.duration);
-    console.log("payload.username", payload);
-    
-    
     payload.message = `announcement ${payload.username} has muted ${payload.target_username}`
-    await this.chatService.MuteUserFromRoom(`${payload.target} + ${payload.duration}`, payload.roomId)
+    const timestampIn60Seconds = new Date();
+    timestampIn60Seconds.setSeconds(timestampIn60Seconds.getSeconds() + 60);
+    await this.chatService.MuteUserFromRoom(`${payload.target} ${timestampIn60Seconds.getTime()}`, payload.roomId)
     await this.handleSendMessage(client, payload)
+
     this.server.to(payload.roomId).emit("refresh");
   }
 
@@ -85,6 +92,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('unmute')
   async Unmute(client: Socket, payload: any) {
+    console.log("hh h h h h h");
+    
+    if (await this.chatService.checkIfMuted(payload.target, payload.roomId) !== 1){ 
+      console.log("hh h h h h h222222");
+      this.server.to(payload.roomId).emit("alreadyUnmuted", payload.userId);
+      return;
+    }
     payload.message = `announcement ${payload.username} has unmuted ${payload.target_username}`
     await this.chatService.UnmuteUserFromRoom(payload.target, payload.roomId)
     await this.handleSendMessage(client, payload)
@@ -116,19 +130,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
     await this.chatService.setRoomToPublic(payload.roomId);
     await this.handleSendMessage(client, payload)
-    this.server.to(payload.roomId).emit('refresh', "Public");
+    this.server.to(payload.roomId).emit('refresh', "Public", roomData.name);
+    this.server.emit('refreshJoinComp');
   }
 
   @OnEvent('setRoomToProtected')
-  async setRoomToProtected(client: Socket, payload: any) {
+  async setRoomToProtected(client: Socket, payload: any, roomName:string) {
+    const roomData = await this.chatService.getRoom(payload.roomId);
+    if (!roomData) return;
     await this.handleSendMessage(client, payload)
-    this.server.to(payload.roomId).emit('refresh', "Protected");
+    this.server.to(payload.roomId).emit('refresh', "Protected", roomName);
+    this.server.emit('refreshJoinComp');
   }
 
 
-  @SubscribeMessage('changeRoomPassword')
-  async changePassword(client: Socket, payload: any) {
-      this.server.to(payload.roomId).emit('refresh');
+  @OnEvent('changeRoomPassword')
+  async changePassword(client: Socket, roomId: any) {
+    console.log("hna 2");
+      console.log("hna 1");
+      
+      this.server.emit('refreshJoinComp');
   }
 
   @SubscribeMessage('leave')
@@ -180,11 +201,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   handleConnection(client: any) {
-    console.log("chat connected")
   }
 
   handleDisconnect(client: any) {
-    console.log("chat disconnected")
   }
 
 }

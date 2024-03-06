@@ -1,6 +1,6 @@
 'use client'
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import { RootState } from '@/redux/store/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,14 +21,13 @@ export default function Page(props: any) {
   const [groupData, setGroupData] = useState<any>([]);
   const [refresh, setRefresh] = useState(true);
   const [refreshStatus, setRefreshStatus] = useState(true);
-  const [isMuted, setIsMuted] = useState<any>(false);
   const [blockType, setBlockType] = useState<string>();
   const [memberSettings, setMemberSettings] = useState(Array(groupData?.members?.length || 0).fill(false));
   const [refreshNotifs, setRefreshNoifications] = useState(false)
   const [myBlockList, setMyBlockList] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [clicked, setIsclicked] = useState(false);
-  const [remainingDuration, setRemainingDuration] = useState(60);
+  const scrolToBottom = useRef<any>(null);
 
   const refreshConvos = useSelector((state: RootState) => state.refresh.refresh);
   const dispatch = useDispatch();
@@ -51,11 +50,9 @@ export default function Page(props: any) {
           const data = response.data;
           setGroupData(data.data);
           console.log("data.data", data.data);
+          console.log("nani dfk hh 1");
           
-          if (data.data.type !== "DM") {
-            setIsMuted((await axios.get(`http://localhost:4000/chat/getIsMuted?userId=${userData.id}&groupId=${props.params.id}`, { withCredentials: true })).data);
-          }
-          else {
+          if (data.data.type === "DM") {
 
             const myData = await axios.get(`http://localhost:4000/user/getUserByUserId?user=${userData.id}`, { withCredentials: true });
             const isFriend = await axios.get(`http://localhost:4000/user/checkIfFriend?myId=${userData.id}&&receiverId=${data.data.members[0].id}`, { withCredentials: true });
@@ -78,14 +75,6 @@ export default function Page(props: any) {
 
     fetchChatGroups();
   }, [props.params.id, refresh, refreshNotifs, refreshStatus]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRemainingDuration(prevDuration => prevDuration - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
 
   const handleToggleSettings = (index: any) => {
@@ -114,25 +103,24 @@ export default function Page(props: any) {
     })
     handleToggleSettings(index);
   }
-
+  
   useEffect(() => {
     socket?.on("refreshStatus", () => {
-      console.log("wach fkholds adhads asd");
-      
       dispatch(setRefreshConvos(!refreshConvos))
       setRefreshStatus(!refreshStatus);
     });
-    socket?.on("refresh", (channelStatus: any) => {
+
+    socket?.on("refresh", (channelStatus: string, channelName: string) => {
       setRefresh(!refresh);
       dispatch(setRefreshConvos(!refreshConvos))
-      if (channelStatus) toast.success(`This channel has been set to ${channelStatus}`)
+      if (channelStatus && channelName === groupData.name) toast.success(`This channel has been set to ${channelStatus}`)
     });
 
     socket?.on('getAllMessages', (data: any, roomId:string) => {
       if(roomId === props.params.id){
       setMessages(data);
     }
-    })
+    });
 
     socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
       setRefreshNoifications(!refreshNotifs);
@@ -152,7 +140,14 @@ export default function Page(props: any) {
           router.push('/Chat');
         toast.error(`You have been ${type} from ${roomName}`);
       }
-    })
+    });
+
+    socket?.on("alreadyUnmuted",(myId:string) =>{
+      if (myId === userData.id){
+      toast(`This user is already unmuted`);
+    }
+      setRefresh(!refresh);
+    });
 
     return () => {
       socket?.off("refresh");
@@ -161,8 +156,14 @@ export default function Page(props: any) {
       socket?.off("refreshFrontfriendShip");
       socket?.off("redirectToChatPage");
       socket?.off("changePasswordResponse");
+      socket?.off("alreadyUnmuted");
     };
   });
+
+  useEffect(() => {
+    scrolToBottom?.current?.scrollIntoView({ behavior: "smooth"});
+
+  }, [messages]);
 
   function sendMessage() {
     setMssage("");
@@ -181,7 +182,8 @@ export default function Page(props: any) {
   };
 
   function checkIfUserMuted(userId: string) {
-    return groupData?.mutedUsers.includes(userId);
+    console.log("groupData?.mutedUsers", groupData?.mutedUsers);
+    return groupData?.mutedUsers.some((user:string) => user.split(" ")[0] === userId);
   }
 
   function checkIfAdmin(userId: string) {
@@ -249,6 +251,7 @@ export default function Page(props: any) {
       message: "",
       roomId: groupData?.id,
       userId: userData.id,
+      username: userData.username,
     });
     router.push('/Chat');
     
@@ -399,6 +402,8 @@ const Play = async (tar:string):Promise<void> =>
                     }
                   </div>
                 ))}
+                <div ref={scrolToBottom}/>     
+
               </div>
 
 
@@ -517,26 +522,14 @@ const Play = async (tar:string):Promise<void> =>
                   }
 
                   </div>
+
                 ))}
+                  <div ref={scrolToBottom}/>                
               </div>
-
-
-
-              {(isMuted > 0) ?
-                (
-                  <div className='sendBox flex justify-between items-center w-full h-[100px] absolute bottom-0 border-t-[2px] bg-opacity-[52%] overflow-hidden'>
-                    <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%] cursor-not-allowed outline-none' type="search" placeholder={`you are muted for ${remainingDuration}`} readOnly value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
-                    <div className='flex justify-center w-[50px] h-[50px] bg-[#000000] bg-opacity-[24%] mr-[10px] ml-[10px] rounded-[25px]'> <button className='mr-[4px] cursor-not-allowed'> <img src="/send.svg" alt="/send.svg" onClick={sendMessage} /> </button> </div>
-                  </div>
-                )
-                :
-                (
-                  <div className='sendBox flex justify-between items-center w-full h-[100px] absolute bottom-0 border-t-[2px] bg-opacity-[52%] overflow-hidden'>
-                    <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%]' type="search" placeholder='Type your message here' value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
-                    <div className='flex justify-center w-[50px] h-[50px] bg-[#000000] bg-opacity-[24%] mr-[10px] ml-[10px] rounded-[25px]'> <button className='mr-[4px]'> <img src="/send.svg" alt="/send.svg" onClick={sendMessage} /> </button> </div>
-                  </div>
-                )
-              }
+              <div className='sendBox flex justify-between items-center w-full h-[100px] absolute bottom-0 border-t-[2px] bg-opacity-[52%] overflow-hidden'>
+                <div className='w-[100%]'><input className='send w-[99%] h-[55px] pl-[20px] rounded-[10px] ml-[10px] bg-gray-200  bg-opacity-[45%]' type="search" placeholder='Type your message here' value={message} onChange={(e) => setMssage(e.target.value)} onKeyDown={(e) => enterKeyDown(e.key)} /></div>
+                <div className='flex justify-center w-[50px] h-[50px] bg-[#000000] bg-opacity-[24%] mr-[10px] ml-[10px] rounded-[25px]'> <button className='mr-[4px]'> <img src="/send.svg" alt="/send.svg" onClick={sendMessage} /> </button> </div>
+              </div>
             </div>
           </div>
 

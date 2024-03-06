@@ -10,9 +10,9 @@ export class ChatService {
     return this.prisma.chatGroup.create({ data: chatGroup });
   }
 
-  async roomNameCheck(roomName:string) {
+  async roomNameCheck(roomName: string) {
     return this.prisma.chatGroup.count({
-      where : {name:roomName}
+      where: { name: roomName }
     });
   }
 
@@ -110,11 +110,11 @@ export class ChatService {
     const room = await this.getGroupWithMembers(roomId);
     const user = await this.getUser(userId);
 
-    if (!room || !user) return;
+    if (!room || !user) return -1;
 
     const userIndex = room.members.findIndex((member) => member.id === user.id);
 
-    if (userIndex === -1) return;
+    if (userIndex === -1) return -1;
 
     return this.prisma.chatGroup.update({
       where: { id: roomId },
@@ -151,11 +151,27 @@ export class ChatService {
   }
 
   async checkIfMuted(userId: string, roomId: string) {
-    console.log("yarbi tkhdem hh : ", userId);
-    
-    return this.prisma.chatGroup.count({
-      where: { id: roomId, mutedUsers: { has: userId.split(" ")[0] } },
-    });
+
+    const roomData = await this.getRoom(roomId);
+
+    if (roomData) {
+      const mutedUser = roomData.mutedUsers.find(user => userId === user.split(" ")[0]);
+      if (mutedUser) {
+
+        console.log("mutedUser", mutedUser);
+        
+        const timestampIn60Seconds = new Date();
+        if (Number(mutedUser.split(" ")[1]) > timestampIn60Seconds.setSeconds(timestampIn60Seconds.getSeconds())) {
+          return 1;
+        }
+        else {
+          await this.UnmuteUserFromRoom(userId, roomId);
+          return 0;
+        }
+      }
+      else
+        return 0;
+    }
   }
 
   async checkIfBanned(userId: string, roomId: string) {
@@ -190,10 +206,9 @@ export class ChatService {
 
   async MuteUserFromRoom(userId: string, roomId: string) {
 
-    console.log("userId", userId);
-    
     const room = await this.getGroupWithMembers(roomId);
     const user = await this.getUser(userId.split(" ")[0]);
+    console.log("user", user);
 
     if (!room || !user) return;
     const userIndex = room.members.findIndex((member) => member.id === user.id);
@@ -204,7 +219,7 @@ export class ChatService {
         where: { id: roomId },
         data: {
           mutedUsers: {
-            push: user.id
+            push: userId
           }
         }
       });
@@ -337,7 +352,7 @@ export class ChatService {
     const isDMalreadyexist = await this.isDMalreadyexist(userId1, userId2);
     if (isDMalreadyexist) return;
 
-      const uuid = uuidv4();
+    const uuid = uuidv4();
     console.log("waaaaaaaaaa l9alwai", uuid)
     return this.prisma.chatGroup.create({
       data: {

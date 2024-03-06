@@ -11,16 +11,20 @@ export default function JoinGroupChat(props:any) {
 
   const socket = useSelector((state:RootState) => state.socket.socket);
   const dispatch = useDispatch();
+  const [refresh, setRefresh] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState<any>([]);
   const [password, setPassword] = useState<string>("");
+  // dispatch(setRefreshConvos(!refreshConvos))
 
   const userData = useSelector(selectProfileInfo);
 
   useEffect(() => {
+    console.log("kyaaa------------------------");
     const fetchChatGroups = async () => {
       try {
         const response = await axios.get('http://localhost:4000/chat/getChatGroups', { withCredentials: true });
-  
+        
         if (response.status === 200) {
           const data = response.data;
           setGroups(data);
@@ -31,15 +35,24 @@ export default function JoinGroupChat(props:any) {
         console.error('Error fetching data:', error.message);
       }
     };
+
+    // socket?.on("refreshJoinComp", () =>{
+    //   console.log("kyaaaaaaaah111111111");
+    //   setRefresh(!refresh);
+    // });
     
     fetchChatGroups();
-  }, []);
+  }, [refresh]);
   
 
   useEffect(() => {
 
     socket?.on("joinFailed", (errorMessage:string) =>{
       toast.error(`error: ${errorMessage}`);
+    });
+    socket?.on("refreshJoinComp", () =>{
+      console.log("kyaaaaaaaah111111111");
+      setRefresh(!refresh);
     });
     socket?.on("joinSuccessfull", (successMessage:string) =>{
       toast.success(`${successMessage}`);
@@ -53,11 +66,12 @@ export default function JoinGroupChat(props:any) {
 
     return () => {
       socket?.off("joinFailed");
+      socket?.off("refreshJoinComp");
       socket?.off("joinSuccessfull");
       socket?.off("alreadyJoined");
       socket?.off("banned");
     };
-  }, []); 
+  }); 
 
   function joinGroupChat(groupId: string, groupChatsname:string) {
     socket?.emit("joinGroupChat", { userId: userData.id, groupId, roomName: groupChatsname});
