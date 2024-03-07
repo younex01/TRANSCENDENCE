@@ -27,7 +27,6 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   private connectedUsers = new Map<string, any>();
   private  acc_rqst: Map<string, string> = new Map();
 
-
   @SubscribeMessage('connecte')
   async handleConnection(socket: Socket): Promise<void> {
     
@@ -118,7 +117,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   @SubscribeMessage('user_id')
   async handle_id(@MessageBody() id: string , @ConnectedSocket() client: Socket) : Promise<void>
   {
-    const g_id:string = ""; //to remove
+    const g_id:string = ""; 
     this.gameService.handle_id(id,g_id, client.id,this.game);
   }
 

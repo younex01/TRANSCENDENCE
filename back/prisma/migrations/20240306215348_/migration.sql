@@ -22,6 +22,7 @@ CREATE TABLE "friendRequest" (
     "receiverId" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "friendRequest_pkey" PRIMARY KEY ("id")
 );
@@ -33,6 +34,7 @@ CREATE TABLE "inviteToPlay" (
     "receiverId" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "inviteToPlay_pkey" PRIMARY KEY ("id")
 );
@@ -66,14 +68,28 @@ CREATE TABLE "Message" (
 
 -- CreateTable
 CREATE TABLE "GameResult" (
-    "id" SERIAL NOT NULL,
-    "opponent_pic" TEXT NOT NULL,
-    "score_player" INTEGER NOT NULL,
-    "score_opponent" INTEGER NOT NULL,
-    "result" BOOLEAN NOT NULL,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "opponentId" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "userScore" INTEGER NOT NULL,
+    "opponentScore" INTEGER NOT NULL,
 
     CONSTRAINT "GameResult_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Achievement" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "achiev1" BOOLEAN NOT NULL DEFAULT false,
+    "achiev2" BOOLEAN NOT NULL DEFAULT false,
+    "achiev3" BOOLEAN NOT NULL DEFAULT false,
+    "achiev4" BOOLEAN NOT NULL DEFAULT false,
+    "achiev5" BOOLEAN NOT NULL DEFAULT false,
+    "achiev6" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Achievement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -93,6 +109,9 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ChatGroup_name_key" ON "ChatGroup"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Achievement_userId_key" ON "Achievement"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friend_AB_unique" ON "_friend"("A", "B");
@@ -126,6 +145,9 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_chatGroupId_fkey" FOREIGN KEY ("ch
 
 -- AddForeignKey
 ALTER TABLE "GameResult" ADD CONSTRAINT "GameResult_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Achievement" ADD CONSTRAINT "Achievement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_friend" ADD CONSTRAINT "_friend_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

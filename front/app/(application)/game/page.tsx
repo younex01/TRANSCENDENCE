@@ -13,28 +13,17 @@ import Link from "next/link";
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
-  const [playRandom, setplayRandom] = useState<boolean>(false);
   const [playFriend, setplayFriend] = useState<boolean>(false);
   const [hide, setHide] = useState<string>("");
-  const [playFreind, setplayFriends] = useState<boolean>(false);
   const [addMembers, setAddMembers] = useState<boolean>(false);
   const [hToPlay, setHowToPlay] = useState<boolean>(false);
   const [activeButton, setActiveButton] = useState("ai");
 
   const [groupData, setGroupData] = useState<any>([]);
-  // const [win, setWin] = useState<boolean>(false);
   const buttonAi = useRef<HTMLCanvasElement>(null);
 
 
   const userData = useSelector(selectProfileInfo);
-
-  // const [click, setClick] = useState(false)
-  // const handleClick = () => {
-  //   setClick((prev) => {
-  //     return !prev;
-  //   });
-  // };
-
 
   const [myFreinds, setMyFreinds] = useState([]);
 
@@ -47,10 +36,7 @@ export default function Home() {
 
     const listFriends = async () => {
       try {
-        // console.log("------------------->:(------------------->:userId", userId);
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${profileInfo.id}`, { withCredentials: true });
-        
-        console.log("response88--------->:", response.data);
         setMyFreinds(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -106,8 +92,7 @@ export default function Home() {
 
 
   return (
-    <div className="bg-[#dbe0f6] w-full overflow-y-auto overflow-auto">
-      {/* <div  className="bg-red-500"> */}
+    <div className="bg-[#dbe0f6] flex justify-center items-center w-full overflow-y-auto overflow-auto">
       <div className="flex flex-col justify-around items-center  w-full h-[100vh]"
           ref={buttonAi}>
         <div
@@ -120,9 +105,7 @@ export default function Home() {
             You can challenge your friends or play with AI online. Let's start !
           </div>
         </div>
-        {/* <div ref={buttonAi} className="flex flex-col bg-opacity-90 bg-red-500"> */}
         <div
-          // ref={buttonAi}
           className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10">
           <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[50%] gap-10">
             <div
@@ -255,7 +238,7 @@ export default function Home() {
                     <div className="flex items-center justify-center w-full h-[110px] gap-2">
                       <button className="bg-[#dbe0f6] border-1 rounded-lg w-[30%] h-[50%] flex justify-center items-center gap-2 text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
 
-                      onClick={handleClickAi}>
+                      onClick={() => {setActiveButton('ai')}}>
                       <img
                         src="/robot.svg"
                         alt=""
@@ -286,35 +269,32 @@ export default function Home() {
                   </div>
                     {activeButton === 'random' && (
                         <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-hidden overflow-y-auto scrollbar-hide ">
-                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Random Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )
                     }
                     {activeButton === 'ai' && (
                         <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-y-auto scrollbar-hide ">
-                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Ai Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )}
                     {activeButton === 'friends' && (
                         <div className="w-[70%] h-full flex flex-col items-start justify-start overflow-hidden overflow-y-auto scrollbar-hide ">
-                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Rules</h3>
+                          <h3 className="font-bold text-[#252f5b] self-center text-[22px]">Friends Rules</h3>
                           <ul className="list-disc flex flex-col font-semibold text-[20px] text-[#252f5b]">
                             <li className="">You win when you reach 5 point</li>
                             <li>If you left the game You loose automatictly</li>
                             <li>You can use arrow ⬆️⬇️ or mouse for movements</li>
-                            {/* <li></li> */}
                           </ul>
                           </div>
                     )}
@@ -325,33 +305,9 @@ export default function Home() {
           </div>
           
       </div>
-        <div >
         {playFriend && <PlayWithFriend />}
         {playAi && <PongGame />}
-        </div>
       
     </div>
   );
 }
-
-
-
-
-
-
-                      {/* <div className="absolute bottom-5 right-9 font-[IBM-Plex-Serif] font-thin flex items-center justify-center">
-                        <button
-                          className="w-[139px] h-[40px] bg-color1 text-[30px] text-[#D7D7D7] flex items-center justify-center rounded-[19px] mr-2"
-                          onClick={handleClickFr}
-                        >
-                          Confirme
-                        </button>
-                        <button
-                          className="w-[139px] h-[40px] bg-[#FFFFFF] bg-opacity-[41%] text-[30px] flex items-center justify-center rounded-[19px] opacity-[69%]"
-                          onClick={() => {
-                            setAddMembers(!addMembers);
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div> */}

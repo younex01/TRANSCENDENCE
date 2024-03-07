@@ -13,9 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store/store";
 
 export default function LeftBar() {
-  // const dispatch = useDispatch();
-  // const socket = useSelector((state:RootState) => state.socket.socket);
-
   const socket = useSelector((state: RootState) => state.socket.socket);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
@@ -41,7 +38,8 @@ export default function LeftBar() {
     <div
       className={`fixed z-[1000] h-screen sidebar  flex flex-col justify-between items-center transition-all duration-300 ${
         isSidebarOpen ? "w-full backdrop-blur-[4px]" : "-translate-x-full"
-      } lg:w-20 lg:translate-x-0 lg:flex lg:relative md:z-1 md:h-screen`}
+      } lg:w-20 lg:translate-x-0 lg:flex lg:relative lg
+      :z-1 md:h-screen`}
     >
       <div
         className={`sidebar bg-[#6E7AAE] left-0  w-20 h-full flex flex-col  justify-between items-center ${
@@ -127,8 +125,8 @@ export default function LeftBar() {
         // md:hidden pt-12 absolute left-[20px]
         className={
           isSidebarOpen
-            ? `md:hidden p-3 absolute left-[20px]`
-            : `md:hidden pt-14 absolute left-[20px]`
+            ? `lg:hidden p-3 absolute left-[20px]`
+            : `lg:hidden pt-14 absolute left-[20px]`
         }
         onClick={toggleSidebar}
         style={{ zIndex: 1 }}

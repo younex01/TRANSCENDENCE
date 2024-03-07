@@ -22,29 +22,32 @@ export class GameRandomService {
       private eventEmitter: EventEmitter2
     ) {}
 
-    async addGameResult(players:Player[],userId:string,result:boolean){
-      // const existingGameResult = await this.prisma.gameResult.findFirst({
-      //   where: {
-      //     userId,
-      //   },
-      // });
+    async addGameResult(players: Player[], userId: string, result: boolean) {
+
+      console.log("kyaaaaaaaaaaah", players);
   
-      // if (existingGameResult) {
-      //   // Game result already exists for this user
-      //   return existingGameResult;
-      // } else {
-        // Game result does not exist, create a new one
-        return this.prisma.gameResult.create({
-          data: {
-            opponent_pic: players[1].pic,
-            score_player: players[0].score,
-            score_opponent: players[1].score,
-            result,
-            userId,
-          },
-        });
-      // }
+        const status = players[0].score > players[1].score ? "win" : "lose";
+        const data:any = {
+          userId: players[0].db_id,
+          opponentId: players[1].db_id,
+          status: status,
+          userScore: players[0].score,
+          opponentScore: players[1].score,
+        }      
+        const status2 = players[1].score > players[0].score ? "win" : "lose";
+        const data2:any = {
+          userId: players[1].db_id,
+          opponentId: players[0].db_id,
+          status: status2,
+          userScore: players[1].score,
+          opponentScore: players[0].score,
+        }
+        console.log("kyaaaaaaaaaaadata", data);
+        return await this.prisma.gameResult.create({ data: data }) && await this.prisma.gameResult.create({ data: data2 });
+    
     }
+
+
     
     checkWinner(players: Player[],rooms:{[roomId: string]: string[];}, roomId: string, server: Server): boolean{
       if (!players[0] || !players[1])
@@ -193,14 +196,14 @@ export class GameRandomService {
             if (game[i].players[0].id === id)
             {
               game[i].players[0].giveUp = true;
+              game[i].players[1].score = 5;
               server.to(roomId[0]).emit("winner",game[i].players[1].name);
-              this.addGameResult(game[i].players, game[i].players[1].db_id,false);
             }
             else
             {
               game[i].players[1].giveUp = true;
+              game[i].players[0].score = 5;
               server.to(roomId[0]).emit("winner",game[i].players[0].name);
-              this.addGameResult(game[i].players, game[i].players[0].db_id,true);
             }
           }
           this.userService.updateProfile("Online", game[i].players[0].db_id);
@@ -246,7 +249,6 @@ export class GameRandomService {
       {
         if (this.checkWinner(players, rooms, roomId, server) || players[0].giveUp || players[1].giveUp) {
           clearInterval(intervalId);
-          //close socket
         }
         
         const gameData = {
@@ -263,8 +265,6 @@ export class GameRandomService {
         if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
           ball.velocityY = -ball.velocityY;
         }
-        
-        // Handle ball collisions with players
         let collisionResult = this.collision(ball, canvas, players);
         if (collisionResult) {
           if (ball.x < canvas.width / 2)
@@ -272,9 +272,7 @@ export class GameRandomService {
         else
           ball.velocityX = -1 * Math.abs(ball.velocityX);
         }
-        if (players[0] && players[1])
-        {
-          // Handle scoring
+        if (players[0] && players[1]) {
           if (ball.x - ball.radius < 0) {
             players[1].score++;
             this.resetBall(ball, canvas);
@@ -289,8 +287,7 @@ export class GameRandomService {
     }, 1000 / 60);
   }
 
-  ResetScore(players:Player[])
-  {
+  ResetScore(players: Player[]) {
     players[0].score = 0;
     players[1].score = 0;
   }
@@ -306,24 +303,19 @@ export class GameRandomService {
     }
   }
 
-  async handle_id(db_id: string, g_id: string, socket_id: string,games: Game[])
-  {
-    for(let game of games)
-    {
+  async handle_id(db_id: string, g_id: string, socket_id: string, games: Game[]) {
+    for (let game of games) {
       if (!game.players)
         return;
-      if (game.players.length == 2)
-      {
-        if(game.players[0].id == socket_id)
-        {
+      if (game.players.length == 2) {
+        if (game.players[0].id == socket_id) {
           game.players[0].db_id = db_id;
           const user = await this.userService.getUser(db_id);
           game.players[0].name = user.username;
           game.players[0].pic = user.avatar;
           game.players[0].g_id = g_id;
         }
-        else if (game.players[1].id == socket_id)
-        {
+        else if (game.players[1].id == socket_id) {
           game.players[1].db_id = db_id;
           const user = await this.userService.getUser(db_id);
           game.players[1].name = user.username;
@@ -338,7 +330,11 @@ export class GameRandomService {
 
   public getUserInfosFromToken(token: string): any {
     try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      console.log('token:', token);
+
+      const decoded = jwt.verify(token, 'dontTellAnyone');
+      console.log('decoded -----------------:', decoded);
+
       return decoded;
     } catch (error) {
       console.error('JWT verification failed:', error.message);
@@ -347,3 +343,4 @@ export class GameRandomService {
   }
 
 }
+

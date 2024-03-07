@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image"; // Make sure to import your image component/library
-import {
-  selectFreindInfo,
-  selectFreindRequestInfo,
-} from "../../../../redux/features/freinds/requestSlice";
+import { selectFreindInfo, selectFreindRequestInfo }
+from "../../../../redux/features/freinds/requestSlice";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import axios from "axios";
@@ -93,7 +91,8 @@ const TeamCard = ({
       </div>
       {!isMyId && isFriend ? (
         <div className="w-full flex justify-center items-center gap-[16px] ">
-           <Link href="../Play" onClick={() => Play(userId)}>
+           <Link href="../Play" onClick={() => Play(userId)}
+           className="rounded-[10px] cursor-pointer w-[60%] bg-[#d3dafb] h-[40px] flex  items-center justify-center hover:bg-[#c3cdfb] ">
           <button className=" rounded-[10px] cursor-pointer w-[60%] bg-[#d3dafb] h-[40px] flex flex-row-reverse items-center justify-center gap-[8px] hover:bg-[#c3cdfb]">
             <div className="">
               <p className="text-[#252f5b] text-[14px] font-semibold">
@@ -146,8 +145,8 @@ const TeamCard = ({
           </Link>
         </div>
       )
-    : null
-    }
+        : null
+      }
     </div>
   );
 };

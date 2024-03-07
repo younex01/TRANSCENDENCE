@@ -21,29 +21,29 @@ export class GameService {
       private eventEmitter: EventEmitter2,
     ) {}
 
-    async addGameResult(players:Player[],userId:string,result:boolean){
+    async addGameResult(players: Player[], userId: string, result: boolean) {
 
-      // this.prisma.inviteToPlay.deleteMany({
-      //   where: {
-      //     senderId: players[0].db_id,
-      //     receiverId: players[1].db_id,
-      //   },
-      // });
-
+      console.log("kyaaaaaaaaaaah", players);
   
-        // Game result does not exist, create a new one
-        if (!players[1].pic || !players[0].pic)
-          return;
-        return this.prisma.gameResult.create({
-          data: {
-            opponent_pic: players[1].pic,
-            score_player: players[0].score,
-            score_opponent: players[1].score,
-            result,
-            userId,
-          },
-        });
-
+        const status = players[0].score > players[1].score ? "win" : "lose";
+        const data:any = {
+          userId: players[0].db_id,
+          opponentId: players[1].db_id,
+          status: status,
+          userScore: players[0].score,
+          opponentScore: players[1].score,
+        }      
+        const status2 = players[1].score > players[0].score ? "win" : "lose";
+        const data2:any = {
+          userId: players[1].db_id,
+          opponentId: players[0].db_id,
+          status: status2,
+          userScore: players[1].score,
+          opponentScore: players[0].score,
+        }
+        console.log("kyaaaaaaaaaaadata", data);
+        return await this.prisma.gameResult.create({ data: data }) && await this.prisma.gameResult.create({ data: data2 });
+    
     }
 
     async test2(games :Game[] ,id:string):Promise<number>{
@@ -79,11 +79,9 @@ export class GameService {
       let result : number = -1;
       for(let i = 0; i < games.length;i++)
       {
-        // console.log(games[i].players[0],id,map);
         if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
         {
           map.delete(id);
-          // console.log("i",i);
           result = i;
           break;
         }
@@ -92,7 +90,6 @@ export class GameService {
     }
 
     async getReceiverIdBySenderId(senderId: string,player:Player[],opponents:string[]):Promise<void> {
-      // console.log(senderId);
       try {
         const invite = await this.prisma.inviteToPlay.findFirst({
           where: {
@@ -101,11 +98,9 @@ export class GameService {
         });
     
         if (invite) {
-          // console.log(invite.receiverId)
           player[0].opponent_id = invite.receiverId;
           opponents.push(invite.receiverId);
         } else {
-          // console.log('No invite found for senderId:', senderId);
           return null;
         }
       } catch (error) {
@@ -114,7 +109,6 @@ export class GameService {
       }
     }
 
-    //fix the movement in the the player if we replay the game
     checkWinner(players: Player[],rooms:{[roomId: string]: string[];}, roomId: string, server: Server): boolean{
       if (!players[0] || !players[1])
         return true;
@@ -207,7 +201,6 @@ export class GameService {
         if (players[i].id === Id)
         {
           players.splice(i, 1);
-          // console.log(`player with index ${i} removed`);
           players.length = players.length;
           return;
         }
@@ -229,22 +222,18 @@ export class GameService {
         
       } catch (error) {
         console.error("Error removing invite:", error);
-        // Handle error appropriately
       }
     }
 
     removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
       for (let i=0;i<game.length;i++)
       {
-        // players[i] = players[i].filter(player => player.id !== id)
         if (game[i].players.length === 2)
         {
           if (game[i].players[0].id === id || game[i].players[1].id === id)
           {
             if(game[i].players[0].score < 5 && game[i].players[1].score < 5)
             {
-              // console.log("this player is give up the game");
-              //this player is give up the game
               const roomId = Object.keys(game[i].rooms);
               if (game[i].players[0].id === id)
               {
@@ -296,33 +285,28 @@ export class GameService {
         clearInterval(intervalId);
       }
 
-      // Emit game update to clients
       const gameData = {
         ball,
         players,
       };
       server.to(roomId).emit('update', gameData);
 
-      // Update ball position
       ball.x += ball.velocityX * ball.speed;
       ball.y += ball.velocityY * ball.speed;
 
-      // Handle ball collisions with canvas boundaries
       if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
         ball.velocityY = -ball.velocityY;
       }
 
-      // Handle ball collisions with players
       let collisionResult = this.collision(ball, canvas, players);
       if (collisionResult) {
         if (ball.x < canvas.width / 2)
-          ball.velocityX = Math.abs(ball.velocityX);
+          ball.velocityX = 1.05 * Math.abs(ball.velocityX);
         else
-          ball.velocityX = -1 * Math.abs(ball.velocityX);
+          ball.velocityX = -1.05 * Math.abs(ball.velocityX);
       }
        if (players[0] && players[1])
        {
-         // Handle scoring
          if (ball.x - ball.radius < 0) {
            players[1].score++;
            this.resetBall(ball, canvas);
@@ -382,7 +366,7 @@ export class GameService {
 
   public getUserInfosFromToken(token: string): any {
     try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      const decoded = jwt.verify(token, "dontTellAnyone");
       return decoded;
     } catch (error) {
       console.error('JWT verification failed:', error.message);

@@ -304,28 +304,32 @@ export const PlayWithFriend = () => {
   },[])
   
   return (
-    <>
-    <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[calc(100vh-15rem)] w-[calc(100%-20rem)]'>
+    <div className='w-full h-screen'>
+      
+    <div className='w-full bg-[#dbe0f6] h-screen flex justify-center items-center'>
+    <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[30%] w-[60%]'>
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 
             <>
-            <div className="flex justify-around  flex-col">
+            <div className="flex items-center justify-center h-screen bg-[#dbe0f6]">
+
+            <div className="flex justify-around  flex-col ">
                 <div className="flex justify-around  flex-raw pt-10">
                 <div className="flex flex-raw">
-                <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
-                    <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})` , backgroundSize: 'cover' }} ></div>
+                    <div className="text-white text-5xl font-bold pl-4 pt-4">{`${score1}`}</div>
                 </div>
                 <div className="flex flex-raw">
                     <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})`, backgroundSize: 'cover'}}></div>
+                    <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic2})` , backgroundSize: 'cover' }}></div>
                 </div>
                 </div>
                 <div className="flex justify-around items-center flex-raw py-5">
                 <span className="text-white pr-12">{firstName}</span>
                 <span className="text-white pl-12">{secondName}</span>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center w-full h-full">
                 {!winning &&
                     <canvas
                     ref={canvasRef}
@@ -343,8 +347,12 @@ export const PlayWithFriend = () => {
                 {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
                 </div>
             </div>
+
+            </div>
             </>
         }
-    </>
+    </div>
+
+    </div>
   )
 }

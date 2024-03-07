@@ -71,7 +71,7 @@ const Home = () => {
               <Profile />
             </div>
             <div className="xl:w-[900px] w-[100%] xl:h-[750px]">
-              <Achievements />
+              <Achievements userId={userid.id} />
             </div>
           </div>
 

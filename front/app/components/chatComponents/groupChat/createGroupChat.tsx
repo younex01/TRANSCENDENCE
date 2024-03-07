@@ -62,7 +62,6 @@ export default function createGroupChat(props: any) {
             name: channelName,
             avatar: backEndImagePath.data,
             status: "Private",
-            password: channelPassWord,
             owner: userData.id,
             addingToPrivateRoomList
           };

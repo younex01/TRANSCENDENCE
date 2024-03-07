@@ -42,8 +42,6 @@ export default function SearchPanel() {
     const getMyNotifications = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getMyNotifications?userId=${myData.id}`, { withCredentials: true });
-        console.log("notification");
-        console.log(notifications.data);
         setMyNotifications(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -57,8 +55,6 @@ export default function SearchPanel() {
     const getInviteToPlay = async () => {
       try {
         const notifications = await axios.get(`http://localhost:4000/user/getInviteToPlay?userId=${myData.id}`, { withCredentials: true });
-        console.log("notification");
-        console.log(notifications.data);
         setInvitToPlay(notifications.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -101,18 +97,14 @@ export default function SearchPanel() {
     try {
       axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
-      console.log("Notif",notif.senderId,"Myid",myData.id);
 
-      const socket = io('http://localhost:3002',{
+      const socket = io('http://localhost:3002', {
         query: {
           token: "token",
           id: myData.id
         }
       });
-      // Emit an event with data to the backend gateway
-      socket.emit('accepted_request', { key: myData.id , value: notif.senderId });
-      console.log("accepted request");
-      //socket.close();
+      socket.emit('accepted_request', { key: myData.id, value: notif.senderId });
 
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -156,12 +148,12 @@ export default function SearchPanel() {
               <Link href={`/Profile/${user.id}`} key={index} >
                 <div className='flex justify-start items-center  rounded-[14px]  bg-[#f3f5ff] hover:bg-[#e9edff] h-[90px] gap-2 p-2 md:p-4 cursor-pointer'>
                   <div className='min-h-[70px] min-w-[70px] relative'>
-                    <Image 
-                          src={`${user.avatar}`}
-                          alt={`${user.avatar}`}
-                          fill={true}
-                          className='rounded-full object-cover' />
-                    </div>
+                    <Image
+                      src={`${user.avatar}`}
+                      alt={`${user.avatar}`}
+                      fill={true}
+                      className='rounded-full object-cover' />
+                  </div>
                   <div>
                     <div className='font-semibold  text-[#252f5b] text-[12px] md:text-[16px]'>{user.firstName} {user.lastName}</div>
                     <div className="text-[10px] md:text-[14px] text-[#7d84a3]">{user.username}</div>
@@ -178,7 +170,7 @@ export default function SearchPanel() {
         <img src="../../../images/Bell.svg" alt="../../../images/Bell.svg" className='w-8 h-8' onClick={() => { setIsClicked(!isClicked); setRefreshNoifications(!refreshNotifs) }} />
         {isClicked && (
           <div className='mt-2 h-[400px] 2sm:w-[400px] sm:w-[500px] w-full bg-white absolute -right-4 sm:right-0 z-[1000] transition-all rounded-[10px] flex  items-center flex-col pt-5 gap-3 overflow-y-visible overflow-x-hidden no-scrollbar pb-5 border-[2px]'>
-            {invitToPlay && invitToPlay.reverse().map((notif: any, index: any) =>
+            {invitToPlay && invitToPlay.map((notif: any, index: any) =>
               <>
                 {notif.status === "Pending" ? (
                   <>
@@ -200,22 +192,20 @@ export default function SearchPanel() {
                           </div>
                         </div>
                         <div className='flex flex-col sm:flex-row gap-1 pr-3'>
-                        <Link href="../Play">
-                          <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-white  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#7449c0] bg-[#7239D3]' onClick={() => acceptInvitToPlay(notif)}>accept</button>
-                        </Link>
+                          <Link href="../Play">
+                            <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-white  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#7449c0] bg-[#7239D3]' onClick={() => acceptInvitToPlay(notif)}>accept</button>
+                          </Link>
                           <button className='rounded-[8px] h-[28px] w-[84px] text-[14px] flex items-center justify-center text-[#452b72]  font-semibold hover:scale-[1.05] transition-all duration-500 hover:bg-[#d9d8db]  bg-[#e5e2e9]' onClick={() => declineInvitToPlay(notif)}>decline</button>
                         </div>
                       </div>
                     )}
                   </>
                 ) : false}
-                </>
-                )}
-                </div>
-        )}
-      {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+              </>
+            )}
+            {/* ----------------------------------------------------------------------------------------------------------------------------- */}
 
-            {myNotification && myNotification.reverse().map((notif: any, index: any) =>
+            {myNotification && myNotification.map((notif: any, index: any) =>
               <>
                 {notif.status === "Pending" ? (
                   <>
@@ -283,7 +273,7 @@ export default function SearchPanel() {
                               </div>
                             </div>
                             <div className='flex flex-col '>
-                              <div className='font-bold text-[#452975]'>Your friend request have been Declined:</div>
+                              <div className='font-bold text-[#452975]'>Your friend request has been Declined:</div>
                               <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
                             </div>
                           </div>
@@ -312,7 +302,7 @@ export default function SearchPanel() {
                                 <div className='text-[15px]'>{notif.receiver.firstName} {notif.receiver.lastName}</div>
                               </div>
                             </div>
-                            <div className='absolute right-2 bottom-1 flex flex-col text-[10px]'> {new Date(notif.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+                            <div className='absolute right-2 bottom-1 flex flex-col text-[10px]'> {new Date(notif.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
 
                           </div>
                         </>
@@ -323,8 +313,10 @@ export default function SearchPanel() {
 
               </>
             )}
-      {/* ----------------------------------------------------------------------------------------------------------------------------- */}
-            </div>
+          </div>
+        )}
+        {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+      </div>
     </div>
   )
 }

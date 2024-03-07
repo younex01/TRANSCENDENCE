@@ -34,7 +34,7 @@ export class UserService {
     });
   }
 
-  async updateProfile(status: string, userId:string) {
+  async updateProfile(status: string, userId: string) {
     if (!await this.getUser(userId)) return;
     return this.prisma.user.update({
       where: { id: userId },
@@ -42,9 +42,9 @@ export class UserService {
     })
   }
 
-  async userNameCheck(name:string) {
+  async userNameCheck(name: string) {
     return this.prisma.user.count({
-      where : {username:name}
+      where: { username: name }
     });
   }
 
@@ -86,7 +86,8 @@ export class UserService {
       include: {
         sender: true,
         receiver: true
-      }
+      },
+      orderBy: { updatedAt: 'desc' }
     });
   }
 
@@ -110,7 +111,10 @@ export class UserService {
       where: {
         id: notifId,
         status: "Pending",
-        receiverId: myId
+        OR: [
+          { receiverId: myId },
+          { senderId: myId }
+        ]
       },
     });
   }
@@ -152,7 +156,7 @@ export class UserService {
     });
   }
 
-  async pendFriendRequest(notifId: string, sender:string, target:string) {
+  async pendFriendRequest(notifId: string, sender: string, target: string) {
 
     return this.prisma.friendRequest.update({
       where: { id: notifId },
@@ -164,7 +168,7 @@ export class UserService {
     });
   }
 
-  async pendPlayRequest(notifId: string, sender:string, target:string) {
+  async pendPlayRequest(notifId: string, sender: string, target: string) {
 
     return this.prisma.inviteToPlay.update({
       where: { id: notifId },
@@ -176,15 +180,12 @@ export class UserService {
     });
   }
 
-
-
-  
   async acceptFriendRequest(notifId: string) {
 
     return this.prisma.friendRequest.update({
       where: { id: notifId },
       data: {
-        status: "Accepted"
+        status: "Accepted",
       }
     });
   }
@@ -390,24 +391,47 @@ export class UserService {
     });
   }
 
+  async getGameResult(myId: string) {
+    console.log("myId", myId);
 
-  async getBlockedUsers(userId: string): Promise<{ blockedByUsers: string[]; blockedUsers: string[] }> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { blockedByUsers: true, blockedUsers: true },
+    return this.prisma.gameResult.findMany({
+      where: {
+        OR: [
+          { userId: myId },
+          { opponentId: myId }
+        ]
+      },
+      include: {
+        user: true,
+      }
     });
-
-    if (!user) {
-      throw new Error(`User with id ${userId} not found`);
-    }
-
-    return {
-      blockedByUsers: user.blockedByUsers ?? [],
-      blockedUsers: user.blockedUsers ?? [],
-    };
   }
 
 
+  async getAchievements(myId: string, achievement: string) {
+    const existingRecord = await this.prisma.achievement.findFirst({
+      where: {
+        userId: myId
+      },
+    });
+
+    if (!existingRecord) return;
+
+    return this.prisma.achievement.updateMany({
+      where: { id: existingRecord.id }, // Updated to use userId instead of id
+      data: {
+        [achievement]: true
+      }
+    });
+  }
+
+
+
+  async getAllAchievements(myId: string) {
+    return this.prisma.achievement.findFirst({
+      where: { userId: myId }
+    });
+  }
 
 
 

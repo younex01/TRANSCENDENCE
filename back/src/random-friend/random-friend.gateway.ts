@@ -1,11 +1,11 @@
 import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Socket , Server} from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { Ball, Canvas, Game, Player } from './game-data.interface';
 import { GameRandomService } from './random-friend.service';
 import { UserService } from 'src/user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-@WebSocketGateway(3001, {cors: '*'})
+@WebSocketGateway(3001, { cors: '*' })
 export class RandomFriendGateway implements OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameRandomService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
@@ -13,19 +13,16 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private game : Game [] = [];
+  private game: Game[] = [];
   private id: number = -1;
-  private rooms: {[roomId:string]: string[]} = {};
-  private ball : Ball = {color: "WHITE",radius: 15,speed: 0.9,velocityX: 5,velocityY: 5,x: 450,y: 225}
-  private canvas: Canvas = {height: 0,width:0};
-  private players: {[id:number]: Player[]} = {};
-  private ids:string[] = [];
+  private rooms: { [roomId: string]: string[] } = {};
+  private ball: Ball = { color: "WHITE", radius: 15, speed: 0.9, velocityX: 5, velocityY: 5, x: 450, y: 225 }
+  private canvas: Canvas = { height: 0, width: 0 };
+  private players: { [id: number]: Player[] } = {};
+  private ids: string[] = [];
 
   public connectedUsers = new Map<string, any>();
 
-
-  //to do
-  // fix play again
 
   @SubscribeMessage('connecte')
   async handleConnection(@MessageBody() socket: Socket): Promise<void> {
@@ -51,7 +48,6 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       let newBall:Ball = {...this.ball};
       this.rooms[availibleRoomId].push(socket.id);
       socket.join(availibleRoomId);
-      // console.log(`join this room ${availibleRoomId}`);
       this.server.to(availibleRoomId).emit("start");
       //
       this.id = this.game.length;
@@ -77,15 +73,11 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
       );
       this.gameService.startTheGame(this.game[this.id].players, this.game[this.id].rooms, availibleRoomId, this.server, this.game[this.id].ball, this.canvas);
     }
-    else
-    {
-      //update the status to in game for player1
+    else {
       this.id++;
       const newRoomId = socket.id;
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
-      // console.log("new room created!!");
-      // console.log(this.rooms);
       if (!this.players[this.id]) {
         this.players[this.id] = [];
       }
@@ -108,7 +100,7 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
     const id: number = this.gameService.findNbById(this.game, socket.id);
     this.gameService.handleArrowMove(data, socket.id, this.game[id].players);
   }
-  
+
   @SubscribeMessage('mouse_move')
   handleMouseMove(@MessageBody() data: number, @ConnectedSocket() socket: Socket): void {
     const id: number = this.gameService.findNbById(this.game, socket.id);
@@ -122,10 +114,9 @@ export class RandomFriendGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('user_id')
-  async handle_id(@MessageBody() id: string , @ConnectedSocket() client: Socket) : Promise<void>
-  {
-    const g_id:string = ""; //to remove
-    this.gameService.handle_id(id,g_id, client.id,this.game);
+  async handle_id(@MessageBody() id: string, @ConnectedSocket() client: Socket): Promise<void> {
+    const g_id: string = "";
+    this.gameService.handle_id(id, g_id, client.id, this.game);
   }
 
   handleDisconnect(client: Socket) {

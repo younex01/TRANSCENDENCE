@@ -358,16 +358,16 @@ const PongGame = () => {
   
 
   return (
-      <>
-        <div className="flex justify-around  flex-col">
-            <div className="flex justify-around  flex-raw pt-10">
+      <div className="w-full h-screen">
+        <div className="flex justify-center flex-col h-screen w-full bg-[#dbe0f6]">
+            <div className="flex justify-around flex-raw pt-10">
               <div className="flex flex-raw">
               <div className="bg-slate-500 w-20 h-20 rounded-full " style={{backgroundImage: `url(${pic1})`, backgroundSize: 'cover'}}></div>
                 <div className="text-white text-5xl font-bold pl-4 pt-4">{score1}</div>
               </div>
               <div className="flex flex-raw">
                 <div className="text-white text-5xl font-bold pr-4 pt-4">{score2}</div>
-                <div className="bg-slate-500 w-20 h-20 rounded-full "></div>
+                <div className="bg-5slate-00 w-20 h-20 rounded-full " style={{backgroundImage: `url(/franky.jpeg)`, backgroundSize: 'cover'}}></div>
               </div>
             </div>
             <div className="flex justify-around items-center flex-raw py-5">
@@ -392,7 +392,7 @@ const PongGame = () => {
               {winning && <Winner setPlayAgain={setPlayAgain} setWinning={setWinning} winnerName={winnerName} />}
             </div>
         </div>
-      </>
+      </div>
   )
 }
 
