@@ -205,10 +205,12 @@ const PongGame = () => {
         return;
       }
       if (e.key === "ArrowUp" && player) {
-        player.y -= 8;
+        if(player.y <= 0) return;
+        player.y -= 20;
       }
       if (e.key === "ArrowDown" && player) {
-        player.y += 8;
+        if(player.y >= 350) return;
+        player.y += 20;
       }
     };
     const mousemoveHandler = (e:any) => {

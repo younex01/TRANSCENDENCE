@@ -7,7 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { GameRandomService } from 'src/random-friend/random-friend.service';
 
 
-@WebSocketGateway(3002, {cors: '*'})
+@WebSocketGateway({path: '/play', cors: true})
 export class PlayFriendGateway implements OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
@@ -29,7 +29,6 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('connecte')
   async handleConnection(socket: Socket): Promise<void> {
-    
     const token:any = socket.handshake.query.token;
     if (token === "token")
       return;

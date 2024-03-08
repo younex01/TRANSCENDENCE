@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Cookies from 'js-cookie';
-import { Play } from 'next/font/google';
+
 
 export default function page() {
 
@@ -15,7 +15,7 @@ export default function page() {
 
     const [start, setStart] = useState<boolean>(true);
     const [game, setGame] = useState<boolean>(false);
-    const divv = useRef<HTMLCanvasElement>(null);
+    const divv = useRef<HTMLDivElement>(null);
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
@@ -274,7 +274,8 @@ export default function page() {
     useEffect(() => {
         console.log("send connection");
         const token = Cookies.get('JWT_TOKEN');
-        const newSocket = io("http://localhost:3002",{
+        const newSocket = io("http://localhost:4000",{
+          path: '/play',
           query: {
             token: token,
             id: myData.id

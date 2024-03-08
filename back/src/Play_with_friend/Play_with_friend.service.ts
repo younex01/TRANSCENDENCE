@@ -237,12 +237,14 @@ export class GameService {
               const roomId = Object.keys(game[i].rooms);
               if (game[i].players[0].id === id)
               {
+                game[i].players[1].score = 5;
                 game[i].players[0].giveUp = true;
                 server.to(roomId[0]).emit("winner",game[i].players[1].name);
                 this.addGameResult(game[i].players, game[i].players[1].db_id,false);
               }
               else
               {
+                game[i].players[0].score = 5;
                 game[i].players[1].giveUp = true;
                 server.to(roomId[0]).emit("winner",game[i].players[0].name);
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);

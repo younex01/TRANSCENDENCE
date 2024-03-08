@@ -5,7 +5,7 @@ import { GameRandomService } from './random-friend.service';
 import { UserService } from 'src/user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-@WebSocketGateway(3001, { cors: '*' })
+@WebSocketGateway({path: '/game', cors: true})
 export class RandomFriendGateway implements OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameRandomService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};

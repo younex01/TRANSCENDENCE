@@ -16,11 +16,9 @@ services:
     working_dir: /app
     command: bash -c "npm install && npm run build && npx prisma migrate dev --name update && npm run start:dev"
     volumes:
-      - /goinfre/sharrach/Ft_Transcendence/back:/app
+      - /goinfre/yelousse/younessfixgame/back:/app
     ports:
       - 4000:4000
-      - 3001:3001
-      - 3002:3002
     env_file:
       - back/.env
     depends_on:
@@ -30,7 +28,7 @@ services:
     working_dir: /app
     command: bash -c "npm install && npm run build && npm run start -- -p 3000"
     volumes:
-      - /goinfre/sharrach/Ft_Transcendence/front:/app
+      - /goinfre/yelousse/younessfixgame/front:/app
     ports:
       - 3000:3000
     environment:

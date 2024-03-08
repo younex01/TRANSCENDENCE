@@ -20,7 +20,7 @@ export default function Home() {
   const [activeButton, setActiveButton] = useState("ai");
 
   const [groupData, setGroupData] = useState<any>([]);
-  const buttonAi = useRef<HTMLCanvasElement>(null);
+  const buttonAi = useRef<HTMLDivElement>(null);
 
 
   const userData = useSelector(selectProfileInfo);

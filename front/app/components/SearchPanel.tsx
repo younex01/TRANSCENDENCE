@@ -98,7 +98,8 @@ export default function SearchPanel() {
       axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
 
-      const socket = io('http://localhost:3002', {
+      const socket = io('http://localhost:4000', {
+        path: '/play',
         query: {
           token: "token",
           id: myData.id

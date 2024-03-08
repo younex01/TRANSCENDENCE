@@ -12,7 +12,7 @@ export const PlayWithFriend = () => {
     const [text,setText] = useState<string>("")
     const [start, setStart] = useState<boolean>(false);
     const [game, setGame] = useState<boolean>(false);
-    const divv = useRef<HTMLCanvasElement>(null);
+    const divv = useRef<HTMLDivElement>(null);
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
@@ -285,7 +285,8 @@ export const PlayWithFriend = () => {
 
       console.log("send connection");
       const token = Cookies.get('JWT_TOKEN');
-      const newSocket = io("http://localhost:3001",{
+      const newSocket = io("http://localhost:4000/",{
+        path: '/game',
         query: {
           token: token
         }
