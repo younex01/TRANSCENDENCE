@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgres://mazino:mazino@localhost:5432/PGdb"
+  url      = "postgresql://mazino:mazino@localhost:5432/PGdb"
 }
 model User {
   id                   String          @id

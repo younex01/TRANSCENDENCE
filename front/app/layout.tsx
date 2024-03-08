@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 // import { initializeSocket } from '@/redux/features/chatSlices/socketSlice';
 import { Toaster } from 'sonner';
 import SocketInitializer from './socket';
+import AuthWrapper from './authWrapper';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,11 +26,13 @@ function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>
-          <SocketInitializer/>
-          {children}
-          <Toaster richColors closeButton/>
-        </Providers>
+        <AuthWrapper>
+          <Providers>
+            <SocketInitializer/>
+            {children}
+            <Toaster richColors closeButton/>
+          </Providers>
+        </AuthWrapper>
       </body>
     </html>
   )

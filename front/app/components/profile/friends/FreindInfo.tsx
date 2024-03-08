@@ -34,8 +34,8 @@ export default function FreindInfo({userId}: {userId: string}) {
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${userId}`, { withCredentials: true });
         
         setMyFreinds(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      } catch (error:any) {
+        console.log("Error fetching user data:", error.response.data.message);
       }
 
     };
@@ -43,18 +43,25 @@ export default function FreindInfo({userId}: {userId: string}) {
   }, [profileInfo, refreshStatus]);
 
 
-
   useEffect(() => {
 
     socket?.on("refreshStatus", () => {
       setRefreshStatus(!refreshStatus);
     });
+    socket?.on("refreshAllInFront",(myId:string) =>{
+      setRefreshStatus(!refreshStatus);
+    });
+    socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
+      setRefreshStatus(!refreshStatus);
+    });
+
 
     return () => {
       socket?.off("refreshStatus");
+      socket?.off("refreshAllInFront");
+      socket?.off("refreshFrontfriendShip");
     };
   });
-
 
   return (
     <>

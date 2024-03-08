@@ -22,12 +22,13 @@ export class UserController {
             return await res.send({ info: false, message: "Error while getting user" });
         }
     }
-
     @Get('dyali')
     @UseGuards(AuthGuard('jwt'))
     async Getdyali(userId: any) {
         return await this.prisma.userExists(userId);
     }
+
+
 
     @Post('changeInfos')
     @UseGuards(AuthGuard('jwt'))
@@ -45,7 +46,7 @@ export class UserController {
                 where: { id: userDto.id },
                 data: { username: userDto.username, firstName: userDto.firstName, lastName: userDto.lastName, avatar: userDto.avatar }
             });
-
+            this.eventEmitter.emit("refreshAll");
 
             return await res.send({ info: true, message: "Username updated successfully" });
         }
@@ -57,8 +58,9 @@ export class UserController {
 
     @Get('getUserByUserId')
     @UseGuards(AuthGuard('jwt'))
-    async getUserByUserId(@Query('user') user: string, @Req() req) {
+    async getUserByUserId(@Query('user') user: string) {
         
+        if (!user || user === "undefined") return;
         const users = await this.prisma.getUserByUserId(user);
         if (!users)
             throw new NotFoundException("User not found");
@@ -267,7 +269,9 @@ export class UserController {
     @Get('userFreinds')
     @UseGuards(AuthGuard('jwt'))
     async displayFriends(@Query("userId") userId: string) {
+        if (!userId || userId === "undefined") return;
         const friendsList = await this.UserService.friendList(userId);
+        if (!friendsList) return;
         return friendsList;
     }
 

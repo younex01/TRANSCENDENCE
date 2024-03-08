@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectProfileInfo, setProfileData } from '@/redux/features/profile/profileSlice';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import AuthWrapper from '@/app/authWrapper';
 
 
 // let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcwNjQ2Mjc1OSwiZXhwIjo3NzA2NDYyNzU5fQ.IuUhkcHsUeuHIin8d1ir-BNNNqhQZo0KDS0ryEdgQ1o';
@@ -47,9 +48,11 @@ export default function page() {
  
 
   return (
-    <div className='w-full bg-[#e7edff] overflow-y-auto'>   
-      <ChangeInfo />
-    </div>
+    <AuthWrapper>
+      <div className='w-full bg-[#e7edff] overflow-y-auto'>   
+        <ChangeInfo />
+      </div>
+    </AuthWrapper>
   )
 }
 

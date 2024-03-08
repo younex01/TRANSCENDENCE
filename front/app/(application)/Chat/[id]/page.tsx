@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { setRefreshConvos } from '@/redux/features/chatSlices/refreshSlice';
 import NotUser from '../NotUser';
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
+import AuthWrapper from '@/app/authWrapper';
 
 export default function Page(props: any) {
 
@@ -42,12 +43,12 @@ export default function Page(props: any) {
       
       try {
         console.log("tist wahc dkhol wla la hh");
-        const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${props.params.id}`, { withCredentials: true });
-        const blockListResponse = await axios.get(`http://localhost:4000/user/myBlockList?myId=${userData.id}`, { withCredentials: true });
-        setMyBlockList(blockListResponse.data);
-        setMessages(msgs.data.message);
         const response = await axios.get(`http://localhost:4000/chat/getGroupByGroupId?groupId=${props.params.id}&&myId=${userData.id}`, { withCredentials: true });
         if (response.status === 200) {
+          const msgs = await axios.get(`http://localhost:4000/chat/getMsgsByGroupId?groupId=${props.params.id}&&myId=${userData.id}`, { withCredentials: true });
+          const blockListResponse = await axios.get(`http://localhost:4000/user/myBlockList?myId=${userData.id}`, { withCredentials: true });
+          setMyBlockList(blockListResponse.data);
+          setMessages(msgs.data.message);
           const data = response.data;
           setGroupData(data.data);
           console.log("data.data", data.data);
@@ -106,7 +107,8 @@ export default function Page(props: any) {
   }
   
   useEffect(() => {
-    socket?.on("refreshStatus", () => {
+    socket?.on("refreshStatus",  (type: string, userId: string) => {
+      if ((type === "logOut") && (userId === userData.id)) return;
       dispatch(setRefreshConvos(!refreshConvos))
       setRefreshStatus(!refreshStatus);
     });
@@ -143,6 +145,10 @@ export default function Page(props: any) {
       }
     });
 
+    socket?.on("refreshAllInFront",(myId:string) =>{
+      setRefreshStatus(!refreshStatus);
+    });
+
     socket?.on("alreadyUnmuted",(myId:string) =>{
       if (myId === userData.id){
       toast(`This user is already unmuted`);
@@ -158,6 +164,7 @@ export default function Page(props: any) {
       socket?.off("redirectToChatPage");
       socket?.off("changePasswordResponse");
       socket?.off("alreadyUnmuted");
+      socket?.off("refreshAllInFront");
     };
   });
 
@@ -305,13 +312,14 @@ const Play = async (tar:any):Promise<void> =>
   // };
   
 
-  if(groupData === 404){
-    return <NotUser />
-  }
+  // if(groupData === 404){
+  //   return <NotUser />
+  // }
 
   return (
-    groupData === 404 ? <NotUser />
-
+      
+    groupData === 404 ?
+    <NotUser/>
     :((groupData.type === "DM" && isLoading) ?
 
       (
@@ -717,6 +725,7 @@ const Play = async (tar:any):Promise<void> =>
             </div>
           </div>
         </div>
+
       )
     )
   )

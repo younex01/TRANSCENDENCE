@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Providers from "../../redux/store/Providers";
 import LeftBar from "./../components/leftBar";
 import React from "react";
+import AuthWrapper from "../authWrapper";
 // import { PersistGate } from 'redux-persist/integration/react'
 // import { PersistGate } from 'redux-persist/es/integration/react'
 
@@ -16,13 +17,15 @@ const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex">
+      <AuthWrapper>
+        <div className="flex">
 
-      <Providers>
-        <LeftBar />
-        {children}
-      </Providers>
-    </div>
+            <Providers>
+              <LeftBar />
+              {children}
+            </Providers>
+        </div>
+      </AuthWrapper>
   );
 }
 export default RootLayout;

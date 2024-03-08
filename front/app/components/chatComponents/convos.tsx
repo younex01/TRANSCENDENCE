@@ -41,7 +41,11 @@ export default function Convos() {
     socket?.on("refreshStatus", () => {
       setRefreshStatus(!refreshStatus);
     });
+    socket?.on("refreshAllInFront",(myId:string) =>{
+      setRefreshStatus(!refreshStatus);
+    });
     return () => {
+      socket?.off("refreshAllInFront");
       socket?.off("refreshStatus");
       socket?.off("refresh");
     };

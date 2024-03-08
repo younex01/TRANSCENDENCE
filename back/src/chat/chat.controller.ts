@@ -76,6 +76,7 @@ export class ChatController {
   @Get('/getGroupByGroupId')
   async getGroupByGroupId(@Query('groupId') groupId: string, @Query('myId') myId: string) {
     try {
+      if (!await this.getIfMember(myId, groupId)) return;
       const group = await this.chatService.getGroupWithMembers(groupId);
       if (group.type === 'DM') {
         const otherMember = group.members.find(member => member.id !== myId);
@@ -93,12 +94,16 @@ export class ChatController {
   }
 
   @Get('/getMsgsByGroupId')
-  async getMsgsByGroupId(@Query('groupId') groupId: string) {
+  async getMsgsByGroupId(@Query('groupId') groupId: string, @Query('myId') myId: string) {
 
-    const roomData = await this.chatService.getRoom(groupId);
+    const roomData = await this.chatService.getGroupWithMembers(groupId);
     if (!roomData)
       throw new NotFoundException("Group not found");
 
+    const userIndex = roomData.members.findIndex((member) => member.id === myId);
+    if (userIndex === -1)
+      throw new NotFoundException("Group not found");
+    
     const message = await this.chatService.getGroupMessages(groupId);
     return { message };
   }

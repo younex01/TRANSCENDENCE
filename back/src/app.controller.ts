@@ -12,4 +12,8 @@ export class AppController {
   // async handleUpdatedUser(@Body() userId: any){
   //   return this.prisma.updateUser(userId);
   // }
+  @Get("/")
+  async healthCheck() {
+    return "ok";
+  }
 }

@@ -21,9 +21,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async getUserByUserId(user:string){
+    console.log("user", user);
+    
     const users = await this.user.findUnique({
       where: {id: user},
     });
+    if (!user) 
+      throw new Error('User not found');
+
     return users;
   }
 

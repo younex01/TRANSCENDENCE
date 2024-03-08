@@ -23,7 +23,7 @@ export default function LeftBar() {
 
   const logout = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/auth/logout", {withCredentials: true});
+      await axios.get("http://localhost:4000/auth/logout", {withCredentials: true});
       socket.emit("customDisco")
       router.push("/");
       await profilePersistor.purge();
@@ -100,7 +100,7 @@ export default function LeftBar() {
           <Link href="./../../Settings">
             <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full flex items-center justify-center ">
               <Image
-                src="/../../../Setting.svg"
+                src="/../../../setting.svg"
                 alt="logo"
                 width={35}
                 height={35}

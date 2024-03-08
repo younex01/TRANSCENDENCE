@@ -42,8 +42,6 @@ export class AuthController {
       });
       return res.redirect("http://localhost:3000/Settings");
     } else if (req.user.twoFactorAuthEnabled) {
-      // await this.jwtService.signAsync(payload);
-      // res.cookie('JWT_TOKEN', token);
       res.cookie("USER_ID", req.user.id);
       return res.redirect("http://localhost:3000/QRcode");
     }
@@ -55,13 +53,11 @@ export class AuthController {
   @Get("logout")
   @UseGuards(AuthGuard("jwt"))
   async ft_logout(@Res() res) {
-    // console.log("ress print", res);
     
     console.log("logout", res.req.user);
     
     res.clearCookie("JWT_TOKEN");
     res.status(200).json({ redirect: "http://localhost:3000" });
-    // return res.redirect("http://localhost:3000");
   }
 
   @Post("generateTwoFactorAuthCode")

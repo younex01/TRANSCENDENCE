@@ -5,6 +5,7 @@ import { setProfileData } from '@/redux/features/profile/profileSlice';
 import Home from '@/app/components/profile/Home';
 import type { RootState } from '@/redux/store/store'
 import { useSelector, useDispatch } from 'react-redux'
+import AuthWrapper from '@/app/authWrapper';
 
 axios.defaults.withCredentials = true;
 
@@ -34,8 +35,10 @@ export default function Page() {
   },[]);
   
   return (
-    <div className='w-full bg-[#dbe0f6] overflow-y-auto '>
-      <Home  />
-    </div>
+    <AuthWrapper>
+        <div className='w-full bg-[#dbe0f6] overflow-y-auto '>
+          <Home  />
+        </div>
+      </AuthWrapper>
   )
 }

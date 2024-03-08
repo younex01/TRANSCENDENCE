@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Providers from "../../../redux/store/Providers"
 import React from 'react'
 import FriendsAndGroups from '@/app/components/chatComponents/friendsAndGroups'
+import AuthWrapper from '@/app/authWrapper'
 const inter = Inter({ subsets: ['latin'] })
 
 function RootLayout({
@@ -11,10 +12,12 @@ function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <Providers>
-        <FriendsAndGroups/>
-        {children}
-    </Providers>
+    <AuthWrapper>
+      <Providers>
+          <FriendsAndGroups/>
+          {children}
+      </Providers>
+    </AuthWrapper>
   )
 }
 export default RootLayout

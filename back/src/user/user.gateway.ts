@@ -51,8 +51,11 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @OnEvent('refreshStatus')
-  async refreshStatus(client: Socket) {
-    this.server.emit("refreshStatus");
+  async refreshStatus(client: any, type: string, id: string) {
+    // if  (type === "logOut")
+    //   client.broadcast.emit("refreshStatus");
+    // else
+      this.server.emit("refreshStatus", type, id);
   }
 
   
@@ -66,6 +69,10 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
   }
   
+  @OnEvent('refreshAll')
+  async refreshAll(client: Socket) {
+    this.server.emit("refreshAllInFront");
+  }
   
   @SubscribeMessage('customDisco')
   async customDisco(client: Socket) {

@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Cookies from 'js-cookie';
+import AuthWrapper from '@/app/authWrapper';
 
 
 export default function page() {
@@ -296,6 +297,8 @@ export default function page() {
 
 
   return (
+    <AuthWrapper>
+      
     <div className='w-full h-screen bg-[#dbe0f6] flex justify-center items-center'>
     <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-row h-[30%] w-[60%]'>
         {start && <div className='text-white'>{text}</div>}
@@ -342,5 +345,7 @@ export default function page() {
             </>
         }
     </div>
+
+    </AuthWrapper>
   )
 }

@@ -11,6 +11,7 @@ import animationData from   "../../../public/nothing.json"
 import Lottie from 'react-lottie-player';
 import Link from "next/link";
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
+import AuthWrapper from "@/app/authWrapper";
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
@@ -39,8 +40,8 @@ export default function Home() {
       try {
         const response = await axios.get(`http://localhost:4000/user/userFreinds?userId=${profileInfo.id}`, { withCredentials: true });
         setMyFreinds(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      } catch (error:any) {
+        console.log("Error fetching user data:", error.response.data.message);
       }
 
     };
@@ -103,7 +104,9 @@ export default function Home() {
 
 
   return (
-    <div className="bg-[#dbe0f6] flex justify-center items-center w-full overflow-y-auto overflow-auto">
+    <AuthWrapper>
+      
+      <div className="bg-[#dbe0f6] flex justify-center items-center w-full overflow-y-auto overflow-auto">
       <div className="flex flex-col justify-around items-center  w-full h-[100vh]"
           ref={buttonAi}>
         <div
@@ -118,10 +121,10 @@ export default function Home() {
         </div>
         <div
           className="flex flex-col  justify-center items-center max-w-[1200px] w-full h-full px-5 gap-10">
-          <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[50%] gap-10">
+          <div className="flex lg:flex-row flex-col justify-center items-center w-full h-[70%] gap-10">
             <div
-              className="rounded-lg w-full h-full flex justify-center items-end gap-4"
-              style={{ backgroundImage: `url(/hh1.jpg)` }}
+              className="rounded-lg w-full h-full flex justify-center items-end gap-4  bg-cover bg-no-repeat bg-center"
+              style={{ backgroundImage: `url(/friendsGame.webp)` }}
             >
               <div className="pb-5">
                 <button
@@ -151,14 +154,14 @@ export default function Home() {
                       <div className="h-full w-full flex justify-center items-center flex-col overflow-y-visible overflow-x-hidden no-scrollbar">
 
                       {myFreinds.map((value: any, index: number) => (
-                        <div className="flex justify-between  sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ">
-                          <div className="flex flex-row justify-between w-full items-center">
+                        <div  key={index} className="flex justify-between  sm:flex-row p-[16px] items-center mb-10 bg-[#9ca5cc] w-[60%] rounded-[34px] ">
+                          <div className="flex flex-row justify-around w-full items-center">
                             <div className="flex justify-between items-center gap-[16px]">
-                              <img
-                                className="md:h-[80px] md:w-[80px] sm:w-[50px] w-[40px] ml-1 rounded-[50px] object-fill"
-                                src={value.avatar}
-                                alt="robiin"
-                                />
+                                <img
+                                  className="md:h-[80px] md:w-[80px] sm:w-[50px] w-[40px] ml-1 rounded-[50px] object-fill"
+                                  src={value.avatar}
+                                  alt="robiin"
+                                  />
                               <div className="flex flex-col ">
                                 <div className="md:text-[16px] sm:text-[14px] text-[12px] text-[#252f5b font-sans-only test">
                                   {value.firstName + " " + value.lastName}
@@ -191,29 +194,9 @@ export default function Home() {
               </div>
             </div>
 
-            <div
-              className="rounded-lg w-full h-full flex justify-center items-end gap-4"
-              style={{ backgroundImage: `url(/hh1.jpg)` }}
-            >
-              <div className="pb-5">
-                  <button
-                    onClick= {handleClickAi}
-                    className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
-                  >
-                    <img
-                      src="/robot.svg"
-                      alt=""
-                      className="w-[22px] h-[22px] bg-cover"
-                    />
-                    Against AI
-                  </button>
-              </div>
-            </div>
-          </div>
-
           <div
-            className="rounded-lg w-full h-[25%] lg:h-[40%] flex justify-center items-end gap-4"
-            style={{ backgroundImage: `url(/hh1.jpg)` }}
+            className="rounded-lg w-full h-full flex justify-center items-end gap-4  bg-cover bg-no-repeat bg-center"
+            style={{ backgroundImage: `url(/randomGame.webp)` }}
           >
             <div className="pb-5">
               <button
@@ -229,6 +212,28 @@ export default function Home() {
               </button>
             </div>
           </div>
+          </div>
+
+
+          <div
+              className="rounded-lg lg:w-[60%] w-full h-[35%] lg:h-[40%] flex justify-center items-end gap-4 bg-cover bg-no-repeat bg-center  r"
+              style={{ backgroundImage: `url(/aiGame.webp)` }}
+            >
+              <div className="pb-5">
+                  <button
+                    onClick= {handleClickAi}
+                    className="w-[250px] h-[4vh] flex justify-center items-center gap-2  bg-[#dbe0f6] border-1 rounded-lg text-[#252f5b] text-[13px] hover:bg-[#c9d0f0] transition-all active:bg-[#a9b8e8]"
+                  >
+                    <img
+                      src="/robot.svg"
+                      alt=""
+                      className="w-[22px] h-[22px] bg-cover"
+                    />
+                    Against AI
+                  </button>
+              </div>
+            </div>
+
         </div>
           <div>
             <button
@@ -320,5 +325,7 @@ export default function Home() {
         {playAi && <PongGame />}
       
     </div>
+
+    </AuthWrapper>
   );
 }

@@ -23,7 +23,7 @@ export class UserService {
       this.userSocketMap[userId] = this.userSocketMap[userId].filter((s: any) => s !== socket);
       if (this.userSocketMap[userId].length === 0) {
         this.updateProfile("Offline", userId);
-        this.eventEmitter.emit("refreshStatus")
+        this.eventEmitter.emit('refreshStatus', "lkhwa", "logOut", this.userSocketMap[userId]);
       }
     }
   }
@@ -392,7 +392,6 @@ export class UserService {
   }
 
   async getGameResult(myId: string) {
-    console.log("myId", myId);
 
     return this.prisma.gameResult.findMany({
       where: {

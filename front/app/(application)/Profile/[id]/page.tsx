@@ -9,6 +9,7 @@ import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import LastGames from "@/app/components/profile/LastGames";
 import Image from "next/image";
 import NotUser from "../NotUser";
+import AuthWrapper from "@/app/authWrapper";
 
 export default function Profile(props: any) {
   // const refreshNotifs = useSelector((state:RootState) => state.refreshNotifs.refreshNoifications);
@@ -89,7 +90,7 @@ export default function Profile(props: any) {
       }
     };
     requestStatus();
-  }, [refreshNotifs]);
+  }, [props.params.id, refreshNotifs, refreshStatus]);
 
   // useEffect(() => {
   //   socket?.on("refreshFrontfriendShip", (channelStatus: any) => {
@@ -107,25 +108,21 @@ export default function Profile(props: any) {
   //   };
   // });
 
-
-
-
   useEffect(() => {
     socket?.onAny((event:any) => {
       if (event == "refreshStatus")
-      {
-        console.log("wach fkholds adhads asd");
         setRefreshStatus(!refreshStatus);
-      }
       else if(event == "refreshFrontfriendShip")
-      {
-        console.log("++++wach fkholds adhads asd");
         setRefreshNoifications(!refreshNotifs);
-      }
-    }
-);
+    });
+
+    socket?.on("refreshAllInFront",(myId:string) =>{
+      setRefreshStatus(!refreshStatus);
+    });
+
     
     return () => {
+      socket?.off("refreshAllInFront");
       socket?.off("refreshStatus");
       socket?.off("refreshFrontfriendShip");
     };
@@ -186,6 +183,8 @@ export default function Profile(props: any) {
 }
   return (
     <>
+    <AuthWrapper>
+      
       {isLoading ? (
         <div>Loading...</div>
       ) : (
@@ -271,6 +270,8 @@ export default function Profile(props: any) {
           </div>
         </div>
       )}
+
+    </AuthWrapper>
     </>
   );
 }

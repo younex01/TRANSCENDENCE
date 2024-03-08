@@ -148,7 +148,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   @OnEvent('changeRoomPassword')
-  async changePassword(client: Socket, roomId: any) {
+  async changePassword() {
     console.log("hna 2");
       console.log("hna 1");
       

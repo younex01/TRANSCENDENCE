@@ -33,8 +33,8 @@ export default function createGroupChat(props: any) {
         console.log("myFriends.data", myFriends.data);
         setFriendsList(myFriends.data)
       }
-      catch (error) {
-        console.log(error)
+      catch (error:any) {
+        console.log("Error fetching user data:", error.response.data.message);
       }
     };
 
