@@ -23,7 +23,7 @@ export class GameService {
 
     async addGameResult(players: Player[], userId: string, result: boolean) {
 
-      console.log("kyaaaaaaaaaaah", players);
+      // console.log("kyaaaaaaaaaaah", players);
   
         const status = players[0].score > players[1].score ? "win" : "lose";
         const data:any = {
@@ -41,7 +41,6 @@ export class GameService {
           userScore: players[1].score,
           opponentScore: players[0].score,
         }
-        console.log("kyaaaaaaaaaaadata", data);
         return await this.prisma.gameResult.create({ data: data }) && await this.prisma.gameResult.create({ data: data2 });
     
     }
@@ -79,6 +78,9 @@ export class GameService {
       let result : number = -1;
       for(let i = 0; i < games.length;i++)
       {
+        if(!games[i].players[0])
+          continue;
+        console.log("--->[",games[i].players[0].opponent_id, id , map.get(id) , games[i].players[0].db_id,"]---<");
         if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
         {
           map.delete(id);
@@ -261,13 +263,15 @@ export class GameService {
         }
         else
         {
-          if (game[i].players[0].id === id && game[i].players.length == 1)
+          if(game[i].players[0])
           {
-            this.userService.updateProfile("Online", game[i].players[0].db_id);
-            this.eventEmitter.emit("refreshStatus");
-            game.splice(i, 1);
-            break;
-
+            if (game[i].players[0].id === id && game[i].players.length == 1)
+            {
+              this.userService.updateProfile("Online", game[i].players[0].db_id);
+              this.eventEmitter.emit("refreshStatus");
+              game.splice(i, 1);
+              break;
+            }
           }
         }
       }

@@ -162,7 +162,6 @@ export class UserController {
 
     }
 
-
     @Post('acceptInviteToPlay')
     @UseGuards(AuthGuard('jwt'))
     async acceptInviteToPlay(@Body() req: any) {
@@ -287,7 +286,7 @@ export class UserController {
         return lastGames;
     }
 
-    @Post('achievements')
+    @Get('achievements')
     @UseGuards(AuthGuard('jwt'))
     async achievements(@Query("userId") userId: string) {
         
@@ -317,8 +316,6 @@ export class UserController {
         if(check >= 25){
             this.UserService.getAchievements(userId, "achiev6");
         }
-        console.log("check-------------", check);
-        
         
         
         return check;
@@ -328,7 +325,7 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     async getAllAchievements(@Query("userId") userId: string) {
         const allAchievements = await this.UserService.getAllAchievements(userId);
-        console.log("all achievemt==============", allAchievements);
+        // console.log("all achievemt==============", allAchievements);
         
         return allAchievements;
     }

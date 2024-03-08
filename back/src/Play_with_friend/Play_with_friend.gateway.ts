@@ -30,18 +30,25 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   @SubscribeMessage('connecte')
   async handleConnection(socket: Socket): Promise<void> {
     const token:any = socket.handshake.query.token;
-    if (token === "token")
-      return;
     const senderId:any = socket.handshake.query.id;
-
+    if (token === "token")
+    {
+      const tar:any = socket.handshake.query.tar;
+      this.acc_rqst.set(tar,senderId);
+      console.log("maaaaaap",this.acc_rqst);
+      return;
+    }
+    console.log("iiiiiiiiid",senderId);
     const token_id = this.gameService.getUserInfosFromToken(token);
     const user = await this.userService.getUser(token_id.sub);
     const existingUser = Array.from(this.connectedUsers.values());
+    if(!user) return;
     if (existingUser.includes(token_id.sub) || user.status === "inGame") {
       socket.emit("already_in_game");
       socket.disconnect();
       return;
     }
+    setTimeout(() => {}, 1000);
     
     this.connectedUsers.set(socket.id, token_id.sub);
     
@@ -73,8 +80,8 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
       
-      this.gameService.getReceiverIdBySenderId(senderId,this.players,this.opponents);
       this.players.push({id: newRoomId, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: senderId,pic: "", g_id: "",opponent_id:""});
+      await this.gameService.getReceiverIdBySenderId(senderId,this.players,this.opponents);
       let newBall:Ball = {...this.ball};
       const newGame: Game = {
         nb: this.id,
@@ -124,6 +131,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   handle_request(@MessageBody() data: { key: string, value: string } , @ConnectedSocket() client: Socket) : void
   {
     this.acc_rqst.set(data.key,data.value);
+    console.log("fill the map",this.acc_rqst);
     client.disconnect();
   }
 

@@ -24,7 +24,7 @@ export class GameRandomService {
 
     async addGameResult(players: Player[], userId: string, result: boolean) {
 
-      console.log("kyaaaaaaaaaaah", players);
+      // console.log("kyaaaaaaaaaaah", players);
   
         const status = players[0].score > players[1].score ? "win" : "lose";
         const data:any = {
@@ -42,7 +42,6 @@ export class GameRandomService {
           userScore: players[1].score,
           opponentScore: players[0].score,
         }
-        console.log("kyaaaaaaaaaaadata", data);
         return await this.prisma.gameResult.create({ data: data }) && await this.prisma.gameResult.create({ data: data2 });
     
     }
