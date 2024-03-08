@@ -10,6 +10,7 @@ import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
 import animationData from   "../../../public/nothing.json"
 import Lottie from 'react-lottie-player';
 import Link from "next/link";
+import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 
 export default function Home() {
   const [playAi, setPlayAi] = useState<boolean>(false);
@@ -54,7 +55,17 @@ export default function Home() {
       `http://localhost:4000/user/sendPlayAgain`,
       { sender: profileInfo.id, target:tar}, // to handel
       { withCredentials: true });
-  }
+
+      const socket = io('http://localhost:4000', {
+        path: '/play',
+        query: {
+          token: "token",
+          id: profileInfo.id,
+          tar: tar
+        }
+      });
+      socket.emit('accepted_request', { key:profileInfo.id, value: tar });
+      }
 
   // const Play = async (tar:string):Promise<void> => 
   // {

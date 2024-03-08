@@ -29,7 +29,7 @@ export default function Achievements({userId}: {userId: any}) {
 // }, [])
     useEffect(() => { const achievement = async () => {
       try{
-        const getachivem = await axios.post(`http://localhost:4000/user/achievements?userId=${userId}`, {withCredentials: true})
+        const getachivem = await axios.get(`http://localhost:4000/user/achievements?userId=${userId}`, {withCredentials: true})
           const achievement = await axios.get(`http://localhost:4000/user/getAllAchievements?userId=${userId}`, {withCredentials: true})
 
           console.log("achievement", achievement.data);

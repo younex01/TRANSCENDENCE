@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import axios from "axios";
 import { selectProfileInfo } from "@/redux/features/profile/profileSlice";
+import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 
 const TeamCard = ({
   name,
@@ -34,7 +35,17 @@ const TeamCard = ({
       `http://localhost:4000/user/sendPlayAgain`,
       { sender: myData.id, target:tar}, // to handel
       { withCredentials: true });
-  }
+      
+        const socket = io('http://localhost:4000', {
+          path: '/play',
+          query: {
+            token: "token",
+            id: myData.id,
+            tar: tar
+          }
+        });
+        socket.emit('accepted_request', { key:myData.id, value: tar });
+      }
   
   const myData = useSelector(selectProfileInfo);
 

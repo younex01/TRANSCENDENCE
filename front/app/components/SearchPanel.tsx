@@ -6,7 +6,7 @@ import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import Image from 'next/image';
-import { io } from 'socket.io-client';
+import { io } from '@/../../node_modules/socket.io-client/build/esm/index';
 
 export default function SearchPanel() {
 
@@ -95,7 +95,7 @@ export default function SearchPanel() {
 
   const acceptInvitToPlay = async (notif: any) => {
     try {
-      axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
+      await axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
 
       const socket = io('http://localhost:4000', {

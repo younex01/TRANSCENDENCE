@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { setRefreshConvos } from '@/redux/features/chatSlices/refreshSlice';
 import NotUser from '../NotUser';
+import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 
 export default function Page(props: any) {
 
@@ -259,12 +260,22 @@ export default function Page(props: any) {
     dispatch(setRefreshConvos(!refreshConvos))
   }
   
-const Play = async (tar:string):Promise<void> => 
+const Play = async (tar:any):Promise<void> => 
   {
     console.log("invite to play");
     console.log(userData.id);
-    console.log(groupData.members[0].id);
+    console.log(tar);
     await axios.post(`http://localhost:4000/user/sendPlayAgain`,{ sender: userData.id, target:tar}, { withCredentials: true });
+
+    const socket = io('http://localhost:4000', {
+      path: '/play',
+      query: {
+        token: "token",
+        id: userData.id,
+        tar: tar
+      }
+    });
+    socket.emit('accepted_request', { key:userData.id, value: tar });
   }
   
   useEffect(() => {
@@ -594,12 +605,12 @@ const Play = async (tar:string):Promise<void> =>
                                             )
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { Play(groupData?.members[index].id) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { Play(groupData?.members[index].id) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
@@ -609,7 +620,7 @@ const Play = async (tar:string):Promise<void> =>
                                       (
                                         <div className='font-semibold absolute right-12 top-4 bg-[#e6ebfe] flex flex-col border-[1px] rounded-[10px] p-1 z-[1000]'>
                                           <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]'> visit profile </Link>
-                                          <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
+                                          <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { Play(groupData?.members[index].id) }}>invite to play</div> </Link>
                                         </div>
                                       )
                                       :
@@ -629,12 +640,12 @@ const Play = async (tar:string):Promise<void> =>
                                               <div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("makeAdmin", groupData.members[index], index, "")}}>make admin</div>
                                             }
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { Play(groupData?.members[index].id) }}>invite to play</div> </Link>
                                           </>
                                           :
                                           <>
                                             <Link href={`/Profile/${members.id}`} className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' > visit profile </Link>
-                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { handleChannelCommands("inviteToPlay", groupData?.members[index], index, "") }}>invite to play</div> </Link>
+                                            <Link href="../Play"><div className='hover:text-[#8d94af] cursor-pointer py-2 px-2 rounded-[8px]' onClick={() => { Play(groupData?.members[index].id) }}>invite to play</div> </Link>
                                           </>
                                         }
                                       </div>
