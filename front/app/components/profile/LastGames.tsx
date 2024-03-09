@@ -77,7 +77,7 @@ export default function LastGames({userId} : {userId: any}) {
         ) : (
           <>
             {last_games &&
-              last_games.reverse().map((game: any, index: number) => (
+              last_games.map((game: any, index: number) => (
                 game.userId !== userId ?
                 <div key={index} className="flex flex-row items-center justify-center w-full lg:w-10/12 2xl:w:10/12 " >
                   <div className="w-[50%] h-[150px] flex flex-row items-center justify-around">

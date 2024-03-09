@@ -26,13 +26,11 @@ function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthWrapper>
           <Providers>
             <SocketInitializer/>
             {children}
             <Toaster richColors closeButton/>
           </Providers>
-        </AuthWrapper>
       </body>
     </html>
   )
