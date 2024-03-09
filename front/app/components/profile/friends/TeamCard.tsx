@@ -35,11 +35,12 @@ const TeamCard = ({
       `http://localhost:4000/user/sendPlayAgain`,
       { sender: myData.id, target:tar}, // to handel
       { withCredentials: true });
-      
+      console.log("connected5")
+
         const socket = io('http://localhost:4000', {
           path: '/play',
           query: {
-            token: "token",
+            token: "token_data",
             id: myData.id,
             tar: tar
           }

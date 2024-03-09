@@ -73,17 +73,38 @@ export class GameService {
         return false;
     }
 
+    async findSender(id:string): Promise<void> {
+      
+      try {
+        const invite = await this.prisma.inviteToPlay.findFirst({
+          where: {
+            receiverId: id,
+            status: 'accepted',
+          },
+        });
+        if (invite)
+          console.log("hada howa lisft lik l invite:",invite.senderId);
+      } catch (error) {
+        console.error('Error finding sender:', error);
+      }
+    }
+
     findIndexBySenderId(games :Game[],id:string, map:Map<string,string>):number
     {
       let result : number = -1;
+      console.log("dkhal");
+      const index = Object.keys(games);
+
+      
+      //this.findSender(id);
       for(let i = 0; i < games.length;i++)
       {
-        if(!games[i].players[0])
+        if(!games[index[i]].players[0].opponent_id)
           continue;
-        console.log("--->[",games[i].players[0].opponent_id, id , map.get(id) , games[i].players[0].db_id,"]---<");
-        if(games[i].players[0].opponent_id === id && map.get(id) === games[i].players[0].db_id)
+        //console.log("--->[",games[index[i]].players[0].opponent_id, id , map.get(id) , games[index[i]].players[0].db_id,"]---<");
+        if(games[index[i]].players[0].opponent_id === id && map.get(id) === games[index[i]].players[0].db_id)
         {
-          map.delete(id);
+          //map.delete(id);
           result = i;
           break;
         }
@@ -98,7 +119,7 @@ export class GameService {
             senderId: senderId
           }
         });
-    
+        console.log("invite back ndakhel opponents_id",invite);
         if (invite) {
           player[0].opponent_id = invite.receiverId;
           opponents.push(invite.receiverId);
@@ -227,7 +248,7 @@ export class GameService {
       }
     }
 
-    removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server): number {
+    removeDataFromRooms(game: Game[], id: string,gameId:number,server:Server,data_map: Map<string, string>): number {
       for (let i=0;i<game.length;i++)
       {
         if (game[i].players.length === 2)
@@ -252,6 +273,10 @@ export class GameService {
                 this.addGameResult(game[i].players, game[i].players[0].db_id,true);
               }
             }
+            data_map.forEach((value, key) => {
+              if (key === game[i].players[0].opponent_id && value === game[i].players[0].db_id) {
+                data_map.delete(key);
+            }  });
             this.userService.updateProfile("Online", game[i].players[0].db_id);
             this.userService.updateProfile("Online", game[i].players[1].db_id);
             this.eventEmitter.emit("refreshStatus");
@@ -263,10 +288,16 @@ export class GameService {
         }
         else
         {
+          //console.log("player in the game removed",game[i].players[0]);
           if(game[i].players[0])
           {
             if (game[i].players[0].id === id && game[i].players.length == 1)
             {
+              //console.log("delet from map",game[i].players[0].opponent_id, game[i].players[0].db_id);
+              data_map.forEach((value, key) => {
+                if (key === game[i].players[0].opponent_id && value === game[i].players[0].db_id) {
+                  data_map.delete(key);
+              }  });
               this.userService.updateProfile("Online", game[i].players[0].db_id);
               this.eventEmitter.emit("refreshStatus");
               game.splice(i, 1);

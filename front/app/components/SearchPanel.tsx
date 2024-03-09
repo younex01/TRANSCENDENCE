@@ -97,14 +97,18 @@ export default function SearchPanel() {
     try {
       await axios.post(`http://localhost:4000/user/acceptInviteToPlay`, { notif, myId: myData.id }, { withCredentials: true });
       setRefreshNoifications(!refreshNotifs);
+      console.log("connected4")
 
+      console.log("-------ach khassni anas",notif.senderId,notif.receiverId);
       const socket = io('http://localhost:4000', {
         path: '/play',
         query: {
-          token: "token",
-          id: myData.id
+          token: "token_d",
+          tar: notif.senderId,
+          send: notif.receiverId
         }
       });
+      socket.emit("checker_y",notif.receiverId);
       socket.emit('accepted_request', { key: myData.id, value: notif.senderId });
 
     } catch (error) {
@@ -184,7 +188,7 @@ export default function SearchPanel() {
                               <img className='h-full w-full object-cover' src={`${notif.sender.avatar}`} alt={`${notif.sender.avatar}`} />
                             </div>
                             {/* <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                              <img className='h-[9px] w-[9px]' src="/vector.svg" alt="/vector.svg" />
+                              <img className='h-[9px] w-[9px]' src="/Vector.svg" alt="/Vector.svg" />
                             </div> */}
                           </div>
                           <div className='flex flex-col '>
@@ -219,7 +223,7 @@ export default function SearchPanel() {
                               <img className='h-full w-full object-cover' src={`${notif.sender.avatar}`} alt={`${notif.sender.avatar}`} />
                             </div>
                             <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                              <img className='h-[9px] w-[9px]' src="/vector.svg" alt="/vector.svg" />
+                              <img className='h-[9px] w-[9px]' src="/Vector.svg" alt="/Vector.svg" />
                             </div>
                           </div>
                           <div className='flex flex-col '>
@@ -243,7 +247,7 @@ export default function SearchPanel() {
                               <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
                             </div>
                             <div className='absolute top-0 -right-2 h-[15px] w-[15px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                              <img className='h-[6px] w-[6px]' src="/vector.svg" alt="/vector.svg" />
+                              <img className='h-[6px] w-[6px]' src="/Vector.svg" alt="/Vector.svg" />
                             </div>
                           </div>
                           <div className='flex flex-col '>
@@ -270,7 +274,7 @@ export default function SearchPanel() {
                                 <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
                               </div>
                               <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                                <img className='h-[9px] w-[9px]' src="/vector.svg" alt="/vector.svg" />
+                                <img className='h-[9px] w-[9px]' src="/Vector.svg" alt="/Vector.svg" />
                               </div>
                             </div>
                             <div className='flex flex-col '>
@@ -295,7 +299,7 @@ export default function SearchPanel() {
                                   <img className='h-full w-full object-cover' src={`${notif.receiver.avatar}`} alt={`${notif.receiver.avatar}`} />
                                 </div>
                                 <div className='absolute top-0 -right-2 h-[20px] w-[20px] rounded-[12px] bg-[#7239D3]  flex items-center justify-center' >
-                                  <img className='h-[9px] w-[9px]' src="/vector.svg" alt="/vector.svg" />
+                                  <img className='h-[9px] w-[9px]' src="/Vector.svg" alt="/Vector.svg" />
                                 </div>
                               </div>
                               <div className='flex flex-col '>

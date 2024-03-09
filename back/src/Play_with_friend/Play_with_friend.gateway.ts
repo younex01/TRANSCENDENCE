@@ -4,8 +4,9 @@ import { Ball, Canvas, Game, Player } from './game-data.interface';
 import { GameService } from './Play_with_friend.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserService } from 'src/user/user.service';
-import { GameRandomService } from 'src/random-friend/random-friend.service';
 
+
+let  status: Map<string, string> = new Map();
 
 @WebSocketGateway({path: '/play', cors: true})
 export class PlayFriendGateway implements OnGatewayDisconnect {
@@ -13,6 +14,7 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   constructor(private readonly gameService: GameService,private readonly userService: UserService, private eventEmitter: EventEmitter2) {};
 
   @WebSocketServer()
+  
   server: Server;
 
   private game : Game [] = [];
@@ -26,37 +28,58 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
   private opponents:string[] = [];
   private connectedUsers = new Map<string, any>();
   private  acc_rqst: Map<string, string> = new Map();
+  private acc_r: [string,string][] = [];
+
 
   @SubscribeMessage('connecte')
   async handleConnection(socket: Socket): Promise<void> {
+
+
+    console.log(this.acc_rqst);
     const token:any = socket.handshake.query.token;
     const senderId:any = socket.handshake.query.id;
-    if (token === "token")
+    
+    if (token && token == "token_data")
     {
+      
       const tar:any = socket.handshake.query.tar;
       this.acc_rqst.set(tar,senderId);
       console.log("maaaaaap",this.acc_rqst);
       return;
     }
-    console.log("iiiiiiiiid",senderId);
+    else if (token && token == "token_d")
+    {
+      const tar:any = socket.handshake.query.tar;
+      const send:any = socket.handshake.query.send;
+      
+      status.set(send,"yes");
+      for (const [key, val] of this.acc_rqst.entries()) {
+        if (val === tar) {
+          this.acc_rqst.delete(key); // Remove the entry if the value matches
+        }
+      }
+      this.acc_rqst.set(send,tar);
+      return;
+    }
     const token_id = this.gameService.getUserInfosFromToken(token);
-    const user = await this.userService.getUser(token_id.sub);
+    console.log("iiiiiiiiid",senderId);
+    let user:any;
+    if(token_id)
+      user = await this.userService.getUser(token_id.sub);
     const existingUser = Array.from(this.connectedUsers.values());
     if(!user) return;
     if (existingUser.includes(token_id.sub) || user.status === "inGame") {
       socket.emit("already_in_game");
       socket.disconnect();
       return;
-    }
-    setTimeout(() => {}, 1000);
-    
+    } 
     this.connectedUsers.set(socket.id, token_id.sub);
-    
-    
     const index: any = this.gameService.findIndexBySenderId(this.game,senderId,this.acc_rqst);
-
-    if (index != -1)
+    console.log("index",index);
+    console.log("======================================this.status",status.get(token_id));
+    if (index != -1 && (status.get(token_id.sub) === "yes"))
     {
+      status.set(token_id.sub, "no");
       const availibleRoomId = Object.keys(this.game[index].rooms).find(roomId => this.game[index].rooms[roomId].length == 1);
       if(!availibleRoomId) return;
       this.game[index].rooms[availibleRoomId].push(socket.id);
@@ -72,15 +95,20 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
       this.gameService.handle_id(senderId,"", socket.id,this.game);
       this.gameService.removeInviteToPlay(this.game[index].players);
       this.game[index].players[0].db_id = senderId;
+      console.log("-------------> after game this is : ",this.game);
       this.gameService.startTheGame(this.game[index].players, this.game[index].rooms, availibleRoomId, this.server, this.game[index].ball, this.canvas);
     }
     else
     {
+      console.log("-------------> befor new game this is : ",this.game);
       const newRoomId = socket.id;
       this.rooms[newRoomId] = [socket.id];
       socket.join(newRoomId);
       
+      console.log("this.rooms",this.rooms, "newRoomId", newRoomId);
       this.players.push({id: newRoomId, playerNb: 1, x:0, y: 175,score: 0,width: 20, height: 100,name: "player1",giveUp:false,db_id: senderId,pic: "", g_id: "",opponent_id:""});
+      console.log("this players", this.players);
+      const index = Object.keys(this.players);
       await this.gameService.getReceiverIdBySenderId(senderId,this.players,this.opponents);
       let newBall:Ball = {...this.ball};
       const newGame: Game = {
@@ -89,12 +117,14 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
         players: [],
         rooms: this.rooms,
       };
-      newGame.players.push(this.players[0]);
+      newGame.players.push(this.players[index[0]]);
       this.game.push(newGame);
+      //console.log(newGame);
       this.players = [];
       this.rooms = {};
       this.id++;
       this.gameService.handle_id(senderId,"", socket.id,this.game);
+      console.log("-------------> after new game this is : ",this.game);
     }
   }
     
@@ -127,22 +157,26 @@ export class PlayFriendGateway implements OnGatewayDisconnect {
     this.gameService.handle_id(id,g_id, client.id,this.game);
   }
 
-  @SubscribeMessage('accepted_request')
-  handle_request(@MessageBody() data: { key: string, value: string } , @ConnectedSocket() client: Socket) : void
+  @SubscribeMessage('checker_y')
+  handle_status_yes(@MessageBody() data: string , @ConnectedSocket() client: Socket) : void
   {
-    this.acc_rqst.set(data.key,data.value);
-    console.log("fill the map",this.acc_rqst);
-    client.disconnect();
+    status.set(data,"yes");
+    //client.disconnect();
   }
 
-
-
-  handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) 
+  {
     this.connectedUsers.delete(client.id);
     console.log("handle disconnect");
-    this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server);
+    this.id = this.gameService.removeDataFromRooms(this.game, client.id,this.id,this.server,this.acc_rqst);
     this.players = [];
     this.rooms = {};
+    const indexs: any = Object.keys(this.game);
+    for(let i: number = 0; i < this.game.length; i++)
+    {
+      this.game[indexs[i]].nb = i; 
+    }
+    this.id = this.game.length;
+    console.log(this.id,this.acc_rqst, this.game);
   }
 }
-

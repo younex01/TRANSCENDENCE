@@ -56,16 +56,16 @@ export default function Home() {
       `http://localhost:4000/user/sendPlayAgain`,
       { sender: profileInfo.id, target:tar}, // to handel
       { withCredentials: true });
-
+      console.log("connected1")
       const socket = io('http://localhost:4000', {
         path: '/play',
         query: {
-          token: "token",
+          token: "token_data",
           id: profileInfo.id,
           tar: tar
         }
       });
-      socket.emit('accepted_request', { key:profileInfo.id, value: tar });
+      socket.emit('checker', { key:profileInfo.id, value: tar });
       }
 
   // const Play = async (tar:string):Promise<void> => 
