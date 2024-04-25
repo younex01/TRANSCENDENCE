@@ -1,14 +1,20 @@
+"use client";
 import { io, Socket } from '@/../../node_modules/socket.io-client/build/esm/index';
 import React, { useEffect, useRef, useState } from 'react'
-import { Winner } from './Winner';
+import { Winner } from '../../../components/game/Winner';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { selectProfileInfo } from '@/redux/features/profile/profileSlice';
 import Cookies from 'js-cookie';
 
-export const PlayWithFriend = () => {
-    
+
+export default function page(props: any) {
+
+
     const [socket,setSocket] = useState<Socket>()
     const [text,setText] = useState<string>("")
-    const [start, setStart] = useState<boolean>(false);
+
+    const [start, setStart] = useState<boolean>(true);
     const [game, setGame] = useState<boolean>(false);
     const divv = useRef<HTMLDivElement>(null);
 
@@ -17,7 +23,7 @@ export const PlayWithFriend = () => {
     const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
     const [score1,setScore1] = useState<number>(0)
     const [score2,setScore2] = useState<number>(0)
-    const [playerWinnes, setPlayerWinnes] = useState<boolean>(false);
+
     const [computerWinnes, setComputerWinnes] = useState<boolean>(false);
     const [winning, setWinning] = useState<boolean>(false);
     const [playAgain, setPlayAgain] = useState<boolean>(false);
@@ -26,12 +32,16 @@ export const PlayWithFriend = () => {
     const [player, setPlayer] = useState<Player>()
     const [computer, setComputer] = useState<Player>()
     const [winnerName, setWinnerName] = useState<string>("");
-
+    
     const [firstName,setFirstName] = useState<string>("Player1");
     const [secondName,setSecondName] = useState<string>("Player2");
-
+    
     const [pic1,setPic1] = useState<string>("");
+    const [playerWinnes, setPlayerWinnes] = useState<boolean>(false);
     const [pic2,setPic2] = useState<string>("");
+    
+    const myData = useSelector(selectProfileInfo);
+
 
 
     const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -41,21 +51,15 @@ export const PlayWithFriend = () => {
         setIsSmallScreen(window.innerWidth < 910 || window.innerHeight < 450);
       };
   
-      handleResize();
+      handleResize(); 
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
     
+
     let canv = canvasRef.current;
     const [ball, setBall] = useState<Ball>();
 
-
-    function getMouesPosition(e:any, canvas: HTMLCanvasElement):any {
-      var mouseX = e * canvas.width / canvas.clientWidth | 0;
-      var mouseY = e * canvas.height / canvas.clientHeight | 0;
-      return {x: mouseX, y: mouseY};
-  }
-    
     useEffect(() => {
       if (player && computer && playAgain)
       {
@@ -63,7 +67,12 @@ export const PlayWithFriend = () => {
         setPlayerWinnes(false);
       }
     },[playAgain])
-  
+
+    function getMouesPosition(e:any, canvas: HTMLCanvasElement):any {
+      var mouseX = e * canvas.width / canvas.clientWidth | 0;
+      var mouseY = e * canvas.height / canvas.clientHeight | 0;
+      return {x: mouseX, y: mouseY};
+    }
     interface Ball{
       x:number;
       y:number;
@@ -73,7 +82,7 @@ export const PlayWithFriend = () => {
       velocityY: number;
       color: string;
     }
-  
+
     interface Net{
       x: number;
       y: number;
@@ -81,18 +90,22 @@ export const PlayWithFriend = () => {
       height: number;
       color: string;
     }
-  
+
    interface Player {
-      id: string;
-      playerNb: number;
-      x: number;
-      y: number;
-      score: number;
-      width: number;
-      height: number;
-      name: string;
-  }
-  
+    id: string;
+    playerNb: number;
+    x: number;
+    y: number;
+    score: number;
+    width: number;
+    height: number;
+    name: string;
+    giveUp: boolean;
+    db_id: string;
+    pic:string;
+    g_id:string;
+}
+
    interface Game{
       ball: Ball;
       players: Player[];
@@ -112,31 +125,29 @@ export const PlayWithFriend = () => {
           setBall({x: canvas.width / 2, y: canvas.height / 2, radius: 15,speed: 0.9, velocityX: 5, velocityY: 5, color: "WHITE"});
         }  
     }, [ctx])
-  
+
     useEffect(()=> {
       if (computerWinnes || playerWinnes)
         setWinning((prev) => {return !prev})
     },[computerWinnes, playerWinnes])
-  
+
     const drawFirstPlayer = (player: Player) =>{
       if (ctx && canvas && player)
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(player.x,player.y,player.width,player.height);
-        if(player.score != 0)
-          setScore1(player.score);
       }
+      setScore1(player.score);
     }
     const drawSecondPlayer = (computer: Player) =>{
       if (ctx && canvas && computer)
       {
         ctx.fillStyle = "WHITE";
         ctx.fillRect(computer.x,computer.y,computer.width,computer.height);
-        if (computer.score != 0)
-          setScore2(computer.score);
       }
+      setScore2(computer.score);
     }
-  
+
     const drawRect = () => {
       if (ctx && canvas)
       {
@@ -144,7 +155,7 @@ export const PlayWithFriend = () => {
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
     };
-    
+
     const drawCircle = (data:Ball) => {
       if (ctx && canvas && ball)
       {
@@ -155,7 +166,7 @@ export const PlayWithFriend = () => {
         ctx.fill();
       }
     }
-    
+
     const drawNet = () => {
       if (ctx && canvas && net) {
         for (let i = 0; i <= canvas.height; i += 4) {
@@ -165,23 +176,16 @@ export const PlayWithFriend = () => {
       }
     };
 
-  
+
     useEffect(() => {
       const keydownHandler = (e:any) => {
-        if(player && canvas && computer)
-        {
           if (e.key === "ArrowUp" ) {
-            if(player.y <= 0 || computer?.y <= 0)
-              return;
             socket?.emit("arrow_move","down");
           }
-        }
-        if(player && canvas && computer)
-        {
           if (e.key === "ArrowDown") {
-          socket?.emit("arrow_move","up");
-        }
-      }
+            socket?.emit("arrow_move","up");
+          }
+
       };
       const mousemoveHandler = (e:any) => {
           if (canvas)
@@ -198,19 +202,23 @@ export const PlayWithFriend = () => {
         canvas?.removeEventListener("mousemove", mousemoveHandler);
       };
     });
-    
+
     const render = (data:Game) => {
       drawRect();
       drawNet()
       drawCircle(data.ball);
       drawFirstPlayer(data.players[0]);
       drawSecondPlayer(data.players[1]);
-      setPlayer(data.players[0]);
-      setComputer(data.players[1]);
     } 
 
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
-    
+
+    const checkWinner = (name: string) => {
+          setComputerWinnes((prev) => {return !prev})
+          setWinnerName(name);
+    }
+
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+
     const fetchData = async () => {
       try {
       const response = await axios.get(`${url}/user/me`, {withCredentials: true});
@@ -220,7 +228,7 @@ export const PlayWithFriend = () => {
         console.error('Error fetching user data:', error);
       }
     };
-    
+
     useEffect(() => {
       socket?.onAny((event, data) => {
         if (event === "start")
@@ -250,46 +258,50 @@ export const PlayWithFriend = () => {
         }
         else if(event == "winner")
         {
-          setComputerWinnes((prev) => {return !prev})
-          setWinnerName(data);
+          checkWinner(data);
         }
         else if(event = "already_in_game")
         {
           setText("Sorry !! you already in game.");
+          socket.close();
         }
       })
-      return () => {socket?.offAny()}
+      return () => {
+        socket?.offAny();
+      }
     })
-    
-    
-    
 
     useEffect(() => {
-
       const token = Cookies.get('JWT_TOKEN');
-      const newSocket = io(`${url}/`,{
-        path: '/game',
-        query: {
-          token: token
+
+        for(let i : number = 0; i < 2e9; i++ )
+        {
+          i *= 1;
         }
-      });
-      setSocket(newSocket);
+        const newSocket = io(`${url}`,{
+          path: '/play',
+          query: {
+            token: token,
+            id: myData.id,
+            tar: props.params.id,
+          }
+        });
+        setSocket(newSocket);
 
-      setStart(true);
-      setText("wait for freind to join");
+        setStart(true);
+        setText("wait for freind to join");
 
-      newSocket.off();
+        newSocket.off();
 
-      return () => {
-        newSocket.close();
-      };
-  },[])
-  
+        return () => {
+          newSocket.close();
+        };
+    },[])
+
+
   return (
-    <div className='w-full h-screen'>
-      
-    <div className='w-full bg-[#dbe0f6] h-screen flex justify-center items-center'>
-    <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-raw h-[30%] w-[60%]'>
+    <div className='w-full h-screen bg-[#dbe0f6] flex justify-center items-center'>
+    <div ref={divv} className='bg-slate-500 bg-opacity-90 rounded-3xl flex justify-center items-center flex-row h-[30%] w-[60%]'>
         {start && <div className='text-white'>{text}</div>}
     </div>
         {game && 
@@ -334,7 +346,6 @@ export const PlayWithFriend = () => {
             </>
         }
     </div>
-
-    </div>
   )
 }
+

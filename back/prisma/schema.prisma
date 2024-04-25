@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://mazino:mazino@db:5432/PGdb"
+  url      = env("DB_URL")
 }
 model User {
   id                   String          @id
